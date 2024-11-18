@@ -4,7 +4,11 @@ import br.com.renatogsilva.my_car.model.domain.Car;
 import br.com.renatogsilva.my_car.model.enumerators.EnumExchange;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.*;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.Serializable;
 
@@ -17,10 +21,19 @@ public class CarDTO implements Serializable {
 
     @EqualsAndHashCode.Include
     private Long id;
+
+    @NonNull
     private String mark;
+
+    @NonNull
     private Integer yearOfManufacture;
     private String color;
+
+    @NonNull
     private String bodyStyle;
+
+    @NonNull
+    @Schema(description = "Tipo de câmbio", example = "1", allowableValues = "1 - MANUAL, 2 - AUTOMATIC")
     private EnumExchange exchange;
     private String enumExchangeDescription;
     private String engine;
