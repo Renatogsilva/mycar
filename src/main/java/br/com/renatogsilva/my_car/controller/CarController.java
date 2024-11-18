@@ -1,6 +1,7 @@
 package br.com.renatogsilva.my_car.controller;
 
 import br.com.renatogsilva.my_car.model.dto.CarDTO;
+import br.com.renatogsilva.my_car.model.enumerators.EnumStatus;
 import br.com.renatogsilva.my_car.service.car.CarService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
