@@ -1,9 +1,8 @@
 package br.com.renatogsilva.my_car.model.domain;
 
-import br.com.renatogsilva.my_car.model.dto.CarDTO;
-import br.com.renatogsilva.my_car.model.enumerators.EnumExchange;
-import br.com.renatogsilva.my_car.model.enumerators.EnumStatus;
+import br.com.renatogsilva.my_car.model.dto.car.CarRequestDTO;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.io.Serializable;
@@ -23,8 +22,8 @@ public class Car implements Serializable {
     @EqualsAndHashCode.Include
     private Long id;
 
-    @Column(length = 100, nullable = false, unique = true)
-    @NonNull
+    @Column(length = 100, nullable = false)
+    @NotBlank
     private String mark;
 
     @Column(name = "year_manufacture", nullable = false)
@@ -33,11 +32,14 @@ public class Car implements Serializable {
 
     @Column(name = "body_style")
     private String bodyStyle;
-    @Column(length = 1, nullable = false)
-    private EnumExchange exchange;
+
+    @NotBlank
+    private Integer exchange;
     private String engine;
     private String version;
-    private EnumStatus status;
+
+    @NotBlank
+    private Integer status;
 
     @Column(name = "creation_date")
     private LocalDate creationDate;
@@ -45,14 +47,14 @@ public class Car implements Serializable {
     @Column(name = "exclusion_date")
     private LocalDate exclusionDate;
 
-    public Car(CarDTO carDTO) {
-        this.id = carDTO.getId();
-        this.mark = carDTO.getMark();
-        this.yearOfManufacture = carDTO.getYearOfManufacture();
-        this.color = carDTO.getColor();
-        this.bodyStyle = carDTO.getBodyStyle();
-        this.exchange = carDTO.getExchange();
-        this.engine = carDTO.getEngine();
-        this.version = carDTO.getVersion();
+    public Car(CarRequestDTO carRequestDTO) {
+        this.id = carRequestDTO.getId();
+        this.mark = carRequestDTO.getMark();
+        this.yearOfManufacture = carRequestDTO.getYearOfManufacture();
+        this.color = carRequestDTO.getColor();
+        this.bodyStyle = carRequestDTO.getBodyStyle();
+        this.exchange = carRequestDTO.getExchange().getCode();
+        this.engine = carRequestDTO.getEngine();
+        this.version = carRequestDTO.getVersion();
     }
 }
