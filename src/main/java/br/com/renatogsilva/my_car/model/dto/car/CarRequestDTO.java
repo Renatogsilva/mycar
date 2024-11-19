@@ -1,14 +1,11 @@
-package br.com.renatogsilva.my_car.model.dto;
+package br.com.renatogsilva.my_car.model.dto.car;
 
 import br.com.renatogsilva.my_car.model.domain.Car;
 import br.com.renatogsilva.my_car.model.enumerators.EnumExchange;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.io.Serializable;
 
@@ -17,12 +14,12 @@ import java.io.Serializable;
 @ToString
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CarDTO implements Serializable {
+public class CarRequestDTO implements Serializable {
 
     @EqualsAndHashCode.Include
     private Long id;
 
-    @NonNull
+    @NotBlank
     private String mark;
 
     @NonNull
@@ -33,21 +30,19 @@ public class CarDTO implements Serializable {
     private String bodyStyle;
 
     @NonNull
-    @Schema(description = "Tipo de câmbio", example = "1", allowableValues = "1 - MANUAL, 2 - AUTOMATIC")
+    @Schema()
     private EnumExchange exchange;
-    private String enumExchangeDescription;
     private String engine;
     private String version;
 
-    public CarDTO(Car car) {
+    public CarRequestDTO(Car car) {
         this.id = car.getId();
         this.mark = car.getMark();
         this.yearOfManufacture = car.getYearOfManufacture();
         this.color = car.getColor();
         this.bodyStyle = car.getBodyStyle();
-        this.exchange = car.getExchange();
+        this.exchange = EnumExchange.get(car.getExchange());
         this.engine = car.getEngine();
         this.version = car.getVersion();
-        this.enumExchangeDescription = car.getExchange().getDescription();
     }
 }
