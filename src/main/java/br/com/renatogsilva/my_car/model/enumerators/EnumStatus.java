@@ -7,11 +7,11 @@ public enum EnumStatus {
     ACTIVE(1, "Ativo"),
     INACTIVE(2, "Inativo");
 
-    private Integer cod;
+    private Integer code;
     private String description;
 
-    EnumStatus(Integer cod, String description) {
-        this.cod = cod;
+    EnumStatus(Integer code, String description) {
+        this.code = code;
         this.description = description;
     }
 
@@ -21,7 +21,7 @@ public enum EnumStatus {
         }
 
         for (EnumStatus e : EnumStatus.values()) {
-            if (e.cod.equals(cod)) {
+            if (e.code.equals(cod)) {
                 return e;
             }
         }
