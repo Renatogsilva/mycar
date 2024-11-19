@@ -7,11 +7,11 @@ public enum EnumSex {
     MALE(1, "Masculino"),
     FEMALE(2, "Feminino");
 
-    private Integer cod;
+    private Integer code;
     private String description;
 
-    EnumSex(Integer cod, String description) {
-        this.cod = cod;
+    EnumSex(Integer code, String description) {
+        this.code = code;
         this.description = description;
     }
 
@@ -21,7 +21,7 @@ public enum EnumSex {
         }
 
         for (EnumSex e : EnumSex.values()) {
-            if (e.cod.equals(cod)) {
+            if (e.code.equals(cod)) {
                 return e;
             }
         }
