@@ -1,4 +1,4 @@
-package br.com.renatogsilva.my_car.model.exceptions;
+package br.com.renatogsilva.my_car.model.exceptions.basic;
 
 import lombok.Getter;
 
