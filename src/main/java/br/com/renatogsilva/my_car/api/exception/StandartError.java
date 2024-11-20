@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,5 +15,5 @@ public class StandartError implements Serializable {
 
     private String message;
     private int code;
-    private Long timeStamp;
+    private LocalDateTime timeStamp;
 }
