@@ -4,7 +4,7 @@ import br.com.renatogsilva.my_car.model.domain.Car;
 import br.com.renatogsilva.my_car.model.dto.car.CarRequestDTO;
 import br.com.renatogsilva.my_car.model.dto.car.CarResponseDTO;
 import br.com.renatogsilva.my_car.model.dto.car.CarResponseListDTO;
-import br.com.renatogsilva.my_car.model.enumerators.EnumMessageExceptions;
+import br.com.renatogsilva.my_car.model.enumerators.EnumMessageCarExceptions;
 import br.com.renatogsilva.my_car.model.enumerators.EnumStatus;
 import br.com.renatogsilva.my_car.model.exceptions.ObjectNotFoundException;
 import br.com.renatogsilva.my_car.model.validations.CarValidations;
@@ -41,9 +41,11 @@ public class CarServiceImpl implements CarService {
     @Transactional
     @Override
     public CarResponseDTO update(CarRequestDTO carRequestDTO, Long id) {
+        carValidations.checkUpdate(carRequestDTO);
+
         Car car = this.carRepository.findById(id)
-                .orElseThrow(() -> new ObjectNotFoundException(EnumMessageExceptions.CAR_NOT_FOUND.getMessage(),
-                        EnumMessageExceptions.CAR_NOT_FOUND.getCode()));
+                .orElseThrow(() -> new ObjectNotFoundException(EnumMessageCarExceptions.CAR_NOT_FOUND.getMessage(),
+                        EnumMessageCarExceptions.CAR_NOT_FOUND.getCode()));
 
         car.setEngine(carRequestDTO.getEngine());
         car.setColor(carRequestDTO.getColor());
@@ -61,8 +63,8 @@ public class CarServiceImpl implements CarService {
     @Override
     public void disable(Long id) {
         Car car = this.carRepository.findById(id)
-                .orElseThrow(() -> new ObjectNotFoundException(EnumMessageExceptions.CAR_NOT_FOUND.getMessage(),
-                        EnumMessageExceptions.CAR_NOT_FOUND.getCode()));
+                .orElseThrow(() -> new ObjectNotFoundException(EnumMessageCarExceptions.CAR_NOT_FOUND.getMessage(),
+                        EnumMessageCarExceptions.CAR_NOT_FOUND.getCode()));
 
         car.setStatus(EnumStatus.INACTIVE.getCode());
         car.setExclusionDate(LocalDate.now());
@@ -73,8 +75,8 @@ public class CarServiceImpl implements CarService {
     @Override
     public void enable(Long id) {
         Car car = this.carRepository.findById(id)
-                .orElseThrow(() -> new ObjectNotFoundException(EnumMessageExceptions.CAR_NOT_FOUND.getMessage(),
-                        EnumMessageExceptions.CAR_NOT_FOUND.getCode()));
+                .orElseThrow(() -> new ObjectNotFoundException(EnumMessageCarExceptions.CAR_NOT_FOUND.getMessage(),
+                        EnumMessageCarExceptions.CAR_NOT_FOUND.getCode()));
 
         car.setStatus(EnumStatus.ACTIVE.getCode());
         car.setExclusionDate(null);
@@ -96,8 +98,8 @@ public class CarServiceImpl implements CarService {
     @Override
     public CarResponseDTO findById(Long id) {
         Car car = this.carRepository.findById(id)
-                .orElseThrow(() -> new ObjectNotFoundException(EnumMessageExceptions.CAR_NOT_FOUND.getMessage(),
-                        EnumMessageExceptions.CAR_NOT_FOUND.getCode()));
+                .orElseThrow(() -> new ObjectNotFoundException(EnumMessageCarExceptions.CAR_NOT_FOUND.getMessage(),
+                        EnumMessageCarExceptions.CAR_NOT_FOUND.getCode()));
 
         return new CarResponseDTO(car);
     }
