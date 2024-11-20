@@ -3,7 +3,7 @@ package br.com.renatogsilva.my_car.model.enumerators;
 public enum EnumMessageCarExceptions {
     CAR_NOT_FOUND(404, "Veículo não encontrado"),
     INVALID_PARAMETER(400, "Parâmetro informado é inválido"),
-    CAR_DUPLICATE(409, "Já existe um veículo cadastrado na base com essas caracteristicas");
+    CAR_DUPLICATE(409, "Já existe um veículo cadastrado na base com essas características");
 
     private Integer code;
     private String message;
