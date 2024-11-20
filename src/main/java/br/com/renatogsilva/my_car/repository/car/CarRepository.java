@@ -7,10 +7,11 @@ import org.springframework.data.repository.query.Param;
 
 public interface CarRepository extends JpaRepository<Car, Long>, CarRepositoryQueries {
 
-    @Query(nativeQuery = true, value = "SELECT *FROM tb_car as car WHERE car.id != :id IS NULL" +
-            " AND car.mark LIKE :mark" +
-            " AND car.version LIKE :version" +
-            " AND car.engine LIKE :engine")
+    @Query(nativeQuery = true, value = "SELECT *FROM tb_car as car" +
+            " WHERE (:id IS NULL OR car.id != :id)" +
+            " AND car.mark = :mark" +
+            " AND car.version = :version" +
+            " AND car.engine = :engine")
     public Car findCarDuplication(@Param("id") Long id,@Param("mark") String mark,@Param("version") String version,
                                   @Param("engine") String engine);
 }
