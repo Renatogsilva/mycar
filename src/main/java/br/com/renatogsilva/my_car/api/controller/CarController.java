@@ -7,6 +7,7 @@ import br.com.renatogsilva.my_car.service.car.CarService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,7 +33,7 @@ public class CarController {
                     @ApiResponse(responseCode = "401", description = "Usuário não autenticado"),
                     @ApiResponse(responseCode = "403", description = "Usuário sem permissão"),
                     @ApiResponse(responseCode = "500", description = "Erro ao cadastrar veículo")}, method = "POST")
-    public CarResponseDTO create(@RequestBody CarRequestDTO carRequestDTO) {
+    public CarResponseDTO create(@RequestBody @Valid CarRequestDTO carRequestDTO) {
         return this.carService.create(carRequestDTO);
     }
 
@@ -46,7 +47,7 @@ public class CarController {
                     @ApiResponse(responseCode = "401", description = "Usuário não autenticado"),
                     @ApiResponse(responseCode = "403", description = "Usuário sem permissão"),
                     @ApiResponse(responseCode = "500", description = "Erro ao atualizar veículo")}, method = "PUT")
-    public CarResponseDTO update(@PathVariable Long id, @RequestBody CarRequestDTO carRequestDTO) {
+    public CarResponseDTO update(@Valid @PathVariable Long id, @RequestBody @Valid CarRequestDTO carRequestDTO) {
         return this.carService.update(carRequestDTO, id);
     }
 
