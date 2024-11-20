@@ -19,7 +19,7 @@ public class CarRequestDTO implements Serializable {
     private Long id;
 
     @NotBlank(message = "Campo marca do veículo é obrigatório")
-    @Max(value = 100, message = "O valor do campo cor excedeu o limite de 100 caracteres")
+    @Size(min = 3, max = 100, message = "O valor do campo marca deve conter no mínimo 3 e no máximo 100 caracteres")
     private String mark;
 
     @Min(value = 2000, message = "Ano de fabricação deve ser maior ou igual á 2000")
@@ -27,26 +27,22 @@ public class CarRequestDTO implements Serializable {
     private Integer yearOfManufacture;
 
     @NotBlank(message = "Campo cor do veículo é obrigatório")
-    @Min(value = 3, message = "Campo cor deve conter no mínimo 3 caracteres")
-    @Max(value = 50, message = "O valor do campo cor excedeu o limite de 50 caracteres")
-
+    @Size(min = 3, max = 50, message = "Campo cor deve conter no mínimo 3 e no máximo 50 caracteres")
     private String color;
+
     @NotBlank(message = "Campo estilo do carro é obrigatório")
-    @Min(value = 4, message = "Campo estilo do carro deve conter no mínimo 3 caracteres")
-    @Max(value = 50, message = "O valor do campo cor excedeu o limite de 50 caracteres")
-
+    @Size(min = 3, max = 50, message = "Campo estilo do veículo deve conter no mínimo 3 e no máximo 50 caracteres")
     private String bodyStyle;
+
     @NotNull(message = "Campo tipo de câmbio é obrigatório")
-
     private EnumExchange exchange;
-    @NotBlank(message = "Campo motor é obrigatório")
-    @Min(value = 3, message = "Campo motor deve conter no mínimo 3 caracteres")
-    @Max(value = 50, message = "O valor do campo cor excedeu o limite de 50 caracteres")
 
+    @NotBlank(message = "Campo motor é obrigatório")
+    @Size(min = 3, max = 50, message = "Campo motor do veículo deve conter no mínimo 3 e no máximo 50 caracteres")
     private String engine;
-    @NotBlank(message = "Campo versão do carro é obrigatório")
-    @Min(value = 3, message = "Campo versão do carro deve conter no mínimo 3 caracteres")
-    @Max(value = 50, message = "O valor do campo cor excedeu o limite de 50 caracteres")
+
+    @NotBlank(message = "Campo versão do veículo é obrigatório")
+    @Size(min = 3, max = 50, message = "Campo versão deve conter no mínimo 3 e no máximo 50 caracteres")
     private String version;
 
     public CarRequestDTO(Car car) {
