@@ -1,8 +1,6 @@
 package br.com.renatogsilva.my_car.model.domain;
 
-import br.com.renatogsilva.my_car.model.dto.UserDTO;
-import br.com.renatogsilva.my_car.model.enumerators.EnumSex;
-import br.com.renatogsilva.my_car.model.enumerators.EnumStatus;
+import br.com.renatogsilva.my_car.model.dto.user.UserRequestDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,21 +23,28 @@ public class User implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
-    private String username;
-    private String password;
-    private String email;
-    private String cpf;
-    private EnumSex sex;
-    private LocalDate birthday;
-    private LocalDate registrationDate;
-    private EnumStatus status;
 
-    public User(UserDTO userDTO) {
-        this.id = userDTO.getId();
-        this.username = userDTO.getUsername();
-        this.email = userDTO.getEmail();
-        this.cpf = userDTO.getCpf();
-        this.sex = userDTO.getSex();
-        this.birthday = userDTO.getBirthday();
+    @Column(nullable = false)
+    private String username;
+
+    @Column(nullable = false)
+    private String password;
+
+    @Column(name = "registration_date", nullable = false)
+    private LocalDate registrationDate;
+
+    @Column(name = "is_primary_access", nullable = false)
+    private boolean isPrimaryAccess;
+
+    @Column(nullable = false)
+    private Integer status;
+
+    @OneToOne(optional = false, fetch = FetchType.EAGER)
+    @JoinColumn(name = "fk_person_id", nullable = false)
+    private Person person;
+
+    public User(UserRequestDTO userRequestDTO) {
+        this.id = userRequestDTO.getId();
+        this.username = userRequestDTO.getUsername();
     }
 }

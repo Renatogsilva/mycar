@@ -20,6 +20,7 @@ public class Car implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
+    @Column(name = "car_id")
     private Long id;
 
     @Column(length = 100, nullable = false)
