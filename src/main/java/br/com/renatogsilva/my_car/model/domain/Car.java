@@ -21,21 +21,19 @@ public class Car implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Long id;
-
     @Column(length = 100, nullable = false)
-    @NotBlank
     private String mark;
-
     @Column(name = "year_manufacture", nullable = false)
     private Integer yearOfManufacture;
+    @Column(length = 50, nullable = false)
     private String color;
-
-    @Column(name = "body_style")
+    @Column(length = 50, name = "body_style", nullable = false)
     private String bodyStyle;
-
-    @NotBlank
+    @Column(nullable = false)
     private Integer exchange;
+    @Column(length = 20, nullable = false)
     private String engine;
+    @Column(length = 20, nullable = false)
     private String version;
 
     @NotBlank
