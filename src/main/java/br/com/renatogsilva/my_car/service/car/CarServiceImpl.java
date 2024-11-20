@@ -6,7 +6,7 @@ import br.com.renatogsilva.my_car.model.dto.car.CarResponseDTO;
 import br.com.renatogsilva.my_car.model.dto.car.CarResponseListDTO;
 import br.com.renatogsilva.my_car.model.enumerators.EnumMessageCarExceptions;
 import br.com.renatogsilva.my_car.model.enumerators.EnumStatus;
-import br.com.renatogsilva.my_car.model.exceptions.ObjectNotFoundException;
+import br.com.renatogsilva.my_car.model.exceptions.car.CarNotFoundException;
 import br.com.renatogsilva.my_car.model.validations.CarValidations;
 import br.com.renatogsilva.my_car.repository.car.CarRepository;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +44,7 @@ public class CarServiceImpl implements CarService {
         carValidations.checkUpdate(carRequestDTO);
 
         Car car = this.carRepository.findById(id)
-                .orElseThrow(() -> new ObjectNotFoundException(EnumMessageCarExceptions.CAR_NOT_FOUND.getMessage(),
+                .orElseThrow(() -> new CarNotFoundException(EnumMessageCarExceptions.CAR_NOT_FOUND.getMessage(),
                         EnumMessageCarExceptions.CAR_NOT_FOUND.getCode()));
 
         car.setEngine(carRequestDTO.getEngine());
@@ -63,7 +63,7 @@ public class CarServiceImpl implements CarService {
     @Override
     public void disable(Long id) {
         Car car = this.carRepository.findById(id)
-                .orElseThrow(() -> new ObjectNotFoundException(EnumMessageCarExceptions.CAR_NOT_FOUND.getMessage(),
+                .orElseThrow(() -> new CarNotFoundException(EnumMessageCarExceptions.CAR_NOT_FOUND.getMessage(),
                         EnumMessageCarExceptions.CAR_NOT_FOUND.getCode()));
 
         car.setStatus(EnumStatus.INACTIVE.getCode());
@@ -75,7 +75,7 @@ public class CarServiceImpl implements CarService {
     @Override
     public void enable(Long id) {
         Car car = this.carRepository.findById(id)
-                .orElseThrow(() -> new ObjectNotFoundException(EnumMessageCarExceptions.CAR_NOT_FOUND.getMessage(),
+                .orElseThrow(() -> new CarNotFoundException(EnumMessageCarExceptions.CAR_NOT_FOUND.getMessage(),
                         EnumMessageCarExceptions.CAR_NOT_FOUND.getCode()));
 
         car.setStatus(EnumStatus.ACTIVE.getCode());
@@ -98,7 +98,7 @@ public class CarServiceImpl implements CarService {
     @Override
     public CarResponseDTO findById(Long id) {
         Car car = this.carRepository.findById(id)
-                .orElseThrow(() -> new ObjectNotFoundException(EnumMessageCarExceptions.CAR_NOT_FOUND.getMessage(),
+                .orElseThrow(() -> new CarNotFoundException(EnumMessageCarExceptions.CAR_NOT_FOUND.getMessage(),
                         EnumMessageCarExceptions.CAR_NOT_FOUND.getCode()));
 
         return new CarResponseDTO(car);
