@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 public interface CarRepository extends JpaRepository<Car, Long>, CarRepositoryQueries {
 
     @Query(nativeQuery = true, value = "SELECT *FROM tb_car as car" +
-            " WHERE (:id IS NULL OR car.id != :id)" +
+            " WHERE (:id IS NULL OR car.car_id != :id)" +
             " AND car.mark = :mark" +
             " AND car.version = :version" +
             " AND car.engine = :engine")
