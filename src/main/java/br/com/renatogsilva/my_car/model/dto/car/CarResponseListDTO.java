@@ -1,6 +1,5 @@
 package br.com.renatogsilva.my_car.model.dto.car;
 
-import br.com.renatogsilva.my_car.model.domain.Car;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,12 +19,4 @@ public class CarResponseListDTO implements Serializable {
     private Integer yearOfManufacture;
     private String engine;
     private String version;
-
-    public CarResponseListDTO(Car car) {
-        this.id = car.getId();
-        this.mark = car.getMark();
-        this.yearOfManufacture = car.getYearOfManufacture();
-        this.engine = car.getEngine();
-        this.version = car.getVersion();
-    }
 }
