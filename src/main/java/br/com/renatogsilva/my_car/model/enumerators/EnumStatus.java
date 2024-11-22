@@ -5,7 +5,8 @@ import lombok.Getter;
 @Getter
 public enum EnumStatus {
     ACTIVE(1, "Ativo"),
-    INACTIVE(2, "Inativo");
+    INACTIVE(2, "Inativo"),
+    DELETED(3, "Deletado");
 
     private Integer code;
     private String description;
