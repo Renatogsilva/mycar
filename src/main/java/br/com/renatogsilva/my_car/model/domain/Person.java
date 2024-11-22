@@ -5,11 +5,11 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Data
 @Entity
 @Table(name = "tb_person")
@@ -41,5 +41,6 @@ public class Person implements Serializable {
     private LocalDate birthDate;
 
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<Phone> phones;
+    @ToString.Exclude
+    private List<Phone> phones = new ArrayList<>();
 }
