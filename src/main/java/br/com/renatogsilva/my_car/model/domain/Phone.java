@@ -7,7 +7,6 @@ import java.io.Serializable;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Data
 @Entity
 @Table(name = "tb_phone")
@@ -29,7 +28,8 @@ public class Phone implements Serializable {
     @Column(name = "is_main", nullable = true)
     private boolean isMain;
 
-    @ManyToOne(optional = false, cascade = CascadeType.ALL)
+    @ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "person_id", nullable = false)
+    @ToString.Exclude
     private Person person;
 }
