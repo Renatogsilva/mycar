@@ -1,6 +1,7 @@
 package br.com.renatogsilva.my_car.model.dto.person;
 
 import br.com.renatogsilva.my_car.model.dto.phone.PhoneRequestDTO;
+import br.com.renatogsilva.my_car.model.enumerators.EnumSex;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,7 +23,7 @@ public class PersonRequestDTO implements Serializable {
     private String lastName;
     private String email;
     private String cpf;
-    private Integer sex;
+    private EnumSex sex;
     private LocalDate birthDate;
     private List<PhoneRequestDTO> phonesRequestDTOs;
 }
