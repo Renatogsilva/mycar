@@ -18,5 +18,5 @@ public class PhoneRequestDTO implements Serializable {
     private Long phoneId;
     private String number;
     private EnumTypePhone typePhone;
-    private boolean isMain;
+    private Boolean isMain;
 }
