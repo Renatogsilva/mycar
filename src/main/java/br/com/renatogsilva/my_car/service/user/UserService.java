@@ -8,10 +8,10 @@ import java.util.List;
 
 public interface UserService {
 
-    public UserRequestDTO create(UserRequestDTO userRequestDTO);
-    public UserRequestDTO update(Long id, UserRequestDTO userRequestDTO);
-    public UserResponseDTO get(Long id);
-    public List<UserResponseListDTO> getAll();
+    public UserResponseDTO create(UserRequestDTO userRequestDTO);
+    public UserResponseDTO update(Long id, UserRequestDTO userRequestDTO);
+    public UserResponseDTO findById(Long id);
+    public List<UserResponseListDTO> findAll();
     public void disable(Long id);
     public void enable(Long id);
 }
