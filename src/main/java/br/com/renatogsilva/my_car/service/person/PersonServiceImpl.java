@@ -2,7 +2,7 @@ package br.com.renatogsilva.my_car.service.person;
 
 import br.com.renatogsilva.my_car.model.domain.Person;
 import br.com.renatogsilva.my_car.model.domain.Phone;
-import br.com.renatogsilva.my_car.repository.PersonRepository;
+import br.com.renatogsilva.my_car.repository.person.PersonRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
