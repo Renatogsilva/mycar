@@ -1,6 +1,5 @@
 package br.com.renatogsilva.my_car.model.dto.car;
 
-import br.com.renatogsilva.my_car.model.domain.Car;
 import br.com.renatogsilva.my_car.model.enumerators.EnumExchange;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.*;
@@ -44,15 +43,4 @@ public class CarRequestDTO implements Serializable {
     @NotBlank(message = "Campo versão do veículo é obrigatório")
     @Size(min = 3, max = 50, message = "Campo versão deve conter no mínimo 3 e no máximo 50 caracteres")
     private String version;
-
-    public CarRequestDTO(Car car) {
-        this.id = car.getId();
-        this.mark = car.getMark();
-        this.yearOfManufacture = car.getYearOfManufacture();
-        this.color = car.getColor();
-        this.bodyStyle = car.getBodyStyle();
-        this.exchange = EnumExchange.get(car.getExchange());
-        this.engine = car.getEngine();
-        this.version = car.getVersion();
-    }
 }
