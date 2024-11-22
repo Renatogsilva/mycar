@@ -12,6 +12,7 @@ public interface CarRepository extends JpaRepository<Car, Long>, CarRepositoryQu
             " AND car.mark = :mark" +
             " AND car.version = :version" +
             " AND car.engine = :engine")
-    public Car findCarDuplication(@Param("id") Long id,@Param("mark") String mark,@Param("version") String version,
-                                  @Param("engine") String engine);
+    public Car findCarDuplicatorByIdAndMarkAndVersionAndEngine(@Param("id") Long id, @Param("mark") String mark,
+                                                               @Param("version") String version,
+                                                               @Param("engine") String engine);
 }
