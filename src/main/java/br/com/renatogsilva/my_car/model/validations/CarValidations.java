@@ -14,7 +14,7 @@ public class CarValidations {
     private final CarRepository carRepository;
 
     private void verifyCarDuplicationityCarForSameMark(Long carId, String mark, String version, String engine) {
-        if (this.carRepository.findCarDuplication(carId, mark, version, engine) != null) {
+        if (this.carRepository.findCarDuplicatorByIdAndMarkAndVersionAndEngine(carId, mark, version, engine) != null) {
             throw new CarDuplicationException(EnumMessageCarExceptions.CAR_DUPLICATE.getMessage(),
                     EnumMessageCarExceptions.CAR_DUPLICATE.getCode());
         }
