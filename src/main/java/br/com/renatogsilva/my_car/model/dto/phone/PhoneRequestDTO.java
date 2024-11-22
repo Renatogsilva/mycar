@@ -1,6 +1,6 @@
 package br.com.renatogsilva.my_car.model.dto.phone;
 
-import br.com.renatogsilva.my_car.model.dto.person.PersonRequestDTO;
+import br.com.renatogsilva.my_car.model.enumerators.EnumTypePhone;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,7 +17,6 @@ public class PhoneRequestDTO implements Serializable {
 
     private Long phoneId;
     private String number;
-    private Integer typePhone;
+    private EnumTypePhone typePhone;
     private boolean isMain;
-    private PersonRequestDTO personRequestDTO;
 }
