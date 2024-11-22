@@ -1,8 +1,7 @@
 package br.com.renatogsilva.my_car.model.enumerators;
 
-import lombok.Getter;
+import com.fasterxml.jackson.annotation.JsonValue;
 
-@Getter
 public enum EnumTypePhone {
     FIXED(1, "Fixo"),
     RESIDENTIAL(2, "Residencial"),
@@ -15,6 +14,15 @@ public enum EnumTypePhone {
     EnumTypePhone(Integer code, String description) {
         this.code = code;
         this.description = description;
+    }
+
+    @JsonValue
+    public Integer getCode() {
+        return code;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public static EnumTypePhone get(Integer cod) {

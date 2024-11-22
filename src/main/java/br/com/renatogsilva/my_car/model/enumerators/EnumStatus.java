@@ -1,8 +1,7 @@
 package br.com.renatogsilva.my_car.model.enumerators;
 
-import lombok.Getter;
+import com.fasterxml.jackson.annotation.JsonValue;
 
-@Getter
 public enum EnumStatus {
     ACTIVE(1, "Ativo"),
     INACTIVE(2, "Inativo"),
@@ -16,6 +15,15 @@ public enum EnumStatus {
         this.description = description;
     }
 
+    @JsonValue
+    public Integer getCode() {
+        return code;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+    
     public static EnumStatus get(Integer cod) {
         if (cod == null) {
             return null;
