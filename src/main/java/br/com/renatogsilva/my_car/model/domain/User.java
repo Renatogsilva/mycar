@@ -12,7 +12,6 @@ import java.time.LocalDate;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Data
 @Entity
 @Table(name = "tb_user")
@@ -30,8 +29,8 @@ public class User implements Serializable {
     @Column(nullable = false)
     private String password;
 
-    @Column(name = "registration_date", nullable = false)
-    private LocalDate registrationDate;
+    @Column(name = "creation_date", nullable = false)
+    private LocalDate creationDate;
 
     @Column(name = "is_primary_access", nullable = false)
     private boolean isPrimaryAccess;
@@ -41,6 +40,7 @@ public class User implements Serializable {
 
     @OneToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(name = "fk_person_id", nullable = false)
+    @ToString.Exclude
     private Person person;
 
     public User(UserRequestDTO userRequestDTO) {
