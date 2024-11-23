@@ -14,7 +14,7 @@ import java.io.Serializable;
 public class UserResponseListDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private Long id;
+    private Long userId;
     private String fullName;
     private String email;
     private String cpf;
