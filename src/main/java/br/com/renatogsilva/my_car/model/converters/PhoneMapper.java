@@ -21,8 +21,5 @@ public interface PhoneMapper {
     Phone toPhone(@MappingTarget Phone phone, PhoneRequestDTO requestDTO);
 
     @Mapping(target = "main", source = "isMain")
-    @Mapping(target = "id", source = "phoneId")
     PhoneResponseDTO toPhoneResponseDTO(Phone phone);
-//    @Mapping(target = "person", ignore = true)
-//    Phone toPhone(Phone phone, PhoneRequestDTO requestDTO);
 }
