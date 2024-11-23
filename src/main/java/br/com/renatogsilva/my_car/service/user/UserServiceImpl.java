@@ -7,6 +7,7 @@ import br.com.renatogsilva.my_car.model.dto.user.UserResponseDTO;
 import br.com.renatogsilva.my_car.model.dto.user.UserResponseListDTO;
 import br.com.renatogsilva.my_car.model.enumerators.EnumMessageUserExceptions;
 import br.com.renatogsilva.my_car.model.enumerators.EnumStatus;
+import br.com.renatogsilva.my_car.model.enumerators.EnumTypeUser;
 import br.com.renatogsilva.my_car.model.exceptions.user.UserNotFoundException;
 import br.com.renatogsilva.my_car.model.validations.PersonBusinessRules;
 import br.com.renatogsilva.my_car.model.validations.UserBusinessRules;
@@ -41,6 +42,7 @@ public class UserServiceImpl implements UserService {
         user.setCreationDate(LocalDate.now());
         user.setPrimaryAccess(true);
         user.setPassword(userRequestDTO.getPersonRequestDTO().getCpf());
+        user.setTypeUser(EnumTypeUser.ADMIN);
 
         user.setPerson(this.personService.create(user.getPerson()));
         this.userRepository.save(user);
