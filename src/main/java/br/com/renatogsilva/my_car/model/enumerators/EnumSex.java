@@ -1,8 +1,7 @@
 package br.com.renatogsilva.my_car.model.enumerators;
 
-import lombok.Getter;
+import com.fasterxml.jackson.annotation.JsonValue;
 
-@Getter
 public enum EnumSex {
     MALE(1, "Masculino"),
     FEMALE(2, "Feminino");
@@ -13,6 +12,15 @@ public enum EnumSex {
     EnumSex(Integer code, String description) {
         this.code = code;
         this.description = description;
+    }
+
+    @JsonValue
+    public Integer getCode() {
+        return code;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public static EnumSex get(Integer cod) {

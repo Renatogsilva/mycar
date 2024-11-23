@@ -2,16 +2,15 @@ package br.com.renatogsilva.my_car.model.enumerators;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum EnumTypePhone {
-    FIXED(1, "Fixo"),
-    RESIDENTIAL(2, "Residencial"),
-    CELL_PHONE(3, "Celular"),
-    COMMERCIAL(4, "Comercial"),;
+public enum EnumTypeUser {
+    ADMIN(1, "Admin"),
+    USER(2, "User"),
+    NOT_PERMISION(3, "Not Permission");
 
     private Integer code;
     private String description;
 
-    EnumTypePhone(Integer code, String description) {
+    EnumTypeUser(Integer code, String description) {
         this.code = code;
         this.description = description;
     }
@@ -25,12 +24,12 @@ public enum EnumTypePhone {
         return description;
     }
 
-    public static EnumTypePhone get(Integer cod) {
+    public static EnumTypeUser get(Integer cod) {
         if (cod == null) {
             return null;
         }
 
-        for (EnumTypePhone e : EnumTypePhone.values()) {
+        for (EnumTypeUser e : EnumTypeUser.values()) {
             if (e.code.equals(cod)) {
                 return e;
             }

@@ -1,9 +1,11 @@
 package br.com.renatogsilva.my_car.api.exception;
 
-import br.com.renatogsilva.my_car.model.enumerators.EnumMessageCarExceptions;
 import br.com.renatogsilva.my_car.model.enumerators.EnumMessageGenericExceptions;
 import br.com.renatogsilva.my_car.model.exceptions.car.CarDuplicationException;
 import br.com.renatogsilva.my_car.model.exceptions.car.CarNotFoundException;
+import br.com.renatogsilva.my_car.model.exceptions.person.PersonDuplicationException;
+import br.com.renatogsilva.my_car.model.exceptions.user.UserDuplicationException;
+import br.com.renatogsilva.my_car.model.exceptions.user.UserNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -23,13 +25,31 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(CarDuplicationException.class)
     public ResponseEntity<Object> handleCarDuplicationException(final CarDuplicationException ex, final WebRequest request) {
         StandartError error = new StandartError(ex.getMessage(), ex.getCode(), LocalDateTime.now());
-        return handleExceptionInternal(ex, error, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+        return handleExceptionInternal(ex, error, new HttpHeaders(), HttpStatus.CONFLICT, request);
     }
 
     @ExceptionHandler(CarNotFoundException.class)
     public ResponseEntity<Object> handleCarNotFoundException(final CarNotFoundException ex, final WebRequest request) {
         StandartError error = new StandartError(ex.getMessage(), ex.getCode(), LocalDateTime.now());
         return handleExceptionInternal(ex, error, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    }
+
+    @ExceptionHandler(UserDuplicationException.class)
+    public ResponseEntity<Object> handleUserDuplicationException(final UserDuplicationException ex, final WebRequest request) {
+        StandartError error = new StandartError(ex.getMessage(), ex.getCode(), LocalDateTime.now());
+        return handleExceptionInternal(ex, error, new HttpHeaders(), HttpStatus.CONFLICT, request);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<Object> handleUserrNotFoundException(final UserNotFoundException ex, final WebRequest request) {
+        StandartError error = new StandartError(ex.getMessage(), ex.getCode(), LocalDateTime.now());
+        return handleExceptionInternal(ex, error, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    }
+
+    @ExceptionHandler(PersonDuplicationException.class)
+    public ResponseEntity<Object> handlePersonDuplicationException(final PersonDuplicationException ex, final WebRequest request) {
+        StandartError error = new StandartError(ex.getMessage(), ex.getCode(), LocalDateTime.now());
+        return handleExceptionInternal(ex, error, new HttpHeaders(), HttpStatus.CONFLICT, request);
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)

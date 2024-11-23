@@ -2,18 +2,15 @@ package br.com.renatogsilva.my_car.model.enumerators;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum EnumTypePhone {
-    FIXED(1, "Fixo"),
-    RESIDENTIAL(2, "Residencial"),
-    CELL_PHONE(3, "Celular"),
-    COMMERCIAL(4, "Comercial"),;
+public enum EnumMessagePersonExceptions {
+    CAR_DUPLICATE(409, "Já existe um registro cadastrado na base com essas informações");
 
     private Integer code;
-    private String description;
+    private String message;
 
-    EnumTypePhone(Integer code, String description) {
+    private EnumMessagePersonExceptions(Integer code, String message) {
         this.code = code;
-        this.description = description;
+        this.message = message;
     }
 
     @JsonValue
@@ -21,16 +18,16 @@ public enum EnumTypePhone {
         return code;
     }
 
-    public String getDescription() {
-        return description;
+    public String getMessage() {
+        return message;
     }
 
-    public static EnumTypePhone get(Integer cod) {
+    public static EnumMessagePersonExceptions get(Integer cod) {
         if (cod == null) {
             return null;
         }
 
-        for (EnumTypePhone e : EnumTypePhone.values()) {
+        for (EnumMessagePersonExceptions e : EnumMessagePersonExceptions.values()) {
             if (e.code.equals(cod)) {
                 return e;
             }

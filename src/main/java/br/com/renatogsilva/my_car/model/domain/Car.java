@@ -1,6 +1,7 @@
 package br.com.renatogsilva.my_car.model.domain;
 
-import br.com.renatogsilva.my_car.model.dto.car.CarRequestDTO;
+import br.com.renatogsilva.my_car.model.enumerators.EnumExchange;
+import br.com.renatogsilva.my_car.model.enumerators.EnumStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -21,7 +22,7 @@ public class Car implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     @Column(name = "car_id")
-    private Long id;
+    private Long carId;
 
     @Column(length = 100, nullable = false)
     private String mark;
@@ -35,8 +36,9 @@ public class Car implements Serializable {
     @Column(length = 50, name = "body_style", nullable = false)
     private String bodyStyle;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Integer exchange;
+    private EnumExchange exchange;
 
     @Column(length = 20, nullable = false)
     private String engine;
@@ -45,22 +47,12 @@ public class Car implements Serializable {
     private String version;
 
     @NotNull
-    private Integer status;
+    @Enumerated(EnumType.STRING)
+    private EnumStatus status;
 
     @Column(name = "creation_date")
     private LocalDate creationDate;
 
     @Column(name = "exclusion_date")
     private LocalDate exclusionDate;
-
-    public Car(CarRequestDTO carRequestDTO) {
-        this.id = carRequestDTO.getId();
-        this.mark = carRequestDTO.getMark();
-        this.yearOfManufacture = carRequestDTO.getYearOfManufacture();
-        this.color = carRequestDTO.getColor();
-        this.bodyStyle = carRequestDTO.getBodyStyle();
-        this.exchange = carRequestDTO.getExchange().getCode();
-        this.engine = carRequestDTO.getEngine();
-        this.version = carRequestDTO.getVersion();
-    }
 }

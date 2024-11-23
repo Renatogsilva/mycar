@@ -1,5 +1,7 @@
 package br.com.renatogsilva.my_car.model.enumerators;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum EnumMessageGenericExceptions {
     INVALID_PARAMETER(400, "Parâmetro inválido"),;
 
@@ -11,6 +13,7 @@ public enum EnumMessageGenericExceptions {
         this.message = message;
     }
 
+    @JsonValue
     public Integer getCode() {
         return code;
     }

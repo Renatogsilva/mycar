@@ -1,5 +1,6 @@
 package br.com.renatogsilva.my_car.model.domain;
 
+import br.com.renatogsilva.my_car.model.enumerators.EnumTypePhone;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -7,7 +8,6 @@ import java.io.Serializable;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Data
 @Entity
 @Table(name = "tb_phone")
@@ -23,13 +23,15 @@ public class Phone implements Serializable {
     @Column(length = 14, nullable = false)
     private String number;
 
-    @Column(name = "type_phone", nullable = false)
-    private Integer typePhone;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type_phone", nullable = false, length = 20)
+    private EnumTypePhone typePhone;
 
     @Column(name = "is_main", nullable = true)
-    private boolean isMain;
+    private Boolean isMain;
 
-    @ManyToOne(optional = false, cascade = CascadeType.ALL)
+    @ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "person_id", nullable = false)
+    @ToString.Exclude
     private Person person;
 }

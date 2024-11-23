@@ -1,9 +1,9 @@
 package br.com.renatogsilva.my_car.model.exceptions.car;
 
 import br.com.renatogsilva.my_car.model.exceptions.basic.ObjectNotFoundException;
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+@Data
 public class CarNotFoundException extends ObjectNotFoundException {
     private int code;
 

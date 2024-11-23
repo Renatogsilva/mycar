@@ -9,24 +9,24 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class CarValidations {
+public class CarBusinessRules {
 
     private final CarRepository carRepository;
 
     private void verifyCarDuplicationityCarForSameMark(Long carId, String mark, String version, String engine) {
-        if (this.carRepository.findCarDuplication(carId, mark, version, engine) != null) {
+        if (this.carRepository.findCarDuplicatorByIdAndMarkAndVersionAndEngine(carId, mark, version, engine) != null) {
             throw new CarDuplicationException(EnumMessageCarExceptions.CAR_DUPLICATE.getMessage(),
                     EnumMessageCarExceptions.CAR_DUPLICATE.getCode());
         }
     }
 
     public void checkRegistration(CarRequestDTO carRequestDTO) {
-        verifyCarDuplicationityCarForSameMark(carRequestDTO.getId(), carRequestDTO.getMark(),
+        verifyCarDuplicationityCarForSameMark(carRequestDTO.getCarId(), carRequestDTO.getMark(),
                 carRequestDTO.getVersion(), carRequestDTO.getEngine());
     }
 
     public void checkUpdate(CarRequestDTO carRequestDTO) {
-        verifyCarDuplicationityCarForSameMark(carRequestDTO.getId(), carRequestDTO.getMark(),
+        verifyCarDuplicationityCarForSameMark(carRequestDTO.getCarId(), carRequestDTO.getMark(),
                 carRequestDTO.getVersion(), carRequestDTO.getEngine());
     }
 }

@@ -2,15 +2,14 @@ package br.com.renatogsilva.my_car.model.enumerators;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum EnumMessageCarExceptions {
-    CAR_NOT_FOUND(404, "Veículo não encontrado"),
-    INVALID_PARAMETER(400, "Parâmetro informado é inválido"),
-    CAR_DUPLICATE(409, "Já existe um veículo cadastrado na base com essas características");
+public enum EnumMessageUserExceptions {
+    USER_NOT_FOUND(404, "Usuário não encontrado"),
+    USER_DUPLICATE(409, "Usuário de acesso informado já existe");
 
     private Integer code;
     private String message;
 
-    private EnumMessageCarExceptions(Integer code, String message) {
+    private EnumMessageUserExceptions(Integer code, String message) {
         this.code = code;
         this.message = message;
     }
@@ -24,12 +23,12 @@ public enum EnumMessageCarExceptions {
         return message;
     }
 
-    public static EnumMessageCarExceptions get(Integer cod) {
+    public static EnumMessageUserExceptions get(Integer cod) {
         if (cod == null) {
             return null;
         }
 
-        for (EnumMessageCarExceptions e : EnumMessageCarExceptions.values()) {
+        for (EnumMessageUserExceptions e : EnumMessageUserExceptions.values()) {
             if (e.code.equals(cod)) {
                 return e;
             }

@@ -1,6 +1,7 @@
 package br.com.renatogsilva.my_car.model.domain;
 
-import br.com.renatogsilva.my_car.model.dto.user.UserRequestDTO;
+import br.com.renatogsilva.my_car.model.enumerators.EnumStatus;
+import br.com.renatogsilva.my_car.model.enumerators.EnumTypeUser;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,7 +13,6 @@ import java.time.LocalDate;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Data
 @Entity
 @Table(name = "tb_user")
@@ -22,29 +22,30 @@ public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    private Long id;
+    private Long userId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 255)
     private String username;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 255)
     private String password;
 
-    @Column(name = "registration_date", nullable = false)
-    private LocalDate registrationDate;
+    @Column(name = "creation_date", nullable = false)
+    private LocalDate creationDate;
 
     @Column(name = "is_primary_access", nullable = false)
     private boolean isPrimaryAccess;
 
-    @Column(nullable = false)
-    private Integer status;
+    @Column(nullable = false, length = 20)
+    @Enumerated(EnumType.STRING)
+    private EnumStatus status;
 
-    @OneToOne(optional = false, fetch = FetchType.EAGER)
-    @JoinColumn(name = "fk_person_id", nullable = false)
+    @Column(nullable = false, length = 20)
+    @Enumerated(EnumType.STRING)
+    private EnumTypeUser typeUser;
+
+    @OneToOne(optional = false, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "fk_person_id", nullable = false, unique = true)
+    @ToString.Exclude
     private Person person;
-
-    public User(UserRequestDTO userRequestDTO) {
-        this.id = userRequestDTO.getId();
-        this.username = userRequestDTO.getUsername();
-    }
 }
