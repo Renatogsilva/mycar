@@ -1,5 +1,7 @@
 package br.com.renatogsilva.my_car.model.enumerators;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum EnumMessageUserExceptions {
     USER_NOT_FOUND(404, "Usuário não encontrado"),
     USER_DUPLICATE(409, "Usuário de acesso informado já existe");
@@ -12,6 +14,7 @@ public enum EnumMessageUserExceptions {
         this.message = message;
     }
 
+    @JsonValue
     public Integer getCode() {
         return code;
     }
