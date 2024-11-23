@@ -18,7 +18,7 @@ import java.util.List;
 public class PersonResponseDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private Long id;
+    private Long personId;
     private String fullName;
     private String email;
     private String cpf;
