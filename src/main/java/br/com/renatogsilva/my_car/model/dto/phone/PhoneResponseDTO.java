@@ -15,7 +15,7 @@ import java.io.Serializable;
 public class PhoneResponseDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private Long id;
+    private Long phoneId;
     private String number;
     private EnumTypePhone typePhone;
     private boolean isMain;
