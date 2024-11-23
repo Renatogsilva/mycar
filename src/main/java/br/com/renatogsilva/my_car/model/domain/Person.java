@@ -1,5 +1,6 @@
 package br.com.renatogsilva.my_car.model.domain;
 
+import br.com.renatogsilva.my_car.model.enumerators.EnumSex;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,7 +21,7 @@ public class Person implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     @Column(name = "person_id")
-    private Long id;
+    private Long personId;
 
     @Column(name = "first_name", length = 255, nullable = false)
     private String firstName;
@@ -34,8 +35,9 @@ public class Person implements Serializable {
     @Column(length = 14, nullable = false)
     private String cpf;
 
-    @Column(nullable = false)
-    private Integer sex;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private EnumSex sex;
 
     @Column(name = "birth_date", nullable = false)
     private LocalDate birthDate;
