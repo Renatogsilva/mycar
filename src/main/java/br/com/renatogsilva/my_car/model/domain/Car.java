@@ -22,7 +22,7 @@ public class Car implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     @Column(name = "car_id")
-    private Long id;
+    private Long carId;
 
     @Column(length = 100, nullable = false)
     private String mark;
