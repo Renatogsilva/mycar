@@ -1,9 +1,9 @@
 package br.com.renatogsilva.my_car.model.exceptions.car;
 
 import br.com.renatogsilva.my_car.model.exceptions.basic.ObjectDuplicationException;
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+@Data
 public class CarDuplicationException extends ObjectDuplicationException {
     private int code;
 
@@ -13,5 +13,6 @@ public class CarDuplicationException extends ObjectDuplicationException {
 
     public CarDuplicationException(String message, int code) {
         super(message, code);
+        this.code = code;
     }
 }
