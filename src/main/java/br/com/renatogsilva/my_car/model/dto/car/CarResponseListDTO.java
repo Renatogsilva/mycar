@@ -14,7 +14,7 @@ import java.io.Serializable;
 public class CarResponseListDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private Long id;
+    private Long carId;
     private String mark;
     private Integer yearOfManufacture;
     private String engine;

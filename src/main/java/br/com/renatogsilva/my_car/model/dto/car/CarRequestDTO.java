@@ -15,7 +15,7 @@ import java.io.Serializable;
 public class CarRequestDTO implements Serializable {
 
     @EqualsAndHashCode.Include
-    private Long id;
+    private Long carId;
 
     @NotBlank(message = "Campo marca do veículo é obrigatório")
     @Size(min = 3, max = 100, message = "O valor do campo marca deve conter no mínimo 3 e no máximo 100 caracteres")
