@@ -8,7 +8,7 @@ import br.com.renatogsilva.my_car.model.dto.car.CarResponseListDTO;
 import br.com.renatogsilva.my_car.model.enumerators.EnumMessageCarExceptions;
 import br.com.renatogsilva.my_car.model.enumerators.EnumStatus;
 import br.com.renatogsilva.my_car.model.exceptions.car.CarNotFoundException;
-import br.com.renatogsilva.my_car.model.validations.CarValidations;
+import br.com.renatogsilva.my_car.model.validations.CarBusinessRules;
 import br.com.renatogsilva.my_car.repository.car.CarRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,14 +22,14 @@ import java.util.List;
 public class CarServiceImpl implements CarService {
 
     private final CarRepository carRepository;
-    private final CarValidations carValidations;
+    private final CarBusinessRules carBusinessRules;
 
     private final CarMapper carMapper;
 
     @Transactional
     @Override
     public CarResponseDTO create(CarRequestDTO carRequestDTO) {
-        this.carValidations.checkRegistration(carRequestDTO);
+        this.carBusinessRules.checkRegistration(carRequestDTO);
 
         Car car = carMapper.toCar(carRequestDTO);
         car.setCreationDate(LocalDate.now());
@@ -43,7 +43,7 @@ public class CarServiceImpl implements CarService {
     @Transactional
     @Override
     public CarResponseDTO update(CarRequestDTO carRequestDTO, Long id) {
-        carValidations.checkUpdate(carRequestDTO);
+        carBusinessRules.checkUpdate(carRequestDTO);
 
         Car car = this.carRepository.findById(id)
                 .orElseThrow(() -> new CarNotFoundException(EnumMessageCarExceptions.CAR_NOT_FOUND.getMessage(),
