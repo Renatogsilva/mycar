@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface UserRepository extends JpaRepository<User, Long>, UserRepositoryQueries {
 
-    @Query(nativeQuery = true, value = "SELECT *FROM tb_user as user WHERE (:id IS NULL OR user.tb_id != :id) " +
-            "AND user.username = :username")
-    public User findUserDuplicatorUserByIdAndUsername(@Param("id") Long id, @Param("username") String username);
+    @Query(nativeQuery = true, value = "SELECT *FROM tb_user as u WHERE (:id IS NULL OR u.user_id != :id) " +
+            "AND u.username = :username")
+    public User findUserDuplicateByUserIdAndLogin(@Param("id") Long id, @Param("username") String username);
 }
