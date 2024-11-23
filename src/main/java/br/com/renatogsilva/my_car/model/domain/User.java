@@ -45,7 +45,7 @@ public class User implements Serializable {
     private EnumTypeUser typeUser;
 
     @OneToOne(optional = false, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "fk_person_id", nullable = false, unique = true)
+    @JoinColumn(name = "fk_person_id", nullable = false, unique = true, foreignKey = @ForeignKey(name = "fk_user_person"))
     @ToString.Exclude
     private Person person;
 }
