@@ -6,10 +6,10 @@ import br.com.renatogsilva.my_car.model.dto.user.UserRequestDTO;
 import br.com.renatogsilva.my_car.model.dto.user.UserResponseDTO;
 import br.com.renatogsilva.my_car.model.dto.user.UserResponseListDTO;
 import br.com.renatogsilva.my_car.model.enumerators.EnumMessageUserExceptions;
-import br.com.renatogsilva.my_car.model.enumerators.EnumSex;
 import br.com.renatogsilva.my_car.model.enumerators.EnumStatus;
 import br.com.renatogsilva.my_car.model.exceptions.user.UserNotFoundException;
-import br.com.renatogsilva.my_car.model.validations.UserValidations;
+import br.com.renatogsilva.my_car.model.validations.PersonBusinessRules;
+import br.com.renatogsilva.my_car.model.validations.UserBusinessRules;
 import br.com.renatogsilva.my_car.repository.user.UserRepository;
 import br.com.renatogsilva.my_car.service.person.PersonService;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -26,14 +25,16 @@ public class UserServiceImpl implements UserService {
 
     private final PersonService personService;
     private final UserRepository userRepository;
-    private final UserValidations userValidations;
+    private final UserBusinessRules userBusinessRules;
+    private final PersonBusinessRules personBusinessRules;
 
     private final UserMapper userMapper;
 
     @Transactional
     @Override
     public UserResponseDTO create(UserRequestDTO userRequestDTO) {
-        userValidations.checkRegistration(userRequestDTO);
+        userBusinessRules.validateInclusioRules(userRequestDTO);
+        personBusinessRules.validateInclusioRules(userRequestDTO.getPersonRequestDTO());
 
         User user = userMapper.toUser(userRequestDTO);
         user.setStatus(EnumStatus.ACTIVE);
@@ -50,7 +51,8 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public UserResponseDTO update(Long id, UserRequestDTO userRequestDTO) {
-        userValidations.checkRegistration(userRequestDTO);
+        userBusinessRules.validateUpdateRules(userRequestDTO);
+        personBusinessRules.validateUpdateRules(userRequestDTO.getPersonRequestDTO());
 
         User user = this.userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(EnumMessageUserExceptions.USER_NOT_FOUND.getMessage(),
@@ -70,25 +72,16 @@ public class UserServiceImpl implements UserService {
         User user = this.userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(EnumMessageUserExceptions.USER_NOT_FOUND.getMessage(),
                         EnumMessageUserExceptions.USER_NOT_FOUND.getCode()));
-        return null;
+
+        return userMapper.toUserResponseDTO(user);
     }
 
     @Transactional(readOnly = true)
     @Override
     public List<UserResponseListDTO> findAll() {
         List<User> users = this.userRepository.findAll();
-        List<UserResponseListDTO> userResponseListDTOs = new ArrayList<>();
 
-        for (User user : users) {
-            userResponseListDTOs.add(new UserResponseListDTO(user.getId(),
-                    user.getPerson().getFirstName()
-                            + " " + user.getPerson().getLastName(),
-                    user.getPerson().getEmail(),
-                    user.getPerson().getCpf(),
-                    EnumSex.get(user.getPerson().getSex()).getDescription(),
-                    user.getStatus().getDescription()));
-        }
-        return userResponseListDTOs;
+        return userMapper.toUserResponseListDTO(users);
     }
 
     @Transactional
