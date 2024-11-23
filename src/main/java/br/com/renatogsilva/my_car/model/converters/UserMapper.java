@@ -18,6 +18,7 @@ import java.util.List;
 public interface UserMapper {
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
+    @Mapping(target = "typeUser", ignore = true)
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "primaryAccess", ignore = true)
     @Mapping(target = "password", ignore = true)
@@ -25,6 +26,7 @@ public interface UserMapper {
     @Mapping(target = "person", source = "personRequestDTO")
     User toUser(UserRequestDTO userRequestDTO);
 
+    @Mapping(target = "typeUser", ignore = true)
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "primaryAccess", ignore = true)
     @Mapping(target = "password", ignore = true)
