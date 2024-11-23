@@ -18,7 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/api/v1/car")
 @RequiredArgsConstructor
-@Tag(name = "Car", description = "API de gerenciamento de carros")
+@Tag(name = "Car", description = "Gerenciamento de carros")
 public class CarController {
 
     private final CarService carService;
@@ -32,6 +32,7 @@ public class CarController {
                     @ApiResponse(responseCode = "400", description = "Parâmetros inválidos"),
                     @ApiResponse(responseCode = "401", description = "Usuário não autenticado"),
                     @ApiResponse(responseCode = "403", description = "Usuário sem permissão"),
+                    @ApiResponse(responseCode = "409", description = "Veículo já cadastrado"),
                     @ApiResponse(responseCode = "500", description = "Erro ao cadastrar veículo")}, method = "POST")
     public CarResponseDTO create(@RequestBody @Valid CarRequestDTO carRequestDTO) {
         return this.carService.create(carRequestDTO);
