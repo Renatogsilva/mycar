@@ -1,6 +1,7 @@
 package br.com.renatogsilva.my_car.model.domain;
 
 import br.com.renatogsilva.my_car.model.enumerators.EnumStatus;
+import br.com.renatogsilva.my_car.model.enumerators.EnumTypeUser;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -38,6 +39,10 @@ public class User implements Serializable {
     @Column(nullable = false, length = 20)
     @Enumerated(EnumType.STRING)
     private EnumStatus status;
+
+    @Column(nullable = false, length = 20)
+    @Enumerated(EnumType.STRING)
+    private EnumTypeUser typeUser;
 
     @OneToOne(optional = false, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "fk_person_id", nullable = false, unique = true)
