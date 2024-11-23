@@ -1,5 +1,7 @@
 package br.com.renatogsilva.my_car.model.enumerators;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum EnumMessageCarExceptions {
     CAR_NOT_FOUND(404, "Veículo não encontrado"),
     INVALID_PARAMETER(400, "Parâmetro informado é inválido"),
@@ -13,6 +15,7 @@ public enum EnumMessageCarExceptions {
         this.message = message;
     }
 
+    @JsonValue
     public Integer getCode() {
         return code;
     }
