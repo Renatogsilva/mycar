@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class CarValidations {
+public class CarBusinessRules {
 
     private final CarRepository carRepository;
 
@@ -21,12 +21,12 @@ public class CarValidations {
     }
 
     public void checkRegistration(CarRequestDTO carRequestDTO) {
-        verifyCarDuplicationityCarForSameMark(carRequestDTO.getId(), carRequestDTO.getMark(),
+        verifyCarDuplicationityCarForSameMark(carRequestDTO.getCarId(), carRequestDTO.getMark(),
                 carRequestDTO.getVersion(), carRequestDTO.getEngine());
     }
 
     public void checkUpdate(CarRequestDTO carRequestDTO) {
-        verifyCarDuplicationityCarForSameMark(carRequestDTO.getId(), carRequestDTO.getMark(),
+        verifyCarDuplicationityCarForSameMark(carRequestDTO.getCarId(), carRequestDTO.getMark(),
                 carRequestDTO.getVersion(), carRequestDTO.getEngine());
     }
 }
