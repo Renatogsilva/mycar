@@ -28,7 +28,8 @@ public class LoginServiceImpl implements LoginService {
                     EnumMessageUserExceptions.CREDENTIALS_INVALID.getCode());
         }
 
-        LoginResponseDTO loginResponseDTO = new LoginResponseDTO(jwtTokenProvider.generateToken(loginRequestDTO.getUsername()));
+        LoginResponseDTO loginResponseDTO = new LoginResponseDTO("Berear "
+                + jwtTokenProvider.generateToken(loginRequestDTO.getUsername()));
 
         return loginResponseDTO;
     }

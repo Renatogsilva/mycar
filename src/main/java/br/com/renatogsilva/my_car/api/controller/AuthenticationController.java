@@ -17,7 +17,6 @@ public class AuthenticationController {
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
     public LoginResponseDTO authentication(@RequestBody LoginRequestDTO loginRequestDTO) {
-        this.loginService.findUserByUsername(loginRequestDTO);
-        return null;
+        return this.loginService.findUserByUsername(loginRequestDTO);
     }
 }
