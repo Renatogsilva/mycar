@@ -4,6 +4,7 @@ import br.com.renatogsilva.my_car.model.enumerators.EnumMessageGenericExceptions
 import br.com.renatogsilva.my_car.model.exceptions.car.CarDuplicationException;
 import br.com.renatogsilva.my_car.model.exceptions.car.CarNotFoundException;
 import br.com.renatogsilva.my_car.model.exceptions.person.PersonDuplicationException;
+import br.com.renatogsilva.my_car.model.exceptions.user.UserAuthenticationException;
 import br.com.renatogsilva.my_car.model.exceptions.user.UserDuplicationException;
 import br.com.renatogsilva.my_car.model.exceptions.user.UserNotFoundException;
 import org.springframework.http.HttpHeaders;
@@ -46,6 +47,12 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, error, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
+    @ExceptionHandler(UserAuthenticationException.class)
+    public ResponseEntity<Object> handlePersonDuplicationException(final UserAuthenticationException ex, final WebRequest request) {
+        StandartError error = new StandartError(ex.getMessage(), ex.getCode(), LocalDateTime.now());
+        return handleExceptionInternal(ex, error, new HttpHeaders(), HttpStatus.UNAUTHORIZED, request);
+    }
+    
     @ExceptionHandler(PersonDuplicationException.class)
     public ResponseEntity<Object> handlePersonDuplicationException(final PersonDuplicationException ex, final WebRequest request) {
         StandartError error = new StandartError(ex.getMessage(), ex.getCode(), LocalDateTime.now());
