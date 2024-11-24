@@ -10,4 +10,6 @@ public interface UserRepository extends JpaRepository<User, Long>, UserRepositor
     @Query(nativeQuery = true, value = "SELECT *FROM tb_user as u WHERE (:id IS NULL OR u.user_id != :id) " +
             "AND u.username = :username")
     public User findUserDuplicateByUserIdAndLogin(@Param("id") Long id, @Param("username") String username);
+
+    public User findUserByUsername(String username);
 }
