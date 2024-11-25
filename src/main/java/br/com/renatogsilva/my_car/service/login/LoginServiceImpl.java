@@ -1,6 +1,6 @@
 package br.com.renatogsilva.my_car.service.login;
 
-import br.com.renatogsilva.my_car.api.config.JwtTokenProvider;
+import br.com.renatogsilva.my_car.api.config.auth.JwtTokenProvider;
 import br.com.renatogsilva.my_car.model.domain.User;
 import br.com.renatogsilva.my_car.model.dto.login.LoginRequestDTO;
 import br.com.renatogsilva.my_car.model.dto.login.LoginResponseDTO;
@@ -28,7 +28,7 @@ public class LoginServiceImpl implements LoginService {
                     EnumMessageUserExceptions.CREDENTIALS_INVALID.getCode());
         }
 
-        LoginResponseDTO loginResponseDTO = new LoginResponseDTO("Berear "
+        LoginResponseDTO loginResponseDTO = new LoginResponseDTO("Bearer "
                 + jwtTokenProvider.generateToken(loginRequestDTO.getUsername()));
 
         return loginResponseDTO;
