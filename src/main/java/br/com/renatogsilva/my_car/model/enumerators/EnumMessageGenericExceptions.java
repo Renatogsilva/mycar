@@ -3,7 +3,8 @@ package br.com.renatogsilva.my_car.model.enumerators;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum EnumMessageGenericExceptions {
-    INVALID_PARAMETER(400, "Parâmetro inválido"),;
+    INVALID_PARAMETER(400, "Parâmetro inválido"),
+    TOKEN_INVALID_OR_EXPIRED(403, "Token inválido ou expirado"),;
 
     private Integer code;
     private String message;
