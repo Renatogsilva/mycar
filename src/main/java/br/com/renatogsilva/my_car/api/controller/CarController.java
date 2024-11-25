@@ -23,7 +23,7 @@ public class CarController {
 
     private final CarService carService;
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Cadastra veículos",
             tags = {"Car"},
@@ -38,7 +38,7 @@ public class CarController {
         return this.carService.create(carRequestDTO);
     }
 
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Atualiza veículos",
             tags = {"Car"},
@@ -80,7 +80,7 @@ public class CarController {
         return this.carService.findAll();
     }
 
-    @DeleteMapping(value = "/active/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(value = "/active/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Ativa veículo",
             tags = {"Car"},
@@ -89,12 +89,12 @@ public class CarController {
                     @ApiResponse(responseCode = "401", description = "Usuário não autenticado"),
                     @ApiResponse(responseCode = "403", description = "Usuário sem permissão"),
                     @ApiResponse(responseCode = "404", description = "Veículo informado não existe"),
-                    @ApiResponse(responseCode = "500", description = "Erro ao ativar veículo")}, method = "DELETE")
+                    @ApiResponse(responseCode = "500", description = "Erro ao ativar veículo")}, method = "PATCH")
     public void enable(@PathVariable Long id) {
         this.carService.enable(id);
     }
 
-    @DeleteMapping(value = "/desactive/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(value = "/desactive/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Desativa veículo",
             tags = {"Car"},
@@ -103,7 +103,7 @@ public class CarController {
                     @ApiResponse(responseCode = "401", description = "Usuário não autenticado"),
                     @ApiResponse(responseCode = "403", description = "Usuário sem permissão"),
                     @ApiResponse(responseCode = "404", description = "Veículo informado não existe"),
-                    @ApiResponse(responseCode = "500", description = "Erro ao desativar veículo")}, method = "DELETE")
+                    @ApiResponse(responseCode = "500", description = "Erro ao desativar veículo")}, method = "PATCH")
     public void disable(@PathVariable Long id) {
         this.carService.disable(id);
     }
