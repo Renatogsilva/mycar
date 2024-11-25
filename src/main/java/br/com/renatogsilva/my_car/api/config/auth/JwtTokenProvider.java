@@ -2,6 +2,7 @@ package br.com.renatogsilva.my_car.api.config.auth;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -9,13 +10,15 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
-    private String SECRET_KEY = "brcomrenatogsilvamycarapisecretkeysegurancabasicauthentication!@#$%&*%$#@!";
+    @Value("${jwt.secret.key}")
+    private String SECRET_KEY;
 
-    public String generateToken(String username) {
+    public String generateToken(String username, String role) {
         return Jwts.builder()
                 .setSubject(username)  // O "subject" geralmente é o nome de usuário ou ID do usuário
+                .claim("role", role)
                 .setIssuedAt(new Date())  // Data de emissão
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))  // Expiração em 1 hora
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 20))  // Expiração em 20 minutos
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)  // Algoritmo de assinatura e chave secreta
                 .compact();
     }
