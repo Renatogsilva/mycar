@@ -29,7 +29,7 @@ public class LoginServiceImpl implements LoginService {
         }
 
         LoginResponseDTO loginResponseDTO = new LoginResponseDTO("Bearer "
-                + jwtTokenProvider.generateToken(loginRequestDTO.getUsername()));
+                + jwtTokenProvider.generateToken(loginRequestDTO.getUsername(), user.getTypeUser().getDescription()));
 
         return loginResponseDTO;
     }
