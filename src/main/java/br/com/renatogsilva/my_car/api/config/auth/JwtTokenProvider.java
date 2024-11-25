@@ -1,4 +1,4 @@
-package br.com.renatogsilva.my_car.api.config;
+package br.com.renatogsilva.my_car.api.config.auth;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
