@@ -13,11 +13,14 @@ public class JwtTokenProvider {
     @Value("${jwt.secret.key}")
     private String SECRET_KEY;
 
+    @Value("${jwt.expiration.time}")
+    private Long EXPIRATION_TIME;
+
     public String generateToken(String username, String role) {
         return Jwts.builder()
                 .setSubject(username)  // O "subject" geralmente é o nome de usuário ou ID do usuário
                 .setIssuedAt(new Date())  // Data de emissão
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 20))  // Expiração em 20 minutos
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))  // Expiração em 20 minutos
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)  // Algoritmo de assinatura e chave secreta
                 .compact();
     }
