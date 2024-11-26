@@ -2,7 +2,7 @@ package br.com.renatogsilva.my_car.api.controller;
 
 import br.com.renatogsilva.my_car.model.dto.login.LoginRequestDTO;
 import br.com.renatogsilva.my_car.model.dto.login.LoginResponseDTO;
-import br.com.renatogsilva.my_car.service.login.LoginService;
+import br.com.renatogsilva.my_car.service.auth.AuthenticationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Auth", description = "Gerenciamento de autenticação")
 public class AuthenticationController {
 
-    private final LoginService loginService;
+    private final AuthenticationService authenticationService;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
@@ -29,6 +29,6 @@ public class AuthenticationController {
                     @ApiResponse(responseCode = "403", description = "Usuário sem permissão"),
                     @ApiResponse(responseCode = "500", description = "Erro ao realizar autenticação")}, method = "POST")
     public LoginResponseDTO authentication(@RequestBody LoginRequestDTO loginRequestDTO) {
-        return this.loginService.findUserByUsername(loginRequestDTO);
+        return this.authenticationService.findUserByUsername(loginRequestDTO);
     }
 }
