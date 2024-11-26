@@ -68,8 +68,12 @@ public class CarServiceImpl implements CarService {
                 .orElseThrow(() -> new CarNotFoundException(EnumMessageCarExceptions.CAR_NOT_FOUND.getMessage(),
                         EnumMessageCarExceptions.CAR_NOT_FOUND.getCode()));
 
+        User user = this.authenticationService.getAuthenticatedUser();
+
         car.setStatus(EnumStatus.INACTIVE);
         car.setExclusionDate(LocalDate.now());
+        car.setUserExclusion(user);
+
         this.carRepository.save(car);
     }
 
@@ -82,6 +86,8 @@ public class CarServiceImpl implements CarService {
 
         car.setStatus(EnumStatus.ACTIVE);
         car.setExclusionDate(null);
+        car.setUserExclusion(null);
+
         this.carRepository.save(car);
     }
 
