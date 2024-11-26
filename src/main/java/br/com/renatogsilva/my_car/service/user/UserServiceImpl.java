@@ -2,6 +2,7 @@ package br.com.renatogsilva.my_car.service.user;
 
 import br.com.renatogsilva.my_car.model.converters.UserMapper;
 import br.com.renatogsilva.my_car.model.domain.User;
+import br.com.renatogsilva.my_car.model.dto.login.LoginResponseDTO;
 import br.com.renatogsilva.my_car.model.dto.user.UserRequestDTO;
 import br.com.renatogsilva.my_car.model.dto.user.UserResponseDTO;
 import br.com.renatogsilva.my_car.model.dto.user.UserResponseListDTO;
@@ -14,6 +15,7 @@ import br.com.renatogsilva.my_car.model.validations.UserBusinessRules;
 import br.com.renatogsilva.my_car.repository.user.UserRepository;
 import br.com.renatogsilva.my_car.service.person.PersonService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +30,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserBusinessRules userBusinessRules;
     private final PersonBusinessRules personBusinessRules;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     private final UserMapper userMapper;
 
@@ -41,7 +44,7 @@ public class UserServiceImpl implements UserService {
         user.setStatus(EnumStatus.ACTIVE);
         user.setCreationDate(LocalDate.now());
         user.setPrimaryAccess(true);
-        user.setPassword(userRequestDTO.getPersonRequestDTO().getCpf());
+        user.setPassword(bCryptPasswordEncoder.encode(userRequestDTO.getPersonRequestDTO().getCpf()));
         user.setTypeUser(EnumTypeUser.ADMIN);
 
         user.setPerson(this.personService.create(user.getPerson()));

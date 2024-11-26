@@ -4,7 +4,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum EnumMessageUserExceptions {
     USER_NOT_FOUND(404, "Usuário não encontrado"),
-    USER_DUPLICATE(409, "Usuário de acesso informado já existe");
+    USER_DUPLICATE(409, "Usuário de acesso informado já existe"),
+    CREDENTIALS_INVALID(401, "Usuário ou senha inválidos"),;
 
     private Integer code;
     private String message;

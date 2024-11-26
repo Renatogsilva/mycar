@@ -31,7 +31,7 @@ public class Phone implements Serializable {
     private Boolean isMain;
 
     @ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "person_id", nullable = false)
+    @JoinColumn(name = "person_id", nullable = false, foreignKey = @ForeignKey(name = "fk_phone_person"))
     @ToString.Exclude
     private Person person;
 }
