@@ -17,7 +17,9 @@ public class LoginResponseDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String token;
-    private Long expiresIn;
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    private int expiresIn;
 
     public LoginResponseDTO(String token) {
         this.token = token;
