@@ -2,6 +2,7 @@ package br.com.renatogsilva.my_car.service.car;
 
 import br.com.renatogsilva.my_car.model.converters.CarMapper;
 import br.com.renatogsilva.my_car.model.domain.Car;
+import br.com.renatogsilva.my_car.model.domain.User;
 import br.com.renatogsilva.my_car.model.dto.car.CarRequestDTO;
 import br.com.renatogsilva.my_car.model.dto.car.CarResponseDTO;
 import br.com.renatogsilva.my_car.model.dto.car.CarResponseListDTO;
@@ -10,6 +11,7 @@ import br.com.renatogsilva.my_car.model.enumerators.EnumStatus;
 import br.com.renatogsilva.my_car.model.exceptions.car.CarNotFoundException;
 import br.com.renatogsilva.my_car.model.validations.CarBusinessRules;
 import br.com.renatogsilva.my_car.repository.car.CarRepository;
+import br.com.renatogsilva.my_car.service.auth.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +25,7 @@ public class CarServiceImpl implements CarService {
 
     private final CarRepository carRepository;
     private final CarBusinessRules carBusinessRules;
+    private final AuthenticationService authenticationService;
 
     private final CarMapper carMapper;
 
@@ -31,9 +34,12 @@ public class CarServiceImpl implements CarService {
     public CarResponseDTO create(CarRequestDTO carRequestDTO) {
         this.carBusinessRules.checkRegistration(carRequestDTO);
 
+        User user = this.authenticationService.getAuthenticatedUser();
+
         Car car = carMapper.toCar(carRequestDTO);
         car.setCreationDate(LocalDate.now());
         car.setStatus(EnumStatus.ACTIVE);
+        car.setUserCreation(user);
 
         this.carRepository.save(car);
 

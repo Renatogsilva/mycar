@@ -2,7 +2,6 @@ package br.com.renatogsilva.my_car.service.user;
 
 import br.com.renatogsilva.my_car.model.converters.UserMapper;
 import br.com.renatogsilva.my_car.model.domain.User;
-import br.com.renatogsilva.my_car.model.dto.login.LoginResponseDTO;
 import br.com.renatogsilva.my_car.model.dto.user.UserRequestDTO;
 import br.com.renatogsilva.my_car.model.dto.user.UserResponseDTO;
 import br.com.renatogsilva.my_car.model.dto.user.UserResponseListDTO;
