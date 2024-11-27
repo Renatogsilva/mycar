@@ -14,12 +14,16 @@ import java.util.List;
 public interface CarMapper {
     CarMapper INSTANCE = Mappers.getMapper(CarMapper.class);
 
+    @Mapping(target = "userExclusion", ignore = true)
+    @Mapping(target = "userCreation", ignore = true)
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
     @Mapping(target = "exclusionDate", ignore = true)
     @Mapping(source = "exchange", target = "exchange")
     Car toCar(CarRequestDTO carRequestDTO);
 
+    @Mapping(target = "userExclusion", ignore = true)
+    @Mapping(target = "userCreation", ignore = true)
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
     @Mapping(target = "exclusionDate", ignore = true)
