@@ -7,6 +7,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Tag(name = "Auth", description = "Gerenciamento de autenticação")
 public class AuthenticationController {
+
+    private static Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 
     private final AuthenticationService authenticationService;
 
@@ -29,6 +33,8 @@ public class AuthenticationController {
                     @ApiResponse(responseCode = "403", description = "Usuário sem permissão"),
                     @ApiResponse(responseCode = "500", description = "Erro ao realizar autenticação")}, method = "POST")
     public LoginResponseDTO authentication(@RequestBody LoginRequestDTO loginRequestDTO) {
+        logger.info("m: authentication - receiving authentication request with loginRequestDTO object");
+
         return this.authenticationService.findUserByUsername(loginRequestDTO);
     }
 }
