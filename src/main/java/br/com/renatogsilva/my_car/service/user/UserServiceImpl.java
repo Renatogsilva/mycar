@@ -2,12 +2,14 @@ package br.com.renatogsilva.my_car.service.user;
 
 import br.com.renatogsilva.my_car.model.converters.UserMapper;
 import br.com.renatogsilva.my_car.model.domain.User;
+import br.com.renatogsilva.my_car.model.dto.user.UserProfileRequestDTO;
 import br.com.renatogsilva.my_car.model.dto.user.UserRequestDTO;
 import br.com.renatogsilva.my_car.model.dto.user.UserResponseDTO;
 import br.com.renatogsilva.my_car.model.dto.user.UserResponseListDTO;
 import br.com.renatogsilva.my_car.model.enumerators.EnumMessageUserExceptions;
 import br.com.renatogsilva.my_car.model.enumerators.EnumStatus;
 import br.com.renatogsilva.my_car.model.enumerators.EnumTypeUser;
+import br.com.renatogsilva.my_car.model.exceptions.user.UserAuthenticationException;
 import br.com.renatogsilva.my_car.model.exceptions.user.UserNotFoundException;
 import br.com.renatogsilva.my_car.model.validations.PersonBusinessRules;
 import br.com.renatogsilva.my_car.model.validations.UserBusinessRules;
@@ -80,6 +82,35 @@ public class UserServiceImpl implements UserService {
         logger.info("m: update - User with ID {} updated successfully", id);
 
         return userMapper.toUserResponseDTO(user);
+    }
+
+    @Transactional
+    @Override
+    public void update(Long id, UserProfileRequestDTO userProfileRequestDTO) {
+        logger.info("m: update - Updating a password");
+
+        User user = this.userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(EnumMessageUserExceptions.USER_NOT_FOUND.getMessage(),
+                EnumMessageUserExceptions.USER_NOT_FOUND.getCode()));
+
+        if (!bCryptPasswordEncoder.matches(userProfileRequestDTO.getCurrentPassword(), user.getPassword())) {
+            logger.info("m: update - Current password entered is different from the registered password");
+
+            throw new UserAuthenticationException(EnumMessageUserExceptions.CURRENT_PASSWORD_INVALID.getMessage(),
+                    EnumMessageUserExceptions.CURRENT_PASSWORD_INVALID.getCode());
+        }
+
+        if (!user.getUsername().equals(userProfileRequestDTO.getUsername())) {
+            logger.info("m: update - Username entered is different from the registered username");
+
+            throw new UserAuthenticationException(EnumMessageUserExceptions.USERNAME_INVALID.getMessage(),
+                    EnumMessageUserExceptions.USERNAME_INVALID.getCode());
+        }
+
+        user.setPassword(bCryptPasswordEncoder.encode(userProfileRequestDTO.getNewPassword()));
+
+        this.userRepository.save(user);
+
+        logger.info("m: update - User password with ID {} updated successfully", id);
     }
 
     @Transactional(readOnly = true)

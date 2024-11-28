@@ -8,10 +8,10 @@ import java.util.List;
 
 public interface CarService {
 
-    public CarResponseDTO create(CarRequestDTO carRequestDTO);
-    public CarResponseDTO update(CarRequestDTO carRequestDTO, Long id);
-    public void disable(Long id);
-    public void enable(Long id);
-    public List<CarResponseListDTO> findAll();
-    public CarResponseDTO findById(Long id);
+    CarResponseDTO create(CarRequestDTO carRequestDTO);
+    CarResponseDTO update(CarRequestDTO carRequestDTO, Long id);
+    void disable(Long id);
+    void enable(Long id);
+    List<CarResponseListDTO> findAll();
+    CarResponseDTO findById(Long id);
 }

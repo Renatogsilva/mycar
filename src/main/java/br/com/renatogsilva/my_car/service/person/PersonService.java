@@ -4,7 +4,7 @@ import br.com.renatogsilva.my_car.model.domain.Person;
 
 public interface PersonService {
 
-    public Person create(Person person);
-    public Person update(Person person);
-    public Person findById(long id);
+    Person create(Person person);
+    Person update(Person person);
+    Person findById(long id);
 }

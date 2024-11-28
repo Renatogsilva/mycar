@@ -1,5 +1,6 @@
 package br.com.renatogsilva.my_car.api.controller;
 
+import br.com.renatogsilva.my_car.model.dto.user.UserProfileRequestDTO;
 import br.com.renatogsilva.my_car.model.dto.user.UserRequestDTO;
 import br.com.renatogsilva.my_car.model.dto.user.UserResponseDTO;
 import br.com.renatogsilva.my_car.model.dto.user.UserResponseListDTO;
@@ -59,6 +60,14 @@ public class UserController {
         logger.info("m: update - receiving request to update user object {}", userRequestDTO);
 
         return this.userService.update(id, userRequestDTO);
+    }
+
+    @PutMapping("/{userId}/change-password")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void changePassword(@PathVariable Long userId, @RequestBody @Valid UserProfileRequestDTO userProfileRequestDTO) {
+        logger.info("m: changePassword - receiving request to update user password");
+
+        this.userService.update(userId, userProfileRequestDTO);
     }
 
     @PatchMapping(value = "/active/{id}")
