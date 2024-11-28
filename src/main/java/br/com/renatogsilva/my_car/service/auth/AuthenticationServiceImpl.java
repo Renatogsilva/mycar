@@ -38,7 +38,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         User user = userRepository.findUserByUsername(loginRequestDTO.getUsername());
 
-        if (user == null || !passwordMatch(user.getPassword(), loginRequestDTO.getPassword())) {
+        if (user == null || !(passwordMatch(user.getPassword(), loginRequestDTO.getPassword()))) {
             logger.error("m: findUserByUsername - user with {} not found", loginRequestDTO.getUsername());
 
             throw new UserAuthenticationException(EnumMessageUserExceptions.CREDENTIALS_INVALID.getMessage(),
