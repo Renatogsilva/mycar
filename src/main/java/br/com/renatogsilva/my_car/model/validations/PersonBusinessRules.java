@@ -17,7 +17,7 @@ public class PersonBusinessRules {
 
     private final PersonRepository personRepository;
 
-    private void validatePersonDuplicateByPersonIdAndCpf(Long personId, String cpf, String email) {
+    private void validatePersonDuplicateByPersonIdAndCpfAndEmail(Long personId, String cpf, String email) {
         logger.info("m: validatePersonDuplicateByPersonIdAndCpf - verify person duplication by id {} " +
                 "and by cpf {} and by email {}", personId, cpf, email);
 
@@ -30,12 +30,12 @@ public class PersonBusinessRules {
     }
 
     public void validateInclusioRules(PersonRequestDTO personRequestDTO) {
-        validatePersonDuplicateByPersonIdAndCpf(personRequestDTO.getPersonId(),
+        validatePersonDuplicateByPersonIdAndCpfAndEmail(personRequestDTO.getPersonId(),
                 personRequestDTO.getCpf(), personRequestDTO.getEmail());
     }
 
     public void validateUpdateRules(PersonRequestDTO personRequestDTO) {
-        validatePersonDuplicateByPersonIdAndCpf(personRequestDTO.getPersonId(),
+        validatePersonDuplicateByPersonIdAndCpfAndEmail(personRequestDTO.getPersonId(),
                 personRequestDTO.getCpf(), personRequestDTO.getEmail());
     }
 }
