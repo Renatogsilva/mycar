@@ -29,10 +29,10 @@ public class Person implements Serializable {
     @Column(name = "last_name", length = 255, nullable = false)
     private String lastName;
 
-    @Column(length = 255, nullable = false)
+    @Column(length = 255, nullable = false, unique = true)
     private String email;
 
-    @Column(length = 14, nullable = false)
+    @Column(length = 14, nullable = false, unique = true)
     private String cpf;
 
     @Enumerated(EnumType.STRING)
