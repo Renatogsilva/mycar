@@ -15,6 +15,7 @@ import br.com.renatogsilva.my_car.model.validations.PersonBusinessRules;
 import br.com.renatogsilva.my_car.model.validations.UserBusinessRules;
 import br.com.renatogsilva.my_car.repository.user.UserRepository;
 import br.com.renatogsilva.my_car.service.person.PersonService;
+import br.com.renatogsilva.my_car.utils.GeneralFunctions;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,7 +93,7 @@ public class UserServiceImpl implements UserService {
         User user = this.userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(EnumMessageUserExceptions.USER_NOT_FOUND.getMessage(),
                 EnumMessageUserExceptions.USER_NOT_FOUND.getCode()));
 
-        if (!bCryptPasswordEncoder.matches(userProfileRequestDTO.getCurrentPassword(), user.getPassword())) {
+        if (!(GeneralFunctions.passwordMatch(bCryptPasswordEncoder, user.getPassword(), userProfileRequestDTO.getCurrentPassword()))) {
             logger.info("m: update - Current password entered is different from the registered password");
 
             throw new UserAuthenticationException(EnumMessageUserExceptions.CURRENT_PASSWORD_INVALID.getMessage(),

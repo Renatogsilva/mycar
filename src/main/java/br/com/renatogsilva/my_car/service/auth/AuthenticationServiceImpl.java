@@ -8,6 +8,7 @@ import br.com.renatogsilva.my_car.model.enumerators.EnumMessageUserExceptions;
 import br.com.renatogsilva.my_car.model.exceptions.user.UserAuthenticationException;
 import br.com.renatogsilva.my_car.model.exceptions.user.UserNotFoundException;
 import br.com.renatogsilva.my_car.repository.user.UserRepository;
+import br.com.renatogsilva.my_car.utils.GeneralFunctions;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +39,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         User user = userRepository.findUserByUsername(loginRequestDTO.getUsername());
 
-        if (user == null || !(passwordMatch(user.getPassword(), loginRequestDTO.getPassword()))) {
+        if (user == null || !(GeneralFunctions.passwordMatch(bCryptPasswordEncoder,
+                user.getPassword(), loginRequestDTO.getPassword()))) {
             logger.error("m: findUserByUsername - user with {} not found", loginRequestDTO.getUsername());
 
             throw new UserAuthenticationException(EnumMessageUserExceptions.CREDENTIALS_INVALID.getMessage(),
@@ -65,11 +67,5 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     EnumMessageUserExceptions.USER_NOT_FOUND.getCode());
         }
         return this.userRepository.findUserByUsername((String) authentication.getPrincipal());
-    }
-
-    private boolean passwordMatch(String usernameLoginResponseDTO, String usernameLoginRequestDTO) {
-        logger.info("m: passwordMatch - verify passwords match");
-
-        return bCryptPasswordEncoder.matches(usernameLoginRequestDTO, usernameLoginResponseDTO);
     }
 }
