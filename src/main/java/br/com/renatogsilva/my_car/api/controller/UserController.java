@@ -54,6 +54,7 @@ public class UserController {
                     @ApiResponse(responseCode = "400", description = "Parâmetros inválidos"),
                     @ApiResponse(responseCode = "401", description = "Usuário não autenticado"),
                     @ApiResponse(responseCode = "403", description = "Usuário sem permissão"),
+                    @ApiResponse(responseCode = "404", description = "Usuário informado não encontrado"),
                     @ApiResponse(responseCode = "409", description = "Usuário já cadastrado"),
                     @ApiResponse(responseCode = "500", description = "Erro ao atualizar usuário")}, method = "PUT")
     public UserResponseDTO update(@PathVariable Long id, @RequestBody @Valid UserRequestDTO userRequestDTO) {
@@ -64,6 +65,15 @@ public class UserController {
 
     @PutMapping("/{userId}/change-password")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Alterar senha",
+            tags = {"User"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Senha atualizado com sucesso"),
+                    @ApiResponse(responseCode = "400", description = "Parâmetros inválidos"),
+                    @ApiResponse(responseCode = "401", description = "Usuário não autenticado"),
+                    @ApiResponse(responseCode = "403", description = "Usuário sem permissão"),
+                    @ApiResponse(responseCode = "404", description = "Usuário informado não encontrado"),
+                    @ApiResponse(responseCode = "500", description = "Erro ao atualizar usuário")}, method = "PUT")
     public void changePassword(@PathVariable Long userId, @RequestBody @Valid UserProfileRequestDTO userProfileRequestDTO) {
         logger.info("m: changePassword - receiving request to update user password");
 
@@ -72,6 +82,15 @@ public class UserController {
 
     @PatchMapping(value = "/active/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Ativar usuário",
+            tags = {"User"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Usuário ativado com sucesso"),
+                    @ApiResponse(responseCode = "400", description = "Parâmetros inválidos"),
+                    @ApiResponse(responseCode = "401", description = "Usuário não autenticado"),
+                    @ApiResponse(responseCode = "403", description = "Usuário sem permissão"),
+                    @ApiResponse(responseCode = "404", description = "Usuário informado não encontrado"),
+                    @ApiResponse(responseCode = "500", description = "Erro ao ativar usuário")}, method = "PATCH")
     public void enable(@PathVariable Long id) {
         logger.info("m: enable - receiving request to enable user object by id {}", id);
 
@@ -80,6 +99,15 @@ public class UserController {
 
     @PatchMapping(value = "/desactive/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Inativar usuário",
+            tags = {"User"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Usuário inativado com sucesso"),
+                    @ApiResponse(responseCode = "400", description = "Parâmetros inválidos"),
+                    @ApiResponse(responseCode = "401", description = "Usuário não autenticado"),
+                    @ApiResponse(responseCode = "403", description = "Usuário sem permissão"),
+                    @ApiResponse(responseCode = "404", description = "Usuário informado não encontrado"),
+                    @ApiResponse(responseCode = "500", description = "Erro ao inativar usuário")}, method = "PATCH")
     public void disable(@PathVariable Long id) {
         logger.info("m: disable - receiving request to disable user object by id {}", id);
 
@@ -88,6 +116,15 @@ public class UserController {
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Consulta usuário por id",
+            tags = {"User"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Usuário encontrado com sucesso"),
+                    @ApiResponse(responseCode = "400", description = "Parâmetros inválidos"),
+                    @ApiResponse(responseCode = "401", description = "Usuário não autenticado"),
+                    @ApiResponse(responseCode = "403", description = "Usuário sem permissão"),
+                    @ApiResponse(responseCode = "404", description = "Usuário informado não encontrado"),
+                    @ApiResponse(responseCode = "500", description = "Erro ao consultar usuário")}, method = "GET")
     public UserResponseDTO findById(@PathVariable long id) {
         logger.info("m: findById - receiving request to find user object by id {}", id);
 
@@ -96,6 +133,14 @@ public class UserController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Consulta lista de usuários",
+            tags = {"User"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Usuários encontrados com sucesso"),
+                    @ApiResponse(responseCode = "400", description = "Parâmetros inválidos"),
+                    @ApiResponse(responseCode = "401", description = "Usuário não autenticado"),
+                    @ApiResponse(responseCode = "403", description = "Usuário sem permissão"),
+                    @ApiResponse(responseCode = "500", description = "Erro ao consultar lista de usuários")}, method = "GET")
     public List<UserResponseListDTO> findAll() {
         logger.info("m: findAll - receiving request to find all user objects");
 

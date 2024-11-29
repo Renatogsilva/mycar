@@ -53,6 +53,7 @@ public class CarController {
                     @ApiResponse(responseCode = "400", description = "Parâmetros inválidos"),
                     @ApiResponse(responseCode = "401", description = "Usuário não autenticado"),
                     @ApiResponse(responseCode = "403", description = "Usuário sem permissão"),
+                    @ApiResponse(responseCode = "404", description = "Veículo informado não encontrado"),
                     @ApiResponse(responseCode = "500", description = "Erro ao atualizar veículo")}, method = "PUT")
     public CarResponseDTO update(@Valid @PathVariable Long id, @RequestBody @Valid CarRequestDTO carRequestDTO) {
         logger.info("m: update - receiving request to update car object {} and id {}", carRequestDTO, id);
@@ -69,7 +70,7 @@ public class CarController {
                     @ApiResponse(responseCode = "400", description = "Parâmetros inválidos"),
                     @ApiResponse(responseCode = "401", description = "Usuário não autenticado"),
                     @ApiResponse(responseCode = "403", description = "Usuário sem permissão"),
-                    @ApiResponse(responseCode = "404", description = "Dados de requisição inválidos"),
+                    @ApiResponse(responseCode = "404", description = "Veículo informado não encontrado"),
                     @ApiResponse(responseCode = "500", description = "Erro ao consultar veículo")}, method = "GET")
     public CarResponseDTO findById(@PathVariable Long id) {
         logger.info("m: findById - receiving request to find car object by id {}", id);
@@ -100,7 +101,7 @@ public class CarController {
                     @ApiResponse(responseCode = "200", description = "Veículo ativado com sucesso"),
                     @ApiResponse(responseCode = "401", description = "Usuário não autenticado"),
                     @ApiResponse(responseCode = "403", description = "Usuário sem permissão"),
-                    @ApiResponse(responseCode = "404", description = "Veículo informado não existe"),
+                    @ApiResponse(responseCode = "404", description = "Veículo informado não encontrado"),
                     @ApiResponse(responseCode = "500", description = "Erro ao ativar veículo")}, method = "PATCH")
     public void enable(@PathVariable Long id) {
         logger.info("m: enable - receiving request to enable car object by id {}", id);
@@ -116,7 +117,7 @@ public class CarController {
                     @ApiResponse(responseCode = "200", description = "Veículo destivado com sucesso"),
                     @ApiResponse(responseCode = "401", description = "Usuário não autenticado"),
                     @ApiResponse(responseCode = "403", description = "Usuário sem permissão"),
-                    @ApiResponse(responseCode = "404", description = "Veículo informado não existe"),
+                    @ApiResponse(responseCode = "404", description = "Veículo informado não encontrado"),
                     @ApiResponse(responseCode = "500", description = "Erro ao desativar veículo")}, method = "PATCH")
     public void disable(@PathVariable Long id) {
         logger.info("m: disable - receiving request to disable car object by id {}", id);
