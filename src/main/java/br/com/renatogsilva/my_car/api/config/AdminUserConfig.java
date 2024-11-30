@@ -46,7 +46,7 @@ public class AdminUserConfig implements CommandLineRunner {
         user.getPerson().setBirthDate(LocalDate.now());
         user.getPerson().getPhones().add(new Phone(null, "(62)98495-2709", EnumTypePhone.CELL_PHONE, true, user.getPerson()));
 
-        this.personRepository.save(user.getPerson());
-        this.userRepository.save(user);
+//        this.personRepository.save(user.getPerson());
+//        this.userRepository.save(user);
     }
 }
