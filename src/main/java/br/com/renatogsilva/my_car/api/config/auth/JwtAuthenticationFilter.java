@@ -8,7 +8,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -18,20 +18,16 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @Component
+@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private JwtTokenProvider jwtTokenProvider;
-    private TokenRevocationConfig tokenRevocationConfig;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final TokenRevocationConfig tokenRevocationConfig;
 
     @Value("${jwt.secret.key}")
     private String SECRET_KEY; // Defina a chave secreta para decodificar o JWT
     @Value("${jwt.header.key}")
     private String HEADER_STRING; // Cabeçalho onde o token JWT é esperado
-
-    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, TokenRevocationConfig tokenRevocationConfig) {
-        this.jwtTokenProvider = new JwtTokenProvider();
-        this.tokenRevocationConfig = new TokenRevocationConfig();
-    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
