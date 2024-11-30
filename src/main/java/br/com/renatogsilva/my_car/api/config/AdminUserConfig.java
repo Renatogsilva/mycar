@@ -32,21 +32,21 @@ public class AdminUserConfig implements CommandLineRunner {
         Person person = new Person();
         user.setPerson(person);
 
-        user.setUsername("renato.silva");
-        user.setPassword(bCryptPasswordEncoder.encode("041.423.631-90"));
+        user.setUsername("teste.teste");
+        user.setPassword(bCryptPasswordEncoder.encode("355.137.120-24"));
         user.setTypeUser(EnumTypeUser.ADMIN);
         user.setStatus(EnumStatus.ACTIVE);
         user.setPrimaryAccess(true);
         user.setCreationDate(LocalDate.now());
-        user.getPerson().setFirstName("Renato");
-        user.getPerson().setLastName("Gomes Silva");
+        user.getPerson().setFirstName("First");
+        user.getPerson().setLastName("Last Name");
         user.getPerson().setSex(EnumSex.MALE);
-        user.getPerson().setCpf("041.423.631-90");
-        user.getPerson().setEmail("silvarenato180@gmail.com");
+        user.getPerson().setCpf("355.137.120-24");
+        user.getPerson().setEmail("teste.com@gmail.com");
         user.getPerson().setBirthDate(LocalDate.now());
-        user.getPerson().getPhones().add(new Phone(null, "(62)98495-2709", EnumTypePhone.CELL_PHONE, true, user.getPerson()));
+        user.getPerson().getPhones().add(new Phone(null, "(62)98420-5789", EnumTypePhone.CELL_PHONE, true, user.getPerson()));
 
-//        this.personRepository.save(user.getPerson());
-//        this.userRepository.save(user);
+        this.personRepository.save(user.getPerson());
+        this.userRepository.save(user);
     }
 }
