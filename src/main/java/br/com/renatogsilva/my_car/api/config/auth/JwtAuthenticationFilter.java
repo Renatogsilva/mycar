@@ -8,6 +8,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -27,6 +28,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Value("${jwt.header.key}")
     private String HEADER_STRING; // Cabeçalho onde o token JWT é esperado
 
+    @Autowired
     public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, TokenRevocationConfig tokenRevocationConfig) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.tokenRevocationConfig = tokenRevocationConfig;
