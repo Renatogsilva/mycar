@@ -8,4 +8,5 @@ public interface AuthenticationService {
 
     LoginResponseDTO findUserByUsername(LoginRequestDTO loginRequestDTO);
     User getAuthenticatedUser();
+    void logout();
 }
