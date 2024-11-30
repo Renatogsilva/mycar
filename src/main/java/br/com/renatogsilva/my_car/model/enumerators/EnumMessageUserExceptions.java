@@ -7,7 +7,8 @@ public enum EnumMessageUserExceptions {
     USER_DUPLICATE(409, "Usuário de acesso informado já existe"),
     CREDENTIALS_INVALID(401, "Usuário ou senha inválidos"),
     CURRENT_PASSWORD_INVALID(400, "Senha atual informada é inválida"),
-    USERNAME_INVALID(400, "Login informado é inválido"),;
+    USERNAME_INVALID(400, "Login informado é inválido"),
+    TOKEN_REVOKED(401, "Token revogado"),;
 
     private Integer code;
     private String message;
