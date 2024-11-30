@@ -20,7 +20,7 @@ public class Phone implements Serializable {
     @Column(name = "phone_id")
     private Long phoneId;
 
-    @Column(length = 14, nullable = false)
+    @Column(length = 14, nullable = false, name = "phone_number")
     private String number;
 
     @Enumerated(EnumType.STRING)
