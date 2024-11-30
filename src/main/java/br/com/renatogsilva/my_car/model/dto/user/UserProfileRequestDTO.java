@@ -1,6 +1,7 @@
 package br.com.renatogsilva.my_car.model.dto.user;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,5 +28,6 @@ public class UserProfileRequestDTO implements Serializable {
     private String currentPassword;
 
     @NotBlank(message = "Campo nova senha é obrigatório")
+    @Size(min = 5, max = 255, message = "O valor do campo nova senha deve conter no mínimo 5 e no máximo 255 caractere")
     private String newPassword;
 }
