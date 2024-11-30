@@ -39,11 +39,11 @@ public class AuthenticationController {
     }
 
     @PostMapping(value = "/logout")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Realiza logout",
             tags = {"Auth"},
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Logout com sucesso"),
+                    @ApiResponse(responseCode = "204", description = "Logout com sucesso"),
                     @ApiResponse(responseCode = "403", description = "Usuário sem permissão"),
                     @ApiResponse(responseCode = "500", description = "Erro ao realizar autenticação")}, method = "POST")
     public void logout() {
