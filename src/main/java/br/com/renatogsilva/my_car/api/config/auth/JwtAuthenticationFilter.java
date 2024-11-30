@@ -1,6 +1,7 @@
 package br.com.renatogsilva.my_car.api.config.auth;
 
 import br.com.renatogsilva.my_car.model.enumerators.EnumMessageGenericExceptions;
+import br.com.renatogsilva.my_car.model.enumerators.EnumMessageUserExceptions;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.FilterChain;
@@ -18,20 +19,36 @@ import java.io.IOException;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+    private final JwtTokenProvider jwtTokenProvider;
+    private final TokenRevocationConfig tokenRevocationConfig;
+
     @Value("${jwt.secret.key}")
     private String SECRET_KEY; // Defina a chave secreta para decodificar o JWT
     @Value("${jwt.header.key}")
     private String HEADER_STRING; // Cabeçalho onde o token JWT é esperado
 
+    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, TokenRevocationConfig tokenRevocationConfig) {
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.tokenRevocationConfig = tokenRevocationConfig;
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // Ignora requisições para /auth/**, pois elas não devem exigir um token JWT
-        if (request.getRequestURI().startsWith("/api/v1/auth")) {
+        if (request.getRequestURI().startsWith("/api/v1/auth/login")) {
             filterChain.doFilter(request, response); // Passa para o próximo filtro sem fazer nada
             return;
         }
 
         String header = request.getHeader(HEADER_STRING);
+
+        if (header != null && jwtTokenProvider.validateToken(header.replace("Bearer ", ""))) {
+            if (tokenRevocationConfig.isTokenRevoked(header.replace("Bearer ", ""))) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);  // Se o token estiver revogado, retorna 401
+                response.getWriter().write(EnumMessageUserExceptions.TOKEN_REVOKED.getMessage());
+                return;
+            }
+        }
 
         // Verifique se o cabeçalho de autorização está presente e se começa com "Bearer "
         if (header != null && header.startsWith("Bearer ")) {
@@ -46,7 +63,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         .getBody();
 
                 // Se o token for válido, crie uma autenticação baseada nas informações do token
-                JwtAuthenticationToken authentication = new JwtAuthenticationToken(claims.getSubject(), null, null); // O sujeito é o nome do usuário
+                JwtAuthenticationToken authentication = new JwtAuthenticationToken(claims.getSubject(), header, null); // O sujeito é o nome do usuário
 
                 // Adicione a autenticação ao contexto de segurança
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
