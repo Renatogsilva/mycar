@@ -28,10 +28,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Value("${jwt.header.key}")
     private String HEADER_STRING; // Cabeçalho onde o token JWT é esperado
 
-    @Autowired
     public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, TokenRevocationConfig tokenRevocationConfig) {
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.tokenRevocationConfig = tokenRevocationConfig;
+        this.jwtTokenProvider = new JwtTokenProvider();
+        this.tokenRevocationConfig = new TokenRevocationConfig();
     }
 
     @Override
