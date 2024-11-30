@@ -23,7 +23,7 @@ public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Realiza autenticação",
             tags = {"Auth"},
@@ -36,5 +36,19 @@ public class AuthenticationController {
         logger.info("m: authentication - receiving authentication request with loginRequestDTO object");
 
         return this.authenticationService.findUserByUsername(loginRequestDTO);
+    }
+
+    @PostMapping(value = "/logout")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Realiza logout",
+            tags = {"Auth"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Logout com sucesso"),
+                    @ApiResponse(responseCode = "403", description = "Usuário sem permissão"),
+                    @ApiResponse(responseCode = "500", description = "Erro ao realizar autenticação")}, method = "POST")
+    public void logout() {
+        logger.info("m: logout - receiving request logout");
+
+        this.authenticationService.logout();
     }
 }
