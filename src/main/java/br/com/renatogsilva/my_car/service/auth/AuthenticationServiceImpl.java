@@ -1,6 +1,7 @@
 package br.com.renatogsilva.my_car.service.auth;
 
 import br.com.renatogsilva.my_car.api.config.auth.JwtTokenProvider;
+import br.com.renatogsilva.my_car.api.config.auth.TokenRevocationConfig;
 import br.com.renatogsilva.my_car.model.domain.User;
 import br.com.renatogsilva.my_car.model.dto.login.LoginRequestDTO;
 import br.com.renatogsilva.my_car.model.dto.login.LoginResponseDTO;
@@ -27,6 +28,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private static Logger logger = LoggerFactory.getLogger(AuthenticationServiceImpl.class);
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final TokenRevocationConfig tokenRevocationConfig;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserRepository userRepository;
 
@@ -47,8 +49,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     EnumMessageUserExceptions.CREDENTIALS_INVALID.getCode());
         }
 
-        LoginResponseDTO loginResponseDTO = new LoginResponseDTO("Bearer "
-                + jwtTokenProvider.generateToken(loginRequestDTO.getUsername(), user.getTypeUser().getDescription()));
+        LoginResponseDTO loginResponseDTO = new LoginResponseDTO(jwtTokenProvider.generateToken(loginRequestDTO.getUsername(), user.getTypeUser().getDescription()));
 
         loginResponseDTO.setExpiresIn(new Date(System.currentTimeMillis() + EXPIRATION_TIME).getTime());
 
@@ -67,5 +68,20 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     EnumMessageUserExceptions.USER_NOT_FOUND.getCode());
         }
         return this.userRepository.findUserByUsername((String) authentication.getPrincipal());
+    }
+
+    @Override
+    public void logout() {
+        logger.info("m: logout - capturing token session");
+
+        String token = SecurityContextHolder.getContext().getAuthentication()
+                .getCredentials().toString().replace("Bearer ", "");
+
+        if (token != null && jwtTokenProvider.validateToken(token)) {
+            logger.info("m: logout - token in the revocation process");
+            tokenRevocationConfig.revokeToken(token);
+        }
+
+        logger.info("m: logout - token revoked successfully");
     }
 }
