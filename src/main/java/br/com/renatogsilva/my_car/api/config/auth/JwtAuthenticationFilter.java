@@ -20,8 +20,8 @@ import java.io.IOException;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final JwtTokenProvider jwtTokenProvider;
-    private final TokenRevocationConfig tokenRevocationConfig;
+    private JwtTokenProvider jwtTokenProvider;
+    private TokenRevocationConfig tokenRevocationConfig;
 
     @Value("${jwt.secret.key}")
     private String SECRET_KEY; // Defina a chave secreta para decodificar o JWT
