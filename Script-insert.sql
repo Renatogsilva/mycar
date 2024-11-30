@@ -8,5 +8,5 @@ VALUES
 
 INSERT INTO tb_user(creation_date, is_primary_access, user_password, fk_person_id, status, type_user, username)
 VALUES
-    ('2024-11-30', true, '$2a$10$xG4egQSrrf8/SvnSYyitmu7luttDPGViV27jR/RL0PUuzbWRA8FwS', (SELECT person_id FROM tb_person WHERE cpf = '355.137.120-24'), 'ACTIVE', 'ADMIN', 'teste.teste')
+    ('2024-11-30', true, '$2a$10$.8m2IE1/iKzHppJf4fguz.jhYJbBII7wyeqYh7ryqmDuf6ZhbdOaW', (SELECT person_id FROM tb_person WHERE cpf = '355.137.120-24'), 'ACTIVE', 'ADMIN', 'teste.teste')
     COMMIT
