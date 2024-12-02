@@ -85,7 +85,7 @@ public class UserController {
     @Operation(summary = "Ativar usuário",
             tags = {"User"},
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Usuário ativado com sucesso"),
+                    @ApiResponse(responseCode = "204", description = "Usuário ativado com sucesso"),
                     @ApiResponse(responseCode = "400", description = "Parâmetros inválidos"),
                     @ApiResponse(responseCode = "401", description = "Usuário não autenticado"),
                     @ApiResponse(responseCode = "403", description = "Usuário sem permissão"),
@@ -102,7 +102,7 @@ public class UserController {
     @Operation(summary = "Inativar usuário",
             tags = {"User"},
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Usuário inativado com sucesso"),
+                    @ApiResponse(responseCode = "204", description = "Usuário inativado com sucesso"),
                     @ApiResponse(responseCode = "400", description = "Parâmetros inválidos"),
                     @ApiResponse(responseCode = "401", description = "Usuário não autenticado"),
                     @ApiResponse(responseCode = "403", description = "Usuário sem permissão"),

@@ -98,7 +98,7 @@ public class CarController {
     @Operation(summary = "Ativa veículo",
             tags = {"Car"},
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Veículo ativado com sucesso"),
+                    @ApiResponse(responseCode = "204", description = "Veículo ativado com sucesso"),
                     @ApiResponse(responseCode = "401", description = "Usuário não autenticado"),
                     @ApiResponse(responseCode = "403", description = "Usuário sem permissão"),
                     @ApiResponse(responseCode = "404", description = "Veículo informado não encontrado"),
@@ -114,7 +114,7 @@ public class CarController {
     @Operation(summary = "Desativa veículo",
             tags = {"Car"},
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Veículo destivado com sucesso"),
+                    @ApiResponse(responseCode = "204", description = "Veículo destivado com sucesso"),
                     @ApiResponse(responseCode = "401", description = "Usuário não autenticado"),
                     @ApiResponse(responseCode = "403", description = "Usuário sem permissão"),
                     @ApiResponse(responseCode = "404", description = "Veículo informado não encontrado"),
