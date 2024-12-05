@@ -27,10 +27,8 @@ public class SwaggerConfig {
                                 .email("silvarenato180@gmail.com")
                                 .url("https://renatogsilva.com"))
                         .license(new License()))
-                .addServersItem((Server) List.of(
-                        new Server().url("https://localhost:8080").description("Servidor de Desenvolvimento"),
-                        new Server().url("http://mycar-prod.up.railway.app").description("Servidor de Produção")
-                ))
+                .addServersItem(new Server().url("https://mycar-prod.up.railway.app").description("Servidor de Produção"))
+                .addServersItem(new Server().url("http://localhost:8080").description("Servidor de Desenvolvimento"))
                 .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
                 .components(new io.swagger.v3.oas.models.Components()
                         .addSecuritySchemes("bearerAuth", new SecurityScheme()
