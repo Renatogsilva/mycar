@@ -50,7 +50,7 @@ public class SecurityConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedMethods("*").allowedOrigins("http://localhost:5173,http://localhost:3000");
+                registry.addMapping("/**").allowedMethods("*").allowedOrigins("https://mycar-prod.up.railway.app/swagger-ui/index.html#,http://localhost:3000,http://localhost:8080/swagger-ui/index.html#");
             }
         };
     }
@@ -58,7 +58,8 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("http://localhost:5173"); // Endereço do Swagger UI
+        configuration.addAllowedOrigin("https://mycar-prod.up.railway.app/swagger-ui/index.html#"); // Endereço do Swagger UI
+        configuration.addAllowedOrigin("http://localhost:8080/swagger-ui/index.html#");
         configuration.addAllowedOrigin("http://localhost:3000"); // Outro domínio permitido
         configuration.addAllowedMethod("*"); // Permitir todos os métodos (GET, POST, PUT, DELETE, etc.)
         configuration.addAllowedHeader("*"); // Permitir todos os cabeçalhos
