@@ -62,7 +62,6 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("https://mycar-prod.up.railway.app"); // Endereço do Swagger UI
         configuration.addAllowedOrigin("http://localhost:3000"); // Outro domínio permitido
         configuration.addAllowedMethod("*"); // Permitir todos os métodos (GET, POST, PUT, DELETE, etc.)
         configuration.addAllowedHeader("*"); // Permitir todos os cabeçalhos
