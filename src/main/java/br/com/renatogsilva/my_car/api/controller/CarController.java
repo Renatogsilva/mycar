@@ -28,7 +28,7 @@ public class CarController {
     private final CarService carService;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Cadastra veículos",
             tags = {"Car"},
             responses = {
