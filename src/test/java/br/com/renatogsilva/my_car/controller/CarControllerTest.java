@@ -1,6 +1,5 @@
 package br.com.renatogsilva.my_car.controller;
 
-import br.com.renatogsilva.my_car.api.config.auth.SecurityConfig;
 import br.com.renatogsilva.my_car.api.controller.CarController;
 import br.com.renatogsilva.my_car.model.dto.car.CarRequestDTO;
 import br.com.renatogsilva.my_car.model.dto.car.CarResponseDTO;
@@ -28,7 +27,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @DisplayName(value = "Testing class Car Controller")
-@Import(SecurityConfig.class)
 public class CarControllerTest {
 
     @Mock
@@ -41,25 +39,36 @@ public class CarControllerTest {
 
     private MockMvc mockMvc;
 
+    private CarRequestDTO carRequestDTO;
+    private CarResponseDTO carResponseDTO;
+    private CarRequestDTO carRequestDTOFailure;
+    private Long carId;
+
     @BeforeEach
     public void setup() {
         mockMvc = MockMvcBuilders.standaloneSetup(carController).build();
         objectMapper = new ObjectMapper();
+
+        this.carRequestDTO = new CarRequestDTO(null, "Fiat", 2020, "Black",
+                "Sedan", EnumExchange.AUTOMATIC, "1.0 Turbo", "Cronos");
+
+        this.carResponseDTO = new CarResponseDTO(1L, "Fiat", 2020, "Black",
+                "Sedan", EnumExchange.AUTOMATIC.getDescription(), "1.0 Turbo", "Cronos");
+
+        this.carRequestDTOFailure = new CarRequestDTO(null, "", 2020, "",
+                "Sedan", EnumExchange.AUTOMATIC, "1.0 Turbo", "Cronos");
+
+        this.carId = 1L;
     }
 
     @Test
     @DisplayName(value = "Should register vehicle successfully")
     public void shouldRegisterVehicleSuccessfully() throws Exception {
-        CarRequestDTO carRequestDTO = new CarRequestDTO(null, "Fiat", 2020, "Black",
-                "Sedan", EnumExchange.AUTOMATIC, "1.0 Turbo", "Cronos");
-        CarResponseDTO carResponseDTO = new CarResponseDTO(1L, "Fiat", 2020, "Black",
-                "Sedan", EnumExchange.AUTOMATIC.getDescription(), "1.0 Turbo", "Cronos");
-
-        given(carService.create(carRequestDTO)).willReturn(carResponseDTO);
+        given(carService.create(carRequestDTO)).willReturn(this.carResponseDTO);
 
         ResultActions resultActions = mockMvc.perform(post("/api/v1/car")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(carRequestDTO)));
+                .content(objectMapper.writeValueAsString(this.carRequestDTO)));
 
         resultActions
                 .andExpect(status().isCreated())
@@ -71,21 +80,22 @@ public class CarControllerTest {
                 .andExpect(jsonPath("$.engine").value("1.0 Turbo"))
                 .andExpect(jsonPath("$.version").value("Cronos"));
 
+        verify(carService).create(carRequestDTO);
+        verify(carService, times(1)).create(this.carRequestDTO);
     }
 
     @Test
     @DisplayName(value = "Should not register a vehicle with invalid data")
     public void shouldNotRegisterVehicleWithInvalidData() throws Exception {
-        CarRequestDTO carRequestDTO = new CarRequestDTO(null, "", 2020, "",
-                "Sedan", EnumExchange.AUTOMATIC, "1.0 Turbo", "Cronos");
-
         ResultActions resultActions = mockMvc.perform(post("/api/v1/car")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(carRequestDTO)));
+                .content(objectMapper.writeValueAsString(carRequestDTOFailure)));
 
         resultActions
                 .andExpect(status().is4xxClientError());
 
+        verify(carService, never()).create(carRequestDTO);
+        verify(carService, times(0)).create(this.carRequestDTO);
     }
 
     @Test
@@ -93,11 +103,9 @@ public class CarControllerTest {
     public void shouldUpdateVehicleSuccessfuly() throws Exception {
         Long carId = 1L;
 
-        CarRequestDTO carRequestDTO = new CarRequestDTO(null, "Fiat", 2020, "Red",
-                "Sedan", EnumExchange.AUTOMATIC, "1.0 Turbo", "Cronos");
-
-        CarResponseDTO carResponseDTO = new CarResponseDTO(carId, "Wolkswagem", 2020, "Black",
-                "Sedan", EnumExchange.AUTOMATIC.getDescription(), "1.0 Turbo", "Polo MSI");
+        carResponseDTO.setMark("Wolkswagem");
+        carResponseDTO.setColor("Black");
+        carResponseDTO.setYearOfManufacture(2024);
 
         when(carService.update(eq(carRequestDTO), eq(carId))).thenReturn(carResponseDTO);
 
@@ -110,51 +118,48 @@ public class CarControllerTest {
                 .andExpect(jsonPath("$").isNotEmpty())
                 .andExpect(jsonPath("$.carId").value(carId))
                 .andExpect(jsonPath("$.mark").value("Wolkswagem"))
-                .andExpect(jsonPath("$.yearOfManufacture").value(2020))
+                .andExpect(jsonPath("$.yearOfManufacture").value(2024))
                 .andExpect(jsonPath("$.color").value("Black"))
-                .andExpect(jsonPath("$.version").value("Polo MSI"))
+                .andExpect(jsonPath("$.version").value("Cronos"))
                 .andExpect(jsonPath("$.engine").value("1.0 Turbo"));
 
+        verify(carService).update(carRequestDTO, carId);
+        verify(carService, times(1)).update(this.carRequestDTO, carId);
     }
 
     @Test
     @DisplayName(value = "Should not update a vehicle with invalid data")
     public void shouldNotUpdateVehicleWithInvalidData() throws Exception {
-        Long carId = 1L;
-
-        CarRequestDTO carRequestDTO = new CarRequestDTO(null, "", 2020, "Green",
-                "Sedan", EnumExchange.AUTOMATIC, "1.0 Turbo", "Cronos");
-
-        ResultActions resultActions = mockMvc.perform(put("/api/v1/car/{id}", carId)
+        ResultActions resultActions = mockMvc.perform(put("/api/v1/car/{id}", this.carId)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(carRequestDTO)));
+                .content(objectMapper.writeValueAsString(carRequestDTOFailure)));
 
         resultActions
                 .andExpect(status().is4xxClientError());
 
+        verify(carService, never()).update(carRequestDTO, this.carId);
+        verify(carService, times(0)).update(this.carRequestDTO, this.carId);
     }
 
     @Test
     @DisplayName(value = "Should successfully find the vehicle by id")
     public void shouldVehicleByIdSuccessfully() throws Exception {
-        Long carId = 1L;
+        when(carService.findById(this.carId)).thenReturn(this.carResponseDTO);
 
-        CarResponseDTO carResponseDTO = new CarResponseDTO(carId, "Wolkswagem", 2020, "Black",
-                "Sedan", EnumExchange.AUTOMATIC.getDescription(), "1.0 Turbo", "Polo MSI");
-
-        when(carService.findById(carId)).thenReturn(carResponseDTO);
-
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/car/{id}", carId)
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/car/{id}", this.carId)
                 .accept(MediaType.APPLICATION_JSON));
 
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$").isNotEmpty())
-                .andExpect(jsonPath("$.carId").value(carId))
-                .andExpect(jsonPath("$.mark").value("Wolkswagem"))
+                .andExpect(jsonPath("$.carId").value(this.carId))
+                .andExpect(jsonPath("$.mark").value("Fiat"))
                 .andExpect(jsonPath("$.yearOfManufacture").value(2020))
                 .andExpect(jsonPath("$.color").value("Black"))
-                .andExpect(jsonPath("$.version").value("Polo MSI"))
+                .andExpect(jsonPath("$.version").value("Cronos"))
                 .andExpect(jsonPath("$.engine").value("1.0 Turbo"));
+
+        verify(carService).findById(this.carId);
+        verify(carService, times(1)).findById(this.carId);
     }
 
     @Test
