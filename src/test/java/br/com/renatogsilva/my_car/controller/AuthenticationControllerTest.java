@@ -36,7 +36,7 @@ public class AuthenticationControllerTest {
     MockMvc mockMvc;
 
     private LoginRequestDTO loginRequestDTO;
-    private LoginRequestDTO loginRequestDTOInvalid;
+    private LoginRequestDTO loginRequestDTOFailure;
     private LoginResponseDTO loginResponseDTO;
 
     @BeforeEach
@@ -46,7 +46,7 @@ public class AuthenticationControllerTest {
 
         this.loginRequestDTO = FactoryAuthentication.createLoginRequestDTOObjectValid();
         this.loginResponseDTO = FactoryAuthentication.createLoginResponseDTOObjectValid();
-        this.loginRequestDTOInvalid = FactoryAuthentication.createLoginRequestDTOObjectInvalid();
+        this.loginRequestDTOFailure = FactoryAuthentication.createLoginRequestDTOObjectInvalid();
     }
 
     @Test
@@ -81,5 +81,19 @@ public class AuthenticationControllerTest {
 
         verify(authenticationService).logout();
         verify(authenticationService, times(1)).logout();
+    }
+
+    @Test
+    @DisplayName(value = "Should not log in with invalid data")
+    public void shouldNotLogInWithInvalidData() throws Exception {
+        ResultActions resultActions = mockMvc.perform(post("/api/v1/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(this.loginRequestDTOFailure)));
+
+        resultActions
+                .andExpect(status().is4xxClientError());
+
+        verify(authenticationService, never()).findUserByUsername(this.loginRequestDTOFailure);
+        verify(authenticationService, times(0)).findUserByUsername(this.loginRequestDTOFailure);
     }
 }
