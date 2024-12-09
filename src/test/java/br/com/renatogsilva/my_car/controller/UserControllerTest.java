@@ -6,7 +6,7 @@ import br.com.renatogsilva.my_car.model.dto.user.UserRequestDTO;
 import br.com.renatogsilva.my_car.model.dto.user.UserResponseDTO;
 import br.com.renatogsilva.my_car.model.dto.user.UserResponseListDTO;
 import br.com.renatogsilva.my_car.service.user.UserService;
-import br.com.renatogsilva.my_car.utils.Factory;
+import br.com.renatogsilva.my_car.utils.FactoryUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -52,9 +52,9 @@ public class UserControllerTest {
 
         objectMapper = new ObjectMapper();
 
-        userRequestDTO = Factory.createUserRequestDTOObjectValid();
-        userResponseDTO = Factory.createUserResponseDTOObjectValid();
-        userProfileRequestDTO = Factory.createUserProfileRequestDTOObjectValid();
+        userRequestDTO = FactoryUser.createUserRequestDTOObjectValid();
+        userResponseDTO = FactoryUser.createUserResponseDTOObjectValid();
+        userProfileRequestDTO = FactoryUser.createUserProfileRequestDTOObjectValid();
         userId = 1L;
     }
 
@@ -65,7 +65,7 @@ public class UserControllerTest {
 
         ResultActions resultActions = mockMvc.perform(post("/api/v1/user")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(Factory.createUserRequestDTOObjectValidString()));
+                .content(FactoryUser.createUserRequestDTOObjectValidString()));
 
         resultActions
                 .andExpect(status().isCreated())
@@ -82,7 +82,7 @@ public class UserControllerTest {
     public void shouldNotRegisterUser() throws Exception {
         ResultActions resultActions = mockMvc.perform(post("/api/v1/user")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(Factory.createUserRequestDTOObjectInvalidString()));
+                .content(FactoryUser.createUserRequestDTOObjectInvalidString()));
 
         resultActions
                 .andExpect(status().is4xxClientError());
@@ -100,7 +100,7 @@ public class UserControllerTest {
 
         ResultActions resultActions = mockMvc.perform(put("/api/v1/user/{id}", userId)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(Factory.createUserRequestDTOObjectValidString()));
+                .content(FactoryUser.createUserRequestDTOObjectValidString()));
 
         resultActions
                 .andExpect(status().isOk())
@@ -118,7 +118,7 @@ public class UserControllerTest {
     public void shouldNotUpdateUserWithInvalidData() throws Exception {
         ResultActions resultActions = mockMvc.perform(put("/api/v1/user/{id}", userId)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(Factory.createUserRequestDTOObjectInvalidString()));
+                .content(FactoryUser.createUserRequestDTOObjectInvalidString()));
 
         resultActions
                 .andExpect(status().is4xxClientError());

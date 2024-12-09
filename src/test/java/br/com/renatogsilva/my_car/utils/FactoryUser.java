@@ -14,7 +14,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Factory {
+public class FactoryUser {
 
     public static UserRequestDTO createUserRequestDTOObjectValid() {
         UserRequestDTO userRequestDTO = new UserRequestDTO();
