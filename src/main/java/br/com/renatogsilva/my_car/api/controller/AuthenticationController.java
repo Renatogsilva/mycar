@@ -6,6 +6,7 @@ import br.com.renatogsilva.my_car.service.auth.AuthenticationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +33,7 @@ public class AuthenticationController {
                     @ApiResponse(responseCode = "400", description = "Parâmetros inválidos"),
                     @ApiResponse(responseCode = "403", description = "Usuário sem permissão"),
                     @ApiResponse(responseCode = "500", description = "Erro ao realizar autenticação")}, method = "POST")
-    public LoginResponseDTO authentication(@RequestBody LoginRequestDTO loginRequestDTO) {
+    public LoginResponseDTO authentication(@RequestBody @Valid LoginRequestDTO loginRequestDTO) {
         logger.info("m: authentication - receiving authentication request with loginRequestDTO object");
 
         return this.authenticationService.findUserByUsername(loginRequestDTO);
