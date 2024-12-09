@@ -24,8 +24,8 @@ public class FactoryAuthentication {
 
     public static LoginRequestDTO createLoginRequestDTOObjectInvalid() {
         LoginRequestDTO loginRequestDTO = new LoginRequestDTO();
-        loginRequestDTO.setUsername("aaaaa");
-        loginRequestDTO.setPassword("aaaaa");
+        loginRequestDTO.setUsername(null);
+        loginRequestDTO.setPassword("");
 
         return loginRequestDTO;
     }
