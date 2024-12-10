@@ -29,7 +29,7 @@ import static org.mockito.BDDMockito.*;
 
 @SpringBootTest
 @DisplayName(value = "Testing class User Service")
-@TestPropertySource(properties = "jwt.expiration.time=1200000")
+@TestPropertySource(locations = "classpath:application-test.properties")
 public class AuthServiceTest {
 
     @Mock
@@ -43,9 +43,6 @@ public class AuthServiceTest {
 
     @InjectMocks
     private AuthenticationServiceImpl authenticationServiceImpl;
-
-    @Value("${jwt.expiration.time}")
-    private Long EXPIRATION_TIME;
 
     private MockMvc mockMvc;
     private LoginRequestDTO loginRequestDTOValid;
