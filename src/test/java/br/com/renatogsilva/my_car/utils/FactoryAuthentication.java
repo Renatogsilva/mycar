@@ -29,4 +29,20 @@ public class FactoryAuthentication {
 
         return loginRequestDTO;
     }
+
+    public static LoginRequestDTO createLoginRequestDTOObjectPasswordInvalid() {
+        LoginRequestDTO loginRequestDTO = new LoginRequestDTO();
+        loginRequestDTO.setUsername("teste.teste");
+        loginRequestDTO.setPassword("asdfafççlkjdasd");
+
+        return loginRequestDTO;
+    }
+
+    public static LoginRequestDTO createLoginRequestDTOObjectUsernameInvalid() {
+        LoginRequestDTO loginRequestDTO = new LoginRequestDTO();
+        loginRequestDTO.setUsername("teste.invalid");
+        loginRequestDTO.setPassword("355.137.120-24");
+
+        return loginRequestDTO;
+    }
 }
