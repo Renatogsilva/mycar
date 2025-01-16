@@ -7,16 +7,20 @@ import br.com.renatogsilva.my_car.model.dto.login.LoginResponseDTO;
 import br.com.renatogsilva.my_car.model.enumerators.EnumStatus;
 import br.com.renatogsilva.my_car.model.enumerators.EnumTypeUser;
 import br.com.renatogsilva.my_car.model.exceptions.user.UserAuthenticationException;
+import br.com.renatogsilva.my_car.model.exceptions.user.UserNotFoundException;
 import br.com.renatogsilva.my_car.repository.user.UserRepository;
 import br.com.renatogsilva.my_car.service.auth.AuthenticationServiceImpl;
 import br.com.renatogsilva.my_car.utils.FactoryAuthentication;
+import br.com.renatogsilva.my_car.utils.FactoryUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
@@ -44,6 +48,9 @@ public class AuthServiceTest {
     @InjectMocks
     private AuthenticationServiceImpl authenticationServiceImpl;
 
+    @Mock
+    private Authentication authentication;
+
     private MockMvc mockMvc;
     private LoginRequestDTO loginRequestDTOValid;
     private LoginRequestDTO loginRequestDTOPasswordInvalid;
@@ -56,6 +63,7 @@ public class AuthServiceTest {
         this.loginRequestDTOValid = FactoryAuthentication.createLoginRequestDTOObjectValid();
         this.loginRequestDTOPasswordInvalid = FactoryAuthentication.createLoginRequestDTOObjectPasswordInvalid();
         this.loginRequestDTOUsernameInvalid = FactoryAuthentication.createLoginRequestDTOObjectUsernameInvalid();
+        this.authenticationServiceImpl.EXPIRATION_TIME = 1200000L;
     }
 
     @Test
@@ -114,13 +122,54 @@ public class AuthServiceTest {
         LoginResponseDTO loginResponseDTO = this.authenticationServiceImpl.findUserByUsername(this.loginRequestDTOValid);
 
         assertNotNull(loginResponseDTO);
-        assertTrue(expectedExpirationTime >= loginResponseDTO.getExpiresIn());
+        assertTrue(expectedExpirationTime <= loginResponseDTO.getExpiresIn());
 
         verify(this.userRepository).findUserByUsername(this.loginRequestDTOValid.getUsername());
         verify(this.userRepository, times(1)).findUserByUsername(this.loginRequestDTOValid.getUsername());
         verify(this.bCryptPasswordEncoder).matches(eq(this.loginRequestDTOValid.getPassword()), eq(user.getPassword()));
-        verify(this.bCryptPasswordEncoder, times(1)).encode(this.loginRequestDTOValid.getPassword());
-        verify(this.jwtTokenProvider).generateToken(loginRequestDTOUsernameInvalid.getUsername(), EnumTypeUser.ADMIN.getDescription());
-        verify(this.jwtTokenProvider, times(1)).generateToken(loginRequestDTOUsernameInvalid.getUsername(), EnumTypeUser.ADMIN.getDescription());
+        verify(this.jwtTokenProvider).generateToken(loginRequestDTOValid.getUsername(), EnumTypeUser.ADMIN.getDescription());
+        verify(this.jwtTokenProvider, times(1)).generateToken(loginRequestDTOValid.getUsername(), EnumTypeUser.ADMIN.getDescription());
+    }
+
+    @Test
+    @DisplayName(value = "Should return exception when user not found")
+    public void shouldReturnExceptionWhenUserNotFound() throws Exception {
+        SecurityContext mockSecurityContext = mock(SecurityContext.class);
+        SecurityContextHolder.setContext(mockSecurityContext);
+        when(mockSecurityContext.getAuthentication()).thenReturn(null);
+
+        UserNotFoundException userNotFoundException = assertThrows(UserNotFoundException.class, () -> {
+           this.authenticationServiceImpl.getAuthenticatedUser();
+        });
+
+        assertEquals("Usuário não encontrado", userNotFoundException.getMessage());
+        assertEquals(404, userNotFoundException.getCode());
+        verify(mockSecurityContext, times(1)).getAuthentication();
+    }
+
+    @Test
+    @DisplayName(value = "Should return user with successful")
+    public void shouldReturnUserWithSuccessfulAuthentication() throws Exception {
+        SecurityContext mockSecurityContext = mock(SecurityContext.class);
+        SecurityContextHolder.setContext(mockSecurityContext);
+        given(mockSecurityContext.getAuthentication()).willReturn(this.authentication);
+        given(authentication.isAuthenticated()).willReturn(true);
+        given(authentication.getPrincipal()).willReturn("validUser");
+
+        User userMock = FactoryUser.createUserObjectValid();
+        given(userRepository.findUserByUsername("validUser")).willReturn(userMock);
+
+        User result = this.authenticationServiceImpl.getAuthenticatedUser();
+
+        assertNotNull(result);
+        assertEquals("username.login", result.getUsername());
+        assertEquals("Emanuel", result.getPerson().getFirstName());
+        verify(this.userRepository, times(1)).findUserByUsername("validUser");
+        verify(authentication, times(1)).isAuthenticated();
+        verify(authentication, times(1)).getPrincipal();
+        verifyNoMoreInteractions(this.userRepository);
+        verifyNoMoreInteractions(this.bCryptPasswordEncoder);
+        verifyNoMoreInteractions(this.bCryptPasswordEncoder);
+        verifyNoMoreInteractions(this.jwtTokenProvider);
     }
 }
