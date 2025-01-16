@@ -33,7 +33,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final UserRepository userRepository;
 
     @Value("${jwt.expiration.time}")
-    private Long EXPIRATION_TIME;
+    public Long EXPIRATION_TIME;
 
     @Override
     public LoginResponseDTO findUserByUsername(LoginRequestDTO loginRequestDTO) {
