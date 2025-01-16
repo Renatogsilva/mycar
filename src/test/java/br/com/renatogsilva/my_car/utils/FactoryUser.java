@@ -1,5 +1,8 @@
 package br.com.renatogsilva.my_car.utils;
 
+import br.com.renatogsilva.my_car.model.domain.Person;
+import br.com.renatogsilva.my_car.model.domain.Phone;
+import br.com.renatogsilva.my_car.model.domain.User;
 import br.com.renatogsilva.my_car.model.dto.person.PersonRequestDTO;
 import br.com.renatogsilva.my_car.model.dto.person.PersonResponseDTO;
 import br.com.renatogsilva.my_car.model.dto.phone.PhoneRequestDTO;
@@ -128,5 +131,32 @@ public class FactoryUser {
         userProfileRequestDTO.setNewPassword("abcd123456789");
 
         return userProfileRequestDTO;
+    }
+
+    public static User createUserObjectValid() {
+        User user = new User();
+        Person person = new Person();
+        Phone phone = new Phone();
+
+        user.setUsername("username.login");
+        user.setPassword("abcd");
+
+        person.setFirstName("Emanuel");
+        person.setBirthDate(LocalDate.of(1994, 10, 12));
+        person.setPersonId(1L);
+        person.setSex(EnumSex.MALE);
+        person.setEmail("email@gmail.com");
+        person.setCpf("355.137.120-24");
+        person.setLastName("FirstName LastName");
+
+        phone.setPhoneId(1L);
+        phone.setTypePhone(EnumTypePhone.CELL_PHONE);
+        phone.setNumber("6298495-5781");
+        phone.setIsMain(true);
+        phone.setPerson(person);
+
+        person.getPhones().add(phone);
+        user.setPerson(person);
+        return user;
     }
 }
