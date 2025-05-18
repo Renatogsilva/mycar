@@ -38,7 +38,7 @@ public class CarServiceImpl implements CarService {
     public CarResponseDTO create(CarRequestDTO carRequestDTO) {
         logger.info("m: create - Creating new car {}", carRequestDTO);
 
-        this.carBusinessRules.validateInclusioRules(carRequestDTO);
+        this.carBusinessRules.validateInclusionRules(carRequestDTO);
 
         User user = this.authenticationService.getAuthenticatedUser();
 
