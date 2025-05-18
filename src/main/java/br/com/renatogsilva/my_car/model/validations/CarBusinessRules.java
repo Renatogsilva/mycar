@@ -29,7 +29,7 @@ public class CarBusinessRules {
         }
     }
 
-    public void validateInclusioRules(CarRequestDTO carRequestDTO) {
+    public void validateInclusionRules(CarRequestDTO carRequestDTO) {
         verifyCarDuplicationByIdAndMarkAndVersionAndEngine(carRequestDTO.getCarId(), carRequestDTO.getMark(),
                 carRequestDTO.getVersion(), carRequestDTO.getEngine());
     }
