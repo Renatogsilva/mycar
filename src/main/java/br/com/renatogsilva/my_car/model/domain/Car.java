@@ -56,11 +56,11 @@ public class Car implements Serializable {
     @Column(name = "exclusion_date")
     private LocalDate exclusionDate;
 
-    @OneToOne(optional = false, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "fk_user_creation_id", nullable = false, unique = true, foreignKey = @ForeignKey(name = "fk_car_user_creation"))
+    @ManyToOne(optional = false, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "fk_user_creation_id", nullable = false, updatable = false, foreignKey = @ForeignKey(name = "fk_car_user_creation"))
     private User userCreation;
 
-    @OneToOne(optional = true, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "fk_user_exclusion_id", nullable = true, unique = true, foreignKey = @ForeignKey(name = "fk_car_user_create_exclusion"))
+    @ManyToOne(optional = true, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "fk_user_exclusion_id", nullable = true, updatable = false, foreignKey = @ForeignKey(name = "fk_car_user_create_exclusion"))
     private User userExclusion;
 }
