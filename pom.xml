@@ -204,9 +204,11 @@
                 <configuration>
                     <targetClasses>
                         <param>br.com.renatogsilva.my_car.api.controller.*</param>
+                        <param>br.com.renatogsilva.my_car.service.*</param>
                     </targetClasses>
                     <targetTests>
                         <param>br.com.renatogsilva.my_car.controller.*</param>
+                        <param>br.com.renatogsilva.my_car.service.*</param>
                     </targetTests>
                 </configuration>
             </plugin>
