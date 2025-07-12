@@ -1,6 +1,7 @@
 package br.com.renatogsilva.my_car.service;
 
 import br.com.renatogsilva.my_car.api.config.auth.JwtTokenProvider;
+import br.com.renatogsilva.my_car.api.config.auth.TokenRevocationConfig;
 import br.com.renatogsilva.my_car.model.domain.User;
 import br.com.renatogsilva.my_car.model.dto.login.LoginRequestDTO;
 import br.com.renatogsilva.my_car.model.dto.login.LoginResponseDTO;
@@ -48,6 +49,9 @@ public class AuthServiceTest {
 
     @Mock
     private Authentication authentication;
+
+    @Mock
+    private TokenRevocationConfig tokenRevocationConfig;
 
     private MockMvc mockMvc;
     private LoginRequestDTO loginRequestDTOValid;
@@ -169,5 +173,26 @@ public class AuthServiceTest {
         verifyNoMoreInteractions(this.bCryptPasswordEncoder);
         verifyNoMoreInteractions(this.bCryptPasswordEncoder);
         verifyNoMoreInteractions(this.jwtTokenProvider);
+    }
+
+    @Test
+    @DisplayName(value = "Should revoke token when valid")
+    public void shouldRevokeTokenWhenValid(){
+        SecurityContext mockSecurityContext = mock(SecurityContext.class);
+        SecurityContextHolder.setContext(mockSecurityContext);
+
+        when(mockSecurityContext.getAuthentication()).thenReturn(this.authentication);
+
+        String token = "Bearer validToken123qweasdf";
+        String replaceToken = "validToken123qweasdf";
+
+        when(this.authentication.getCredentials()).thenReturn(token);
+        when(this.jwtTokenProvider.validateToken(replaceToken)).thenReturn(true);
+
+        this.authenticationServiceImpl.logout();
+
+        verify(this.authentication, times(1)).getCredentials();
+        verify(jwtTokenProvider, times(1)).validateToken(replaceToken);
+        verify(tokenRevocationConfig, times(1)).revokeToken(replaceToken);
     }
 }
