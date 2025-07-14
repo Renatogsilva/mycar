@@ -1,13 +1,9 @@
 package br.com.renatogsilva.my_car.utils;
 
 import br.com.renatogsilva.my_car.model.domain.Car;
-import br.com.renatogsilva.my_car.model.domain.User;
 import br.com.renatogsilva.my_car.model.dto.car.CarRequestDTO;
 import br.com.renatogsilva.my_car.model.dto.car.CarResponseDTO;
 import br.com.renatogsilva.my_car.model.enumerators.EnumExchange;
-import br.com.renatogsilva.my_car.model.enumerators.EnumStatus;
-
-import java.time.LocalDate;
 
 public class FactoryCar {
 
@@ -40,17 +36,14 @@ public class FactoryCar {
         return carResponseDTO;
     }
 
-    public static Car createCarObjectValid(){
+    public static Car createValidCarObjectWithoutCreationDateAndstatusAndUserId(){
         Car car = new Car();
 
-        car.setStatus(EnumStatus.ACTIVE);
         car.setCarId(1L);
         car.setEngine("1.6");
         car.setExchange(EnumExchange.MANUAL);
         car.setColor("Branco");
         car.setExclusionDate(null);
-        car.setCreationDate(LocalDate.now());
-        car.setUserCreation(new User(1L, null,null,null, false, null, null, null));
         car.setMark("Wolkswagem");
         car.setBodyStyle("Hatch");
         car.setVersion("Polo MSI");
