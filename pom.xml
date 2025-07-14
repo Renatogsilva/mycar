@@ -210,6 +210,9 @@
                         <param>br.com.renatogsilva.my_car.controller.*</param>
                         <param>br.com.renatogsilva.my_car.service.*</param>
                     </targetTests>
+                    <mutators>
+                        <mutator>STRONGER</mutator>
+                    </mutators>
                 </configuration>
             </plugin>
         </plugins>
