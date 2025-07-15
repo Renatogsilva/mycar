@@ -11,6 +11,7 @@ import br.com.renatogsilva.my_car.model.dto.user.UserProfileRequestDTO;
 import br.com.renatogsilva.my_car.model.dto.user.UserRequestDTO;
 import br.com.renatogsilva.my_car.model.dto.user.UserResponseDTO;
 import br.com.renatogsilva.my_car.model.enumerators.EnumSex;
+import br.com.renatogsilva.my_car.model.enumerators.EnumStatus;
 import br.com.renatogsilva.my_car.model.enumerators.EnumTypePhone;
 
 import java.time.LocalDate;
@@ -140,6 +141,35 @@ public class FactoryUser {
 
         user.setUsername("username.login");
         user.setPassword("abcd");
+        user.setStatus(EnumStatus.ACTIVE);
+
+        person.setFirstName("Emanuel");
+        person.setBirthDate(LocalDate.of(1994, 10, 12));
+        person.setPersonId(1L);
+        person.setSex(EnumSex.MALE);
+        person.setEmail("email@gmail.com");
+        person.setCpf("355.137.120-24");
+        person.setLastName("FirstName LastName");
+
+        phone.setPhoneId(1L);
+        phone.setTypePhone(EnumTypePhone.CELL_PHONE);
+        phone.setNumber("6298495-5781");
+        phone.setIsMain(true);
+        phone.setPerson(person);
+
+        person.getPhones().add(phone);
+        user.setPerson(person);
+        return user;
+    }
+
+    public static User createUserObjectValidAndInactive() {
+        User user = new User();
+        Person person = new Person();
+        Phone phone = new Phone();
+
+        user.setUsername("username.login");
+        user.setPassword("abcd");
+        user.setStatus(EnumStatus.INACTIVE);
 
         person.setFirstName("Emanuel");
         person.setBirthDate(LocalDate.of(1994, 10, 12));
