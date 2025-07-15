@@ -77,7 +77,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String token = SecurityContextHolder.getContext().getAuthentication()
                 .getCredentials().toString().replace("Bearer ", "");
 
-        if (token != null && jwtTokenProvider.validateToken(token)) {
+        if (jwtTokenProvider.validateToken(token)) {
             logger.info("m: logout - token in the revocation process");
             tokenRevocationConfig.revokeToken(token);
         }
