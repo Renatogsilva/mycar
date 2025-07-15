@@ -83,7 +83,7 @@ public class CarServiceImpl implements CarService {
 
         User user = this.authenticationService.getAuthenticatedUser();
 
-        if (user.getStatus().equals(EnumStatus.INACTIVE)) {
+        if (car.getStatus().equals(EnumStatus.INACTIVE)) {
             logger.warn("m: disable - Car with id {} is already inactive", id);
             return;
         }
