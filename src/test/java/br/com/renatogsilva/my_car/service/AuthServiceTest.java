@@ -5,6 +5,7 @@ import br.com.renatogsilva.my_car.api.config.auth.TokenRevocationConfig;
 import br.com.renatogsilva.my_car.model.domain.User;
 import br.com.renatogsilva.my_car.model.dto.login.LoginRequestDTO;
 import br.com.renatogsilva.my_car.model.dto.login.LoginResponseDTO;
+import br.com.renatogsilva.my_car.model.enumerators.EnumMessageUserExceptions;
 import br.com.renatogsilva.my_car.model.enumerators.EnumStatus;
 import br.com.renatogsilva.my_car.model.enumerators.EnumTypeUser;
 import br.com.renatogsilva.my_car.model.exceptions.user.UserAuthenticationException;
@@ -60,6 +61,7 @@ public class AuthServiceTest {
 
     @BeforeEach
     public void setup() {
+        SecurityContextHolder.clearContext();
         this.mockMvc = MockMvcBuilders.standaloneSetup(authenticationServiceImpl).build();
 
         this.loginRequestDTOValid = FactoryAuthentication.createLoginRequestDTOObjectValid();
@@ -179,20 +181,81 @@ public class AuthServiceTest {
     @DisplayName(value = "Should revoke token when valid")
     public void shouldRevokeTokenWhenValid(){
         SecurityContext mockSecurityContext = mock(SecurityContext.class);
+        Authentication mockAuthentication = mock(Authentication.class);
         SecurityContextHolder.setContext(mockSecurityContext);
 
-        when(mockSecurityContext.getAuthentication()).thenReturn(this.authentication);
+        given(mockSecurityContext.getAuthentication()).willReturn(mockAuthentication);
 
         String token = "Bearer validToken123qweasdf";
         String replaceToken = "validToken123qweasdf";
-
-        when(this.authentication.getCredentials()).thenReturn(token);
-        when(this.jwtTokenProvider.validateToken(replaceToken)).thenReturn(true);
+        given(mockAuthentication.getCredentials()).willReturn(token);
+        given(jwtTokenProvider.validateToken(replaceToken)).willReturn(true);
 
         this.authenticationServiceImpl.logout();
 
-        verify(this.authentication, times(1)).getCredentials();
+        verify(mockAuthentication, times(1)).getCredentials();
         verify(jwtTokenProvider, times(1)).validateToken(replaceToken);
         verify(tokenRevocationConfig, times(1)).revokeToken(replaceToken);
+    }
+
+    @Test
+    @DisplayName(value = "Should not revoke token when invalid")
+    public void shouldNotRevokeTokenWhenInvalid(){
+        SecurityContext mockSecurityContext = mock(SecurityContext.class);
+        Authentication mockAuthentication = mock(Authentication.class);
+        SecurityContextHolder.setContext(mockSecurityContext);
+
+        given(mockSecurityContext.getAuthentication()).willReturn(mockAuthentication);
+
+        String token = "validToken123qweasdf";
+        String replaceToken = "validToken123qweasdf";
+        given(mockAuthentication.getCredentials()).willReturn(token);
+        given(jwtTokenProvider.validateToken(replaceToken)).willReturn(false);
+
+        this.authenticationServiceImpl.logout();
+
+        verify(mockAuthentication, times(1)).getCredentials();
+        verify(jwtTokenProvider, times(1)).validateToken(replaceToken);
+        verify(tokenRevocationConfig, never()).revokeToken(replaceToken);
+    }
+
+    @Test
+    @DisplayName(value = "Should return null authentication")
+    public void shouldReturnNullAuthentication(){
+        SecurityContext mockSecurityContext = mock(SecurityContext.class);
+        SecurityContextHolder.setContext(mockSecurityContext);
+
+        given(mockSecurityContext.getAuthentication()).willReturn(null);
+
+        UserNotFoundException thrown = assertThrows(UserNotFoundException.class, () -> {
+            this.authenticationServiceImpl.getAuthenticatedUser();
+        });
+
+        assertEquals(EnumMessageUserExceptions.USER_NOT_FOUND.getMessage(), thrown.getMessage());
+        assertEquals(EnumMessageUserExceptions.USER_NOT_FOUND.getCode(), thrown.getCode());
+
+        verify(mockSecurityContext, times(1)).getAuthentication();
+        verify(this.userRepository, never()).findUserByUsername("TESTE");
+    }
+
+    @Test
+    @DisplayName(value = "Should return false authentication")
+    public void shouldReturnFalseAuthentication(){
+        Authentication mockAuthentication = mock(Authentication.class);
+        SecurityContext mockSecurityContext = mock(SecurityContext.class);
+        SecurityContextHolder.setContext(mockSecurityContext);
+
+        given(mockSecurityContext.getAuthentication()).willReturn(mockAuthentication);
+        given(mockAuthentication.isAuthenticated()).willReturn(false);
+
+        UserNotFoundException thrown = assertThrows(UserNotFoundException.class, () -> {
+            this.authenticationServiceImpl.getAuthenticatedUser();
+        });
+
+        assertEquals(EnumMessageUserExceptions.USER_NOT_FOUND.getMessage(), thrown.getMessage());
+        assertEquals(EnumMessageUserExceptions.USER_NOT_FOUND.getCode(), thrown.getCode());
+
+        verify(mockSecurityContext, times(1)).getAuthentication();
+        verify(this.userRepository, never()).findUserByUsername("TESTE");
     }
 }
