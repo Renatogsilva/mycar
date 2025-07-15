@@ -322,7 +322,7 @@ public class CarServiceTest {
         List<CarResponseListDTO> carsResponseDto = FactoryCar.carResponseListDTOList();
 
         Car entity = FactoryCar.createValidCarObject();
-        given(carRepository.findAll()).willReturn(cars);
+        given(this.carRepository.findAll()).willReturn(cars);
         given(this.carMapper.toCarResponseListDto(cars)).willReturn(carsResponseDto);
 
         List<CarResponseListDTO> carsResponseDtoList = this.carServiceImpl.findAll();
