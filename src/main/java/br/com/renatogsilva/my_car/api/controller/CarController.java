@@ -23,7 +23,7 @@ import java.util.List;
 @Tag(name = "Car", description = "Gerenciamento de carros")
 public class CarController {
 
-    private static Logger logger = LoggerFactory.getLogger(CarController.class);
+    private static final Logger logger = LoggerFactory.getLogger(CarController.class);
 
     private final CarService carService;
 

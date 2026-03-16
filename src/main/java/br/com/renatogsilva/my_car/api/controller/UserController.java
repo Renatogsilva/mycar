@@ -24,7 +24,7 @@ import java.util.List;
 @Tag(name = "User", description = "Gerenciamento de usuários")
 public class UserController {
 
-    private static Logger logger = LoggerFactory.getLogger(UserController.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     private final UserService userService;
 

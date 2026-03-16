@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class PersonServiceImpl implements PersonService{
 
-    private static Logger logger = LoggerFactory.getLogger(PersonServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(PersonServiceImpl.class);
 
     private final PersonRepository personRepository;
 

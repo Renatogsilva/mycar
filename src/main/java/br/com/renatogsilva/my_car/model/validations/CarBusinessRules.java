@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class CarBusinessRules {
 
-    private static Logger logger = LoggerFactory.getLogger(CarBusinessRules.class);
+    private static final Logger logger = LoggerFactory.getLogger(CarBusinessRules.class);
 
     private final CarRepository carRepository;
 

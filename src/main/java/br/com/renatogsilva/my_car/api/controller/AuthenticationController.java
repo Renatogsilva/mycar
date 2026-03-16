@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Auth", description = "Gerenciamento de autenticação")
 public class AuthenticationController {
 
-    private static Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
+    private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 
     private final AuthenticationService authenticationService;
 

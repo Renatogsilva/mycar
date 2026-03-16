@@ -23,8 +23,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
 import java.util.Optional;
@@ -55,7 +53,6 @@ public class CarServiceTest {
     @InjectMocks
     private CarServiceImpl carServiceImpl;
 
-    private MockMvc mockMvc;
     private CarRequestDTO carRequestDTO;
     private CarResponseDTO carResponseDTO;
     private Car car;
@@ -63,8 +60,6 @@ public class CarServiceTest {
 
     @BeforeEach
     public void setup() {
-        this.mockMvc = MockMvcBuilders.standaloneSetup(carServiceImpl).build();
-
         carRequestDTO = FactoryCar.createCarRequestDTOObjectValid();
         carResponseDTO = FactoryCar.createCarResponseDTOObjectValid();
         car = FactoryCar.createValidCarObjectWithoutCreationDateAndstatusAndUserId();
@@ -99,13 +94,15 @@ public class CarServiceTest {
         assertNotNull(carArgumentCapture.getStatus());
 
         verify(this.carBusinessRules, times(1)).validateInclusionRules(this.carRequestDTO);
-        verify(this.carRepository, times(1)).save(this.car);
+        verify(this.carRepository, times(1)).save(any(Car.class));
         verify(this.authenticationService, times(1)).getAuthenticatedUser();
+        verify(this.carMapper).toCar(this.carRequestDTO);
+        verify(this.carMapper).toCarResponseDto(this.car);
     }
 
     @Test
     @DisplayName("Should must not register a new vehicle with duplicate data")
-    public void ShouldMustNotRegisterANewVehicleWithDuplicateData() {
+    public void shouldThrowExceptionWhenCarIsDuplicated() {
 
         CarDuplicationException exception = new CarDuplicationException(
                 EnumMessageCarExceptions.CAR_DUPLICATE.getMessage(),
@@ -124,19 +121,21 @@ public class CarServiceTest {
         assertEquals(EnumMessageCarExceptions.CAR_DUPLICATE.getCode(), thrown.getCode());
 
         verify(carBusinessRules, times(1)).validateInclusionRules(carRequestDTO);
+        verify(authenticationService, never()).getAuthenticatedUser();
+        verify(carRepository, never()).save(any());
+        verify(carMapper, never()).toCar(any());
     }
 
     @Test
     @DisplayName("Should return a successfully updated car")
-    public void shouldReturnASuccessfullyUpdateCar() {
+    public void shouldReturnSuccessfullyUpdatedCar() {
         Car carEntity = FactoryCar.createValidCarObjectWithoutCreationDateAndstatusAndUserId();
 
-        doNothing().when(this.carBusinessRules).validateUpdateRules(any(CarRequestDTO.class));
+        doNothing().when(this.carBusinessRules).validateUpdateRules(this.carRequestDTO);
 
-        given(this.authenticationService.getAuthenticatedUser()).willReturn(this.user);
         given(this.carRepository.findById(1L)).willReturn(Optional.of(carEntity));
         given(this.carMapper.toCar(carEntity, this.carRequestDTO)).willReturn(this.car);
-        given(this.carRepository.save(any(Car.class))).willReturn(this.car);
+        given(this.carRepository.save(this.car)).willReturn(this.car);
         given(this.carMapper.toCarResponseDto(this.car)).willReturn(this.carResponseDTO);
 
         this.carResponseDTO = this.carServiceImpl.update(this.carRequestDTO, 1L);
@@ -149,13 +148,14 @@ public class CarServiceTest {
         verify(this.carBusinessRules).validateUpdateRules(any(CarRequestDTO.class));
         verify(this.carBusinessRules, times(1)).validateUpdateRules(this.carRequestDTO);
         verify(this.carRepository, times(1)).save(this.car);
-        verify(carRepository, times(1)).findById(1L);
-        verify(carMapper, times(1)).toCarResponseDto(this.car);
+        verify(this.carRepository, times(1)).findById(1L);
+        verify(this.carMapper, times(1)).toCarResponseDto(this.car);
+        verify(this.carMapper).toCar(carEntity, carRequestDTO);
     }
 
     @Test
     @DisplayName("Should throw CarNotFoundException when car does not exist")
-    void shouldThrowExceptionWhenCarNotFound(){
+    void shouldThrowExceptionWhenCarNotFound() {
         given(carRepository.findById(1L)).willReturn(Optional.empty());
 
         CarNotFoundException thrown = assertThrows(CarNotFoundException.class, () -> {
@@ -168,11 +168,12 @@ public class CarServiceTest {
         verify(carRepository, times(1)).findById(1L);
         verify(carBusinessRules, times(1)).validateUpdateRules(this.carRequestDTO);
         verify(carRepository, never()).save(any());
+        verify(carMapper, never()).toCar(any(), any());
     }
 
     @Test
     @DisplayName("Should disable registration successfully")
-    void shouldDisableRegistrationSuccessfully(){
+    void shouldDisableRegistrationSuccessfully() {
         Car entity = FactoryCar.createValidCarObject();
         given(carRepository.findById(1L)).willReturn(Optional.of(entity));
 
@@ -195,44 +196,49 @@ public class CarServiceTest {
 
         verify(this.carRepository, times(1)).findById(1L);
         verify(this.authenticationService, times(1)).getAuthenticatedUser();
+        verify(this.carRepository, times(1)).save(argumentCaptor.capture());
+        verifyNoMoreInteractions(this.carMapper);
     }
 
     @Test
     @DisplayName("Should throw an exception when querying registry to disable")
-    void shouldThrowAnExceptionWhenQueryingRegistryToDisable(){
-        given(carRepository.findById(1L)).willReturn(Optional.empty());
+    void shouldThrowAnExceptionWhenQueryingRegistryToDisable() {
+        given(this.carRepository.findById(1L)).willReturn(Optional.empty());
 
         CarNotFoundException thrown = assertThrows(CarNotFoundException.class, () -> {
-            carServiceImpl.disable(1L);
+            this.carServiceImpl.disable(1L);
         });
 
         assertEquals(EnumMessageCarExceptions.CAR_NOT_FOUND.getMessage(), thrown.getMessage());
         assertEquals(EnumMessageCarExceptions.CAR_NOT_FOUND.getCode(), thrown.getCode());
 
-        verify(carRepository, times(1)).findById(1L);
-        verify(carRepository, never()).save(any());
+        verify(this.carRepository, times(1)).findById(1L);
+        verify(this.carRepository, never()).save(any());
+        verify(this.authenticationService, never()).getAuthenticatedUser();
     }
 
     @Test
     @DisplayName("Should not deactivate an already inactive record")
-    void shouldNotDeactivateAnAlreadyInactiveRecord(){
+    void shouldNotDeactivateAnAlreadyInactiveRecord() {
         Car entity = FactoryCar.createValidCarObjectAndInactive();
 
         given(carRepository.findById(1L)).willReturn(Optional.of(entity));
-        given(this.authenticationService.getAuthenticatedUser()).willReturn(this.user);
 
         this.carServiceImpl.disable(1L);
 
+        assertEquals(EnumStatus.INACTIVE, entity.getStatus());
+        assertNotNull(entity.getExclusionDate());
+
         verify(this.carRepository, times(1)).findById(1L);
-        verify(this.authenticationService, times(1)).getAuthenticatedUser();
+        verify(this.authenticationService, never()).getAuthenticatedUser();
         verify(this.carRepository, never()).save(any());
     }
 
     @Test
     @DisplayName("Should enable registration successfully")
-    void shouldEnableRegistrationSuccessfully(){
+    void shouldEnableRegistrationSuccessfully() {
         Car entity = FactoryCar.createValidCarObjectAndInactive();
-        given(carRepository.findById(1L)).willReturn(Optional.of(entity));
+        given(this.carRepository.findById(1L)).willReturn(Optional.of(entity));
 
         given(this.authenticationService.getAuthenticatedUser()).willReturn(this.user);
         given(this.carRepository.save(any(Car.class))).willReturn(entity);
@@ -248,35 +254,37 @@ public class CarServiceTest {
 
         assertEquals(EnumStatus.ACTIVE, carArgumentCaptor.getStatus());
 
+        verify(this.authenticationService).getAuthenticatedUser();
         verify(this.carRepository, times(1)).findById(1L);
-        verify(this.carRepository, times(1)).save(carArgumentCaptor);
+        verify(this.carRepository, times(1)).save(any(Car.class));
     }
 
     @Test
     @DisplayName("Should throw an exception when querying registry to enable")
-    void shouldThrowAnExceptionWhenQueryingRegistryToEnable(){
-        given(carRepository.findById(1L)).willReturn(Optional.empty());
+    void shouldThrowAnExceptionWhenQueryingRegistryToEnable() {
+        given(this.carRepository.findById(1L)).willReturn(Optional.empty());
 
         CarNotFoundException thrown = assertThrows(CarNotFoundException.class, () -> {
-            carServiceImpl.enable(1L);
+            this.carServiceImpl.enable(1L);
         });
 
         assertEquals(EnumMessageCarExceptions.CAR_NOT_FOUND.getMessage(), thrown.getMessage());
         assertEquals(EnumMessageCarExceptions.CAR_NOT_FOUND.getCode(), thrown.getCode());
 
-        verify(carRepository, times(1)).findById(1L);
-        verify(carRepository, never()).save(any());
+        verify(this.carRepository, times(1)).findById(1L);
+        verify(this.carRepository, never()).save(any());
     }
 
     @Test
     @DisplayName("Should not enable a record that is already enabled")
-    void shouldNotEnableARecordThatIsAlreadyEnabled(){
+    void shouldNotEnableARecordThatIsAlreadyEnabled() {
         Car entity = FactoryCar.createValidCarObject();
 
         given(carRepository.findById(1L)).willReturn(Optional.of(entity));
-        given(this.authenticationService.getAuthenticatedUser()).willReturn(this.user);
 
         this.carServiceImpl.enable(1L);
+
+        assertEquals(EnumStatus.ACTIVE, entity.getStatus());
 
         verify(this.carRepository, times(1)).findById(1L);
         verify(this.carRepository, never()).save(any());
@@ -284,7 +292,7 @@ public class CarServiceTest {
 
     @Test
     @DisplayName("Should search for a record by id")
-    void shouldSearchForARecordById(){
+    void shouldSearchForARecordById() {
         Car entity = FactoryCar.createValidCarObject();
         given(carRepository.findById(1L)).willReturn(Optional.of(entity));
         given(this.carMapper.toCarResponseDto(entity)).willReturn(this.carResponseDTO);
@@ -292,16 +300,16 @@ public class CarServiceTest {
         CarResponseDTO carResponse = this.carServiceImpl.findById(1L);
 
         assertNotNull(carResponse);
-        assertEquals(this.carResponseDTO, carResponse);
+        assertSame(this.carResponseDTO, carResponse);
 
         verify(this.carRepository, times(1)).findById(1L);
         verify(this.carMapper, times(1)).toCarResponseDto(entity);
+        verifyNoMoreInteractions(this.carRepository, this.carMapper);
     }
 
     @Test
     @DisplayName("Should throw exception when not finding record by id")
-    void shouldThrowExceptionWhenNotFindingRecordById(){
-        Car entity = FactoryCar.createValidCarObject();
+    void shouldThrowExceptionWhenNotFindingRecordById() {
         given(carRepository.findById(1L)).willReturn(Optional.empty());
 
         CarNotFoundException thrown = assertThrows(CarNotFoundException.class, () -> {
@@ -312,22 +320,22 @@ public class CarServiceTest {
         assertEquals(EnumMessageCarExceptions.CAR_NOT_FOUND.getCode(), thrown.getCode());
 
         verify(this.carRepository, times(1)).findById(1L);
-        verify(this.carMapper, never()).toCarResponseDto(entity);
+        verify(carMapper, never()).toCarResponseDto(any());
     }
 
     @Test
     @DisplayName("Should return a list of records")
-    void shouldReturnAListOfRecords(){
+    void shouldReturnAListOfRecords() {
         List<Car> cars = FactoryCar.createListValidCarObject();
         List<CarResponseListDTO> carsResponseDto = FactoryCar.carResponseListDTOList();
 
-        Car entity = FactoryCar.createValidCarObject();
         given(this.carRepository.findAll()).willReturn(cars);
         given(this.carMapper.toCarResponseListDto(cars)).willReturn(carsResponseDto);
 
         List<CarResponseListDTO> carsResponseDtoList = this.carServiceImpl.findAll();
 
         assertNotNull(carsResponseDtoList);
+        assertEquals(carsResponseDto, carsResponseDtoList);
         assertEquals(1, carsResponseDtoList.size());
 
         verify(this.carRepository, times(1)).findAll();

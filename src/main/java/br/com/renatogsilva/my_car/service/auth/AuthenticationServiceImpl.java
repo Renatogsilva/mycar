@@ -25,7 +25,7 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
 
-    private static Logger logger = LoggerFactory.getLogger(AuthenticationServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(AuthenticationServiceImpl.class);
 
     private final JwtTokenProvider jwtTokenProvider;
     private final TokenRevocationConfig tokenRevocationConfig;

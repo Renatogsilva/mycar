@@ -24,8 +24,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalDate;
 
@@ -54,7 +52,6 @@ public class AuthServiceTest {
     @Mock
     private TokenRevocationConfig tokenRevocationConfig;
 
-    private MockMvc mockMvc;
     private LoginRequestDTO loginRequestDTOValid;
     private LoginRequestDTO loginRequestDTOPasswordInvalid;
     private LoginRequestDTO loginRequestDTOUsernameInvalid;
@@ -62,7 +59,6 @@ public class AuthServiceTest {
     @BeforeEach
     public void setup() {
         SecurityContextHolder.clearContext();
-        this.mockMvc = MockMvcBuilders.standaloneSetup(authenticationServiceImpl).build();
 
         this.loginRequestDTOValid = FactoryAuthentication.createLoginRequestDTOObjectValid();
         this.loginRequestDTOPasswordInvalid = FactoryAuthentication.createLoginRequestDTOObjectPasswordInvalid();

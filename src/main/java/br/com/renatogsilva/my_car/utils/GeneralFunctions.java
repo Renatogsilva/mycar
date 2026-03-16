@@ -6,7 +6,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class GeneralFunctions {
 
-    private static Logger logger = LoggerFactory.getLogger(GeneralFunctions.class);
+    private static final Logger logger = LoggerFactory.getLogger(GeneralFunctions.class);
 
     public static boolean passwordMatch(BCryptPasswordEncoder bCryptPasswordEncoder,
                                         String usernameLoginResponseDTO, String usernameLoginRequestDTO) {

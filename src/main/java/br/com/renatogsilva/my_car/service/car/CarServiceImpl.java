@@ -25,7 +25,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CarServiceImpl implements CarService {
 
-    private static Logger logger = LoggerFactory.getLogger(CarServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(CarServiceImpl.class);
 
     private final CarRepository carRepository;
     private final CarBusinessRules carBusinessRules;
@@ -81,12 +81,12 @@ public class CarServiceImpl implements CarService {
                 .orElseThrow(() -> new CarNotFoundException(EnumMessageCarExceptions.CAR_NOT_FOUND.getMessage(),
                         EnumMessageCarExceptions.CAR_NOT_FOUND.getCode()));
 
-        User user = this.authenticationService.getAuthenticatedUser();
-
         if (car.getStatus().equals(EnumStatus.INACTIVE)) {
             logger.warn("m: disable - Car with id {} is already inactive", id);
             return;
         }
+
+        User user = this.authenticationService.getAuthenticatedUser();
 
         car.setStatus(EnumStatus.INACTIVE);
         car.setExclusionDate(LocalDate.now());
