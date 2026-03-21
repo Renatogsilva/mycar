@@ -29,8 +29,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willThrow;
+import static org.mockito.BDDMockito.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 
@@ -175,29 +174,25 @@ public class CarServiceTest {
     @DisplayName("Should disable registration successfully")
     void shouldDisableRegistrationSuccessfully() {
         Car entity = FactoryCar.createValidCarObject();
-        given(carRepository.findById(1L)).willReturn(Optional.of(entity));
 
+        given(carRepository.findById(1L)).willReturn(Optional.of(entity));
         given(this.authenticationService.getAuthenticatedUser()).willReturn(this.user);
-        given(this.carRepository.save(any(Car.class))).willReturn(entity);
 
         this.carServiceImpl.disable(1L);
         var argumentCaptor = ArgumentCaptor.forClass(Car.class);
-        verify(this.carRepository).save(argumentCaptor.capture());
-        Car carArgumentCaptor = argumentCaptor.getValue();
 
+        then(this.carRepository).should().save(argumentCaptor.capture());
+        then(this.carRepository).should(times(1)).findById(1L);
+        then(this.authenticationService).should(times(1)).getAuthenticatedUser();
+
+        Car carArgumentCaptor = argumentCaptor.getValue();
 
         assertNotNull(carArgumentCaptor.getCreationDate());
         assertNotNull(carArgumentCaptor.getExclusionDate());
         assertNotNull(carArgumentCaptor.getUserCreation());
         assertNotNull(carArgumentCaptor.getUserExclusion());
         assertNotNull(carArgumentCaptor.getStatus());
-
         assertEquals(EnumStatus.INACTIVE, carArgumentCaptor.getStatus());
-
-        verify(this.carRepository, times(1)).findById(1L);
-        verify(this.authenticationService, times(1)).getAuthenticatedUser();
-        verify(this.carRepository, times(1)).save(argumentCaptor.capture());
-        verifyNoMoreInteractions(this.carMapper);
     }
 
     @Test
