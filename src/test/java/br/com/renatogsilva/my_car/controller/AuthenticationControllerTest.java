@@ -1,5 +1,7 @@
 package br.com.renatogsilva.my_car.controller;
 
+import br.com.renatogsilva.my_car.api.config.auth.JwtTokenProvider;
+import br.com.renatogsilva.my_car.api.config.auth.TokenRevocationConfig;
 import br.com.renatogsilva.my_car.api.controller.AuthenticationController;
 import br.com.renatogsilva.my_car.model.dto.login.LoginRequestDTO;
 import br.com.renatogsilva.my_car.model.dto.login.LoginResponseDTO;
@@ -9,30 +11,36 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
 @DisplayName(value = "Testing class Authentication Controller")
+@WebMvcTest(controllers = AuthenticationController.class)
+@AutoConfigureMockMvc(addFilters = false)
 public class AuthenticationControllerTest {
 
-    @Mock
+    @MockBean
     private AuthenticationService authenticationService;
 
+    @Autowired
     private ObjectMapper objectMapper;
 
-    @InjectMocks
-    private AuthenticationController authenticationController;
+    @MockBean
+    private JwtTokenProvider jwtTokenProvider;
 
+    @MockBean
+    private TokenRevocationConfig tokenRevocationConfig;
+
+    @Autowired
     MockMvc mockMvc;
 
     private LoginRequestDTO loginRequestDTO;
@@ -41,9 +49,6 @@ public class AuthenticationControllerTest {
 
     @BeforeEach
     public void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(authenticationController).build();
-        objectMapper = new ObjectMapper();
-
         this.loginRequestDTO = FactoryAuthentication.createLoginRequestDTOObjectValid();
         this.loginResponseDTO = FactoryAuthentication.createLoginResponseDTOObjectValid();
         this.loginRequestDTOFailure = FactoryAuthentication.createLoginRequestDTOObjectInvalid();

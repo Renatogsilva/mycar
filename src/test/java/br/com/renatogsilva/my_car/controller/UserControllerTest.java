@@ -1,5 +1,7 @@
 package br.com.renatogsilva.my_car.controller;
 
+import br.com.renatogsilva.my_car.api.config.auth.JwtTokenProvider;
+import br.com.renatogsilva.my_car.api.config.auth.TokenRevocationConfig;
 import br.com.renatogsilva.my_car.api.controller.UserController;
 import br.com.renatogsilva.my_car.model.dto.user.UserProfileRequestDTO;
 import br.com.renatogsilva.my_car.model.dto.user.UserRequestDTO;
@@ -11,14 +13,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
 
 import java.util.List;
 
@@ -26,18 +28,24 @@ import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
 @DisplayName(value = "Testing class User Controller")
+@WebMvcTest(controllers = UserController.class)
+@AutoConfigureMockMvc(addFilters = false)
 public class UserControllerTest {
 
-    @Mock
+    @MockBean
     private UserService userService;
 
+    @MockBean
+    private JwtTokenProvider jwtTokenProvider;
+
+    @MockBean
+    private TokenRevocationConfig tokenRevocationConfig;
+
+    @Autowired
     private ObjectMapper objectMapper;
 
-    @InjectMocks
-    private UserController userController;
-
+    @Autowired
     private MockMvc mockMvc;
 
     private UserRequestDTO userRequestDTO;
@@ -48,10 +56,6 @@ public class UserControllerTest {
 
     @BeforeEach
     public void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
-
-        objectMapper = new ObjectMapper();
-
         userRequestDTO = FactoryUser.createUserRequestDTOObjectValid();
         userResponseDTO = FactoryUser.createUserResponseDTOObjectValid();
         userProfileRequestDTO = FactoryUser.createUserProfileRequestDTOObjectValid();
@@ -159,7 +163,7 @@ public class UserControllerTest {
 
         when(userService.findAll()).thenReturn(list);
 
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/user/")
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/user")
                 .accept(MediaType.APPLICATION_JSON));
 
         resultActions
@@ -178,7 +182,7 @@ public class UserControllerTest {
 
         when(userService.findAll()).thenReturn(list);
 
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/user/")
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/user")
                 .accept(MediaType.APPLICATION_JSON));
 
         resultActions
