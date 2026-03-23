@@ -1,5 +1,7 @@
 package br.com.renatogsilva.my_car.controller;
 
+import br.com.renatogsilva.my_car.api.config.auth.JwtTokenProvider;
+import br.com.renatogsilva.my_car.api.config.auth.TokenRevocationConfig;
 import br.com.renatogsilva.my_car.api.controller.CarController;
 import br.com.renatogsilva.my_car.model.dto.car.CarRequestDTO;
 import br.com.renatogsilva.my_car.model.dto.car.CarResponseDTO;
@@ -10,14 +12,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
 
@@ -25,18 +26,24 @@ import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
 @DisplayName(value = "Testing class Car Controller")
+@WebMvcTest(controllers = CarController.class)
+@AutoConfigureMockMvc(addFilters = false)
 public class CarControllerTest {
 
-    @Mock
+    @MockBean
     private CarService carService;
 
+    @MockBean
+    private JwtTokenProvider jwtTokenProvider;
+
+    @MockBean
+    private TokenRevocationConfig tokenRevocationConfig;
+
+    @Autowired
     private ObjectMapper objectMapper;
 
-    @InjectMocks
-    private CarController carController;
-
+    @Autowired
     private MockMvc mockMvc;
 
     private CarRequestDTO carRequestDTO;
@@ -46,9 +53,6 @@ public class CarControllerTest {
 
     @BeforeEach
     public void setup() {
-        mockMvc = MockMvcBuilders.standaloneSetup(carController).build();
-        objectMapper = new ObjectMapper();
-
         this.carRequestDTO = new CarRequestDTO(null, "Fiat", 2020, "Black",
                 "Sedan", EnumExchange.AUTOMATIC, "1.0 Turbo", "Cronos");
 
@@ -178,7 +182,7 @@ public class CarControllerTest {
 
         when(carService.findAll()).thenReturn(list);
 
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/car/")
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/car")
                 .accept(MediaType.APPLICATION_JSON));
 
         resultActions
@@ -196,7 +200,7 @@ public class CarControllerTest {
         List<CarResponseListDTO> list = List.of();
         when(carService.findAll()).thenReturn(list);
 
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/car/")
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/car")
                 .accept(MediaType.APPLICATION_JSON));
 
         resultActions
