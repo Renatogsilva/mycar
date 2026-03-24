@@ -233,9 +233,8 @@ public class CarServiceTest {
     @DisplayName("Should enable registration successfully")
     void shouldEnableRegistrationSuccessfully() {
         Car entity = FactoryCar.createValidCarObjectAndInactive();
-        given(this.carRepository.findById(1L)).willReturn(Optional.of(entity));
 
-        given(this.authenticationService.getAuthenticatedUser()).willReturn(this.user);
+        given(this.carRepository.findById(1L)).willReturn(Optional.of(entity));
         given(this.carRepository.save(any(Car.class))).willReturn(entity);
 
         this.carServiceImpl.enable(1L);
@@ -249,7 +248,6 @@ public class CarServiceTest {
 
         assertEquals(EnumStatus.ACTIVE, carArgumentCaptor.getStatus());
 
-        verify(this.authenticationService).getAuthenticatedUser();
         verify(this.carRepository, times(1)).findById(1L);
         verify(this.carRepository, times(1)).save(any(Car.class));
     }
