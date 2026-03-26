@@ -17,9 +17,10 @@ import br.com.renatogsilva.my_car.utils.FactoryUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,8 +31,8 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
-@SpringBootTest
 @DisplayName(value = "Testing class User Service")
+@ExtendWith(MockitoExtension.class)
 public class AuthServiceTest {
 
     @Mock
