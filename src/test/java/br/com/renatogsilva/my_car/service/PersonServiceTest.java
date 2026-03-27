@@ -28,21 +28,21 @@ public class PersonServiceTest {
     @InjectMocks
     private PersonServiceImpl personServiceImpl;
 
-    private Person personCreated;
-    private Person personUpdated;
+    private Person personEntity;
+    private Person personEntityUpload;
     private Person person;
 
     @BeforeEach
     public void setUp() {
-        this.personCreated = FactoryPerson.createdValidPerson();
-        this.personUpdated = FactoryPerson.updateValidPerson();
-        this.person = FactoryPerson.createValidPerson();
+        this.personEntity = FactoryPerson.createPersonEntityObjectValid();
+        this.personEntityUpload = FactoryPerson.updatePersonEntityObjectValid();
+        this.person = FactoryPerson.createPersonEntityObjectValid();
     }
 
     @Test
     @DisplayName("Should return a person create with successful")
     public void createPerson_WithValidData_ShouldReturnPerson() {
-        given(this.personRepository.save(any(Person.class))).willReturn(personCreated);
+        given(this.personRepository.save(any(Person.class))).willReturn(personEntity);
 
         Person result = this.personServiceImpl.create(this.person);
 
@@ -58,15 +58,15 @@ public class PersonServiceTest {
 
         then(this.personRepository).shouldHaveNoMoreInteractions();
 
-        Assertions.assertSame(result, this.personCreated);
+        Assertions.assertSame(result, this.personEntity);
     }
 
     @Test
     @DisplayName("Should return a person update with successful")
     public void updatePerson_WithValidData_ShouldReturnPerson() {
-        given(this.personRepository.save(any(Person.class))).willReturn(this.personUpdated);
+        given(this.personRepository.save(any(Person.class))).willReturn(this.personEntityUpload);
 
-        Person result = this.personServiceImpl.update(this.personUpdated);
+        Person result = this.personServiceImpl.update(this.personEntityUpload);
 
         ArgumentCaptor<Person> captor = ArgumentCaptor.forClass(Person.class);
         then(this.personRepository).should().save(captor.capture());
@@ -80,7 +80,7 @@ public class PersonServiceTest {
 
         then(this.personRepository).shouldHaveNoMoreInteractions();
 
-        Assertions.assertSame(result, this.personUpdated);
+        Assertions.assertSame(result, this.personEntityUpload);
         Assertions.assertEquals("Update", result.getFirstName());
         Assertions.assertEquals("Sucessful", result.getLastName());
         Assertions.assertEquals("update.successful@gmail.com", result.getEmail());
@@ -88,7 +88,7 @@ public class PersonServiceTest {
 
     @Test
     @DisplayName("Should return null when get person by id")
-    public void findPersonById_WithValidData_ShouldReturnNull(){
+    public void findPersonById_WithValidData_ShouldReturnNull() {
         //GIVEN ARRANGE
 
         //WHE ACT

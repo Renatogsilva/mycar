@@ -1,68 +1,68 @@
 package br.com.renatogsilva.my_car.utils;
 
 import br.com.renatogsilva.my_car.model.domain.Person;
-import br.com.renatogsilva.my_car.model.domain.Phone;
+import br.com.renatogsilva.my_car.model.dto.person.PersonRequestDTO;
+import br.com.renatogsilva.my_car.model.dto.person.PersonResponseDTO;
 import br.com.renatogsilva.my_car.model.enumerators.EnumSex;
-import br.com.renatogsilva.my_car.model.enumerators.EnumTypePhone;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 public class FactoryPerson {
 
-    public static Person createdValidPerson() {
+    public static PersonRequestDTO createPersonRequestDTOObjectValid() {
+        PersonRequestDTO personRequestDTO = new PersonRequestDTO();
+
+        personRequestDTO.setPersonId(null);
+        personRequestDTO.setCpf("295.464.615-20");
+        personRequestDTO.setSex(EnumSex.MALE);
+        personRequestDTO.setEmail("emanuelbenjamindrumond@agreonoma.eng.br");
+        personRequestDTO.setFirstName("Emanuel");
+        personRequestDTO.setLastName("Benjamin Benício Drumond");
+        personRequestDTO.setBirthDate(LocalDate.of(1994, 10, 12));
+        personRequestDTO.setPhonesRequestDTOs(FactoryPhone.createListPhoneRequestDTOObjectValid());
+
+        return personRequestDTO;
+    }
+
+    public static PersonResponseDTO createPersonResponseDTOObjectValid() {
+        PersonResponseDTO personResponseDTO = new PersonResponseDTO();
+
+        personResponseDTO.setPersonId(1L);
+        personResponseDTO.setCpf("355.137.120-24");
+        personResponseDTO.setSex(EnumSex.MALE);
+        personResponseDTO.setEmail("email@gmail.com");
+        personResponseDTO.setFullName("FirstName LastName");
+        personResponseDTO.setBirthDate(LocalDate.of(1994, 10, 12));
+        personResponseDTO.setPhonesResponseDTOs(FactoryPhone.createListPhoneResponseDTOObjectValid());
+
+        return personResponseDTO;
+    }
+
+    public static Person createPersonEntityObjectValid(){
         Person person = new Person();
         person.setPersonId(1L);
-        person.setFirstName("Julio");
-        person.setLastName("Cesar");
-        person.setEmail("julio_cesar_teste_mockt@gmail.com");
+        person.setFirstName("Emanuel");
+        person.setLastName("Benjamin Benício Drumond");
+        person.setEmail("emanuelbenjamindrumond@agreonoma.eng.br");
         person.setSex(EnumSex.MALE);
-        person.setBirthDate(LocalDate.of(1997, 10, 18));
-        person.setCpf("317.752.450-55");
-        person.setPhones(getCreatedValidPhones());
+        person.setBirthDate(LocalDate.of(1994, 10, 12));
+        person.setCpf("295.464.615-20");
+        person.setPhones(FactoryPhone.createdListPhoneEntityObjectValid());
 
         return person;
     }
 
-    public static Person createValidPerson() {
-        return new Person(null, "Júlio", "Cesar", "julio_cesar_teste_mockt@gmail.com",
-                "317.752.450-55", EnumSex.MALE, LocalDate.of(1997, 10, 18), getCreateValidPhones());
-    }
-
-    public static Person updateValidPerson() {
+    public static Person updatePersonEntityObjectValid(){
         Person person = new Person();
         person.setPersonId(1L);
-        person.setFirstName("Update");
-        person.setLastName("Sucessful");
+        person.setFirstName("Emanuel update");
+        person.setLastName("Benjamin Benício Drumond update");
         person.setEmail("update.successful@gmail.com");
         person.setSex(EnumSex.MALE);
         person.setBirthDate(LocalDate.of(1997, 10, 18));
         person.setCpf("317.752.450-55");
-        person.setPhones(getCreatedValidPhones());
+        person.setPhones(FactoryPhone.createdListPhoneEntityObjectValid());
 
         return person;
-    }
-
-    private static List<Phone> getCreatedValidPhones() {
-        List<Phone> phones = new ArrayList<>();
-        Phone fix = new Phone(1L, "3353-1011", EnumTypePhone.FIXED, false, null);
-        Phone phone = new Phone(2L, "3353-1011", EnumTypePhone.FIXED, true, null);
-
-        phones.add(fix);
-        phones.add(phone);
-
-        return phones;
-    }
-
-    private static List<Phone> getCreateValidPhones() {
-        List<Phone> phones = new ArrayList<>();
-        Phone fix = new Phone(null, "3353-1011", EnumTypePhone.FIXED, false, null);
-        Phone phone = new Phone(null, "3353-1011", EnumTypePhone.FIXED, true, null);
-
-        phones.add(fix);
-        phones.add(phone);
-
-        return phones;
     }
 }

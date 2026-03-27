@@ -31,7 +31,6 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.*;
-import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 
 @DisplayName(value = "Testing class Car Service")
@@ -63,7 +62,7 @@ public class CarServiceTest {
         carRequestDTO = FactoryCar.createCarRequestDTOObjectValid();
         carResponseDTO = FactoryCar.createCarResponseDTOObjectValid();
         car = FactoryCar.createValidCarObjectWithoutCreationDateAndstatusAndUserId();
-        user = FactoryUser.createUserObjectValid();
+        user = FactoryUser.createUserEntityObjectValid();
     }
 
     @Test

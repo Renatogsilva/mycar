@@ -157,7 +157,7 @@ public class AuthServiceTest {
         given(authentication.isAuthenticated()).willReturn(true);
         given(authentication.getPrincipal()).willReturn("validUser");
 
-        User userMock = FactoryUser.createUserObjectValid();
+        User userMock = FactoryUser.createUserEntityObjectValid();
         given(userRepository.findUserByUsername("validUser")).willReturn(userMock);
 
         User result = this.authenticationServiceImpl.getAuthenticatedUser();
