@@ -4,6 +4,7 @@ import br.com.renatogsilva.my_car.model.domain.Person;
 import br.com.renatogsilva.my_car.model.domain.Phone;
 import br.com.renatogsilva.my_car.model.enumerators.EnumTypePhone;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FactoryPhone {
@@ -62,7 +63,7 @@ public class FactoryPhone {
     }
 
     public static List<Phone> listToPersist() {
-        return List.of(
+        return new ArrayList<>(List.of(
                 phone()
                         .withType(EnumTypePhone.CELL_PHONE)
                         .withNumber("(62)98420-9870")
@@ -74,11 +75,11 @@ public class FactoryPhone {
                         .withNumber("3353-1011")
                         .main(false)
                         .build()
-        );
+        ));
     }
 
     public static List<Phone> listPersisted() {
-        return List.of(
+        return new ArrayList<>(List.of(
                 phone()
                         .persisted()
                         .withId(1L)
@@ -94,6 +95,6 @@ public class FactoryPhone {
                         .withNumber("3353-1011")
                         .main(false)
                         .build()
-        );
+        ));
     }
 }

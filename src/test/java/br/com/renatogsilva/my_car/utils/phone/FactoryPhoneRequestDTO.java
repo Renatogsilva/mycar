@@ -16,9 +16,6 @@ public class FactoryPhoneRequestDTO {
         return new PhoneRequestDTOListBuilder();
     }
 
-    // =========================
-    // BUILDER UNITÁRIO
-    // =========================
     public static class PhoneRequestDTOBuilder {
 
         private final PhoneRequestDTO dto;
@@ -68,9 +65,6 @@ public class FactoryPhoneRequestDTO {
         }
     }
 
-    // =========================
-    // BUILDER DE LISTA
-    // =========================
     public static class PhoneRequestDTOListBuilder {
 
         private final List<PhoneRequestDTO> list;
@@ -78,7 +72,6 @@ public class FactoryPhoneRequestDTO {
         public PhoneRequestDTOListBuilder() {
             this.list = new ArrayList<>();
 
-            // DEFAULT: 1 celular + 1 fixo
             list.add(
                     FactoryPhoneRequestDTO.phone()
                             .withType(EnumTypePhone.CELL_PHONE)
@@ -102,6 +95,7 @@ public class FactoryPhoneRequestDTO {
             list.add(
                     FactoryPhoneRequestDTO.phone()
                             .persisted()
+                            .withId(1L)
                             .withType(EnumTypePhone.CELL_PHONE)
                             .withNumber("(62)98420-9870")
                             .asMain()

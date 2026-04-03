@@ -28,6 +28,21 @@ public class FactoryCar {
         return carRequestDTO;
     }
 
+    public static CarRequestDTO updateCarRequestDTOObjectValid(){
+        CarRequestDTO carRequestDTO = new CarRequestDTO();
+
+        carRequestDTO.setCarId(1L);
+        carRequestDTO.setMark("Wolkswagem");
+        carRequestDTO.setYearOfManufacture(2020);
+        carRequestDTO.setColor("Branco");
+        carRequestDTO.setExchange(EnumExchange.MANUAL);
+        carRequestDTO.setBodyStyle("hatch");
+        carRequestDTO.setEngine("1.0 Turbo");
+        carRequestDTO.setVersion("Polo TSI");
+
+        return carRequestDTO;
+    }
+
     public static CarResponseDTO createCarResponseDTOObjectValid(){
         CarResponseDTO carResponseDTO = new CarResponseDTO();
 

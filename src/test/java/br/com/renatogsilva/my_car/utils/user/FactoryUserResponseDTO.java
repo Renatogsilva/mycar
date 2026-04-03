@@ -2,6 +2,7 @@ package br.com.renatogsilva.my_car.utils.user;
 
 import br.com.renatogsilva.my_car.model.dto.person.PersonResponseDTO;
 import br.com.renatogsilva.my_car.model.dto.user.UserResponseDTO;
+import br.com.renatogsilva.my_car.utils.person.FactoryPersonResponseDTO;
 
 public class FactoryUserResponseDTO {
 

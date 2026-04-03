@@ -13,6 +13,8 @@ import br.com.renatogsilva.my_car.model.validations.UserBusinessRules;
 import br.com.renatogsilva.my_car.repository.user.UserRepository;
 import br.com.renatogsilva.my_car.service.person.PersonService;
 import br.com.renatogsilva.my_car.service.user.UserServiceImpl;
+import br.com.renatogsilva.my_car.utils.person.FactoryPerson;
+import br.com.renatogsilva.my_car.utils.person.FactoryPersonRequestDTO;
 import br.com.renatogsilva.my_car.utils.user.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,12 +26,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.*;
 
 @DisplayName(value = "Testing class User Service")
 @ExtendWith(MockitoExtension.class)
@@ -69,39 +70,33 @@ public class UserServiceTest {
     @DisplayName("Should return a user created with successful")
     public void shouldReturnAUserCreateWithSuccessful() {
         //GIVEN ARRANGE
-        UserRequestDTO createRequest = FactoryUserRequestDTO.userRequest().build();
-        UserResponseDTO createdResponse = FactoryUserResponseDTO.userResponse().persisted().build();
-        User userToPersist = FactoryUser.user().build();
+        UserRequestDTO userRequestDTO = FactoryUserRequestDTO.userRequest().build();
         User userPersisted = FactoryUser.user().persisted().build();
         Person personPersisted = FactoryPerson.person().persisted().build();
 
         doNothing().when(this.userBusinessRules).validateInclusioRules(any(UserRequestDTO.class));
         doNothing().when(this.personBusinessRules).validateInclusioRules(any(PersonRequestDTO.class));
 
-        given(this.userMapper.toUser(any(UserRequestDTO.class))).willReturn(userToPersist);
-        given(this.personService.create(any(Person.class))).willReturn(personPersisted);
-        given(this.userRepository.save(any(User.class))).willReturn(userPersisted);
-        given(this.userMapper.toUserResponseDTO(any(User.class))).willReturn(createdResponse);
-        given(this.bCryptPasswordEncoder.encode(any(String.class))).willReturn(this.jwtToken);
+        when(this.personService.create(any(Person.class))).thenReturn(personPersisted);
+        when(this.userRepository.save(any(User.class))).thenReturn(userPersisted);
+        when(this.bCryptPasswordEncoder.encode(any(String.class))).thenReturn(this.jwtToken);
 
         //WHEN ACT
-        UserResponseDTO result = this.userService.create(createRequest);
+        UserResponseDTO userResponseDTO = this.userService.create(userRequestDTO);
 
         //THEN ASSERT
         ArgumentCaptor<User> userArgumentCaptor = ArgumentCaptor.forClass(User.class);
         ArgumentCaptor<Person> personArgumentCaptor = ArgumentCaptor.forClass(Person.class);
 
-        then(this.userRepository).should().save(userArgumentCaptor.capture());
-        then(this.personService).should().create(personArgumentCaptor.capture());
+        verify(this.userRepository).save(userArgumentCaptor.capture());
+        verify(this.personService).create(personArgumentCaptor.capture());
 
         User userCaptor = userArgumentCaptor.getValue();
         Person personCaptor = personArgumentCaptor.getValue();
 
-        then(this.userBusinessRules).should().validateInclusioRules(any(UserRequestDTO.class));
-        then(this.personBusinessRules).should().validateInclusioRules(any(PersonRequestDTO.class));
-        then(this.userMapper).should().toUser(any(UserRequestDTO.class));
-        then(this.userMapper).should().toUserResponseDTO(any(User.class));
-        then(this.bCryptPasswordEncoder).should().encode(createRequest.getPersonRequestDTO().getCpf());
+        verify(this.userBusinessRules).validateInclusioRules(any(UserRequestDTO.class));
+        verify(this.personBusinessRules).validateInclusioRules(any(PersonRequestDTO.class));
+        verify(this.bCryptPasswordEncoder).encode(userRequestDTO.getPersonRequestDTO().getCpf());
 
         Assertions.assertNotNull(personCaptor);
         Assertions.assertEquals(personPersisted.getFirstName(), personCaptor.getFirstName());
@@ -113,10 +108,11 @@ public class UserServiceTest {
         Assertions.assertEquals(jwtToken, userCaptor.getPassword());
         Assertions.assertTrue(userCaptor.isPrimaryAccess());
         Assertions.assertNotNull(userCaptor.getCreationDate());
-
-        Assertions.assertNotNull(result);
-        Assertions.assertSame(createdResponse, result);
         Assertions.assertSame(personPersisted, userCaptor.getPerson());
+
+        Assertions.assertNotNull(userCaptor);
+        Assertions.assertNotNull(userResponseDTO);
+        Assertions.assertEquals(userResponseDTO.getUsername(), userCaptor.getUsername());
     }
 
     @Test
@@ -124,63 +120,49 @@ public class UserServiceTest {
     public void shouldUpdateUserSuccessfully() {
         //GIVEN ARRANGE
         Long userId = 1L;
-        PersonRequestDTO pessoaRequestQueSeraAtualizado = FactoryPersonRequestDTO.personRequest().persisted()
+        PersonRequestDTO personRequestDTOToUpdate = FactoryPersonRequestDTO.personRequest().persisted()
                 .withName("First Name Updated", "Last Name Updated").build();
 
-        UserRequestDTO usuarioRequestQueSeraAtualizado = FactoryUserRequestDTO.userRequest().persisted()
+        UserRequestDTO userRequestDTOToUpdate = FactoryUserRequestDTO.userRequest().persisted()
                 .withUsername("update.success")
-                .withPerson(pessoaRequestQueSeraAtualizado).build();
+                .withPerson(personRequestDTOToUpdate).build();
 
-        Person pessoaQueVeioDoBancoParaSerAtualizado = FactoryPerson.person().persisted().build();
+        Person personFromDB = FactoryPerson.person().persisted().build();
 
-        User usuarioQueVeioDoBancoParaSerAtualizado = FactoryUser
+        User userFromDB = FactoryUser
                 .user().persisted()
-                .withPerson(pessoaQueVeioDoBancoParaSerAtualizado).build();
+                .withPerson(personFromDB).build();
 
-        Person pessoaEntityAtualizado = FactoryPerson.person().persisted().withName("First Name Updated", "Last Name Updated").build();
+        Person updatedPersonEntity = FactoryPerson.person().persisted().withName("First Name Updated", "Last Name Updated").build();
 
-        User usuarioEntityAtualizado = FactoryUser.user().persisted().withUsername("update.success")
-                .withPerson(pessoaEntityAtualizado).build();
+        User updatedUserEntity = FactoryUser.user().persisted().withUsername("update.success")
+                .withPerson(updatedPersonEntity).build();
 
-        UserResponseDTO usuarioResposta = FactoryUserResponseDTO.userResponse().persisted().withUsername("update.success")
-                .withPerson(FactoryPersonResponseDTO.personResponse().persisted().withFullName("First Name Updated Last Name Updated").build()).build();
 
         doNothing().when(this.userBusinessRules).validateUpdateRules(any(UserRequestDTO.class));
         doNothing().when(this.personBusinessRules).validateUpdateRules(any(PersonRequestDTO.class));
 
-        given(this.userRepository.findById(userId)).willReturn(Optional.of(usuarioQueVeioDoBancoParaSerAtualizado));
-        given(this.userMapper.toUser(any(User.class), any(UserRequestDTO.class))).willReturn(usuarioEntityAtualizado);
-        given(this.personService.update(any(Person.class))).willReturn(usuarioEntityAtualizado.getPerson());
-        given(this.userRepository.save(any(User.class))).willReturn(usuarioEntityAtualizado);
-        given(this.userMapper.toUserResponseDTO(any(User.class))).willReturn(usuarioResposta);
+        when(this.userRepository.findById(userId)).thenReturn(Optional.of(userFromDB));
+        when(this.personService.update(any(Person.class))).thenReturn(updatedUserEntity.getPerson());
+        when(this.userRepository.save(any(User.class))).thenReturn(updatedUserEntity);
 
         //WHEN ACT
-        UserResponseDTO result = this.userService.update(userId, usuarioRequestQueSeraAtualizado);
+        UserResponseDTO result = this.userService.update(userId, userRequestDTOToUpdate);
 
         //THEN ASSERT
         ArgumentCaptor<User> userArgumentCaptor = ArgumentCaptor.forClass(User.class);
-        ArgumentCaptor<Person> personArgumentCaptor = ArgumentCaptor.forClass(Person.class);
 
-        then(this.userRepository).should().save(userArgumentCaptor.capture());
-        then(this.personService).should().update(personArgumentCaptor.capture());
+        verify(this.userRepository).save(userArgumentCaptor.capture());
 
         User userCaptor = userArgumentCaptor.getValue();
-        Person personCaptor = personArgumentCaptor.getValue();
 
-        then(this.userBusinessRules).should().validateUpdateRules(usuarioRequestQueSeraAtualizado);
-        then(this.personBusinessRules).should().validateUpdateRules(pessoaRequestQueSeraAtualizado);
-        then(this.userRepository).should().findById(userId);
-        then(this.userMapper).should().toUser(usuarioQueVeioDoBancoParaSerAtualizado, usuarioRequestQueSeraAtualizado);
-        then(this.userMapper).should().toUserResponseDTO(usuarioEntityAtualizado);
+        verify(this.userBusinessRules).validateUpdateRules(userRequestDTOToUpdate);
+        verify(this.personBusinessRules).validateUpdateRules(personRequestDTOToUpdate);
+        verify(this.userRepository).findById(userId);
 
         Assertions.assertNotNull(result);
         Assertions.assertNotNull(userCaptor);
-        Assertions.assertNotNull(personCaptor);
-
-        Assertions.assertSame(
-                usuarioEntityAtualizado.getPerson(),
-                userCaptor.getPerson()
-        );
+        Assertions.assertNotNull(userCaptor.getPerson());
 
         Assertions.assertAll(
                 () -> Assertions.assertEquals("update.success", result.getUsername()),
@@ -196,8 +178,8 @@ public class UserServiceTest {
         );
 
         Assertions.assertAll(
-                () -> Assertions.assertEquals("First Name Updated", personCaptor.getFirstName()),
-                () -> Assertions.assertEquals("Last Name Updated", personCaptor.getLastName())
+                () -> Assertions.assertEquals("First Name Updated", userCaptor.getPerson().getFirstName()),
+                () -> Assertions.assertEquals("Last Name Updated", userCaptor.getPerson().getLastName())
         );
     }
 }

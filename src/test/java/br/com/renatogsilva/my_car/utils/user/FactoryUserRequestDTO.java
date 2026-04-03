@@ -2,6 +2,7 @@ package br.com.renatogsilva.my_car.utils.user;
 
 import br.com.renatogsilva.my_car.model.dto.person.PersonRequestDTO;
 import br.com.renatogsilva.my_car.model.dto.user.UserRequestDTO;
+import br.com.renatogsilva.my_car.utils.person.FactoryPersonRequestDTO;
 
 public class FactoryUserRequestDTO {
     public static UserRequestDTOBuilder userRequest() {

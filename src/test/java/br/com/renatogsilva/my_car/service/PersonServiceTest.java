@@ -3,7 +3,7 @@ package br.com.renatogsilva.my_car.service;
 import br.com.renatogsilva.my_car.model.domain.Person;
 import br.com.renatogsilva.my_car.repository.person.PersonRepository;
 import br.com.renatogsilva.my_car.service.person.PersonServiceImpl;
-import br.com.renatogsilva.my_car.utils.user.FactoryPerson;
+import br.com.renatogsilva.my_car.utils.person.FactoryPerson;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,8 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.*;
 
 @DisplayName(value = "Testing class Person Service")
 @ExtendWith(MockitoExtension.class)
@@ -44,12 +43,12 @@ public class PersonServiceTest {
     @Test
     @DisplayName("Should return a person create with successful")
     public void createPerson_WithValidData_ShouldReturnPerson() {
-        given(this.personRepository.save(any(Person.class))).willReturn(personEntity);
+        when(this.personRepository.save(any(Person.class))).thenReturn(personEntity);
 
         Person result = this.personServiceImpl.create(this.person);
 
         ArgumentCaptor<Person> captor = ArgumentCaptor.forClass(Person.class);
-        then(this.personRepository).should().save(captor.capture());
+        verify(this.personRepository).save(captor.capture());
 
         Person personSaved = captor.getValue();
 
@@ -58,7 +57,7 @@ public class PersonServiceTest {
             Assertions.assertNotNull(phone.getPerson());
         });
 
-        then(this.personRepository).shouldHaveNoMoreInteractions();
+        verifyNoMoreInteractions(this.personRepository);
 
         Assertions.assertSame(result, this.personEntity);
     }
@@ -66,12 +65,12 @@ public class PersonServiceTest {
     @Test
     @DisplayName("Should return a person update with successful")
     public void updatePerson_WithValidData_ShouldReturnPerson() {
-        given(this.personRepository.save(any(Person.class))).willReturn(this.personEntityUpload);
+        when(this.personRepository.save(any(Person.class))).thenReturn(this.personEntityUpload);
 
         Person result = this.personServiceImpl.update(this.personEntityUpload);
 
         ArgumentCaptor<Person> captor = ArgumentCaptor.forClass(Person.class);
-        then(this.personRepository).should().save(captor.capture());
+        verify(this.personRepository).save(captor.capture());
 
         Person personUpdate = captor.getValue();
 
@@ -80,7 +79,7 @@ public class PersonServiceTest {
             Assertions.assertNotNull(phone.getPerson());
         });
 
-        then(this.personRepository).shouldHaveNoMoreInteractions();
+        verifyNoMoreInteractions(this.personRepository);
 
         Assertions.assertSame(result, this.personEntityUpload);
         Assertions.assertEquals("Emanuel update", result.getFirstName());

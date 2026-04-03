@@ -1,4 +1,4 @@
-package br.com.renatogsilva.my_car.utils.user;
+package br.com.renatogsilva.my_car.utils.person;
 
 import br.com.renatogsilva.my_car.model.dto.person.PersonResponseDTO;
 import br.com.renatogsilva.my_car.model.dto.phone.PhoneResponseDTO;
