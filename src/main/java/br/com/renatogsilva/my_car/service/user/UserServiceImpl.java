@@ -38,8 +38,6 @@ public class UserServiceImpl implements UserService {
     private final PersonBusinessRules personBusinessRules;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    private final UserMapper userMapper;
-
     @Transactional
     @Override
     public UserResponseDTO create(UserRequestDTO userRequestDTO) {
@@ -48,7 +46,7 @@ public class UserServiceImpl implements UserService {
         userBusinessRules.validateInclusioRules(userRequestDTO);
         personBusinessRules.validateInclusioRules(userRequestDTO.getPersonRequestDTO());
 
-        User user = userMapper.toUser(userRequestDTO);
+        User user = UserMapper.INSTANCE.toUser(userRequestDTO);
         user.setStatus(EnumStatus.ACTIVE);
         user.setCreationDate(LocalDate.now());
         user.setPrimaryAccess(true);
@@ -60,7 +58,7 @@ public class UserServiceImpl implements UserService {
 
         logger.info("m: create - User created successfully");
 
-        return userMapper.toUserResponseDTO(user);
+        return UserMapper.INSTANCE.toUserResponseDTO(user);
     }
 
     @Transactional
@@ -75,14 +73,14 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserNotFoundException(EnumMessageUserExceptions.USER_NOT_FOUND.getMessage(),
                         EnumMessageUserExceptions.USER_NOT_FOUND.getCode()));
 
-        user = userMapper.toUser(user, userRequestDTO);
+        user = UserMapper.INSTANCE.toUser(user, userRequestDTO);
 
         this.personService.update(user.getPerson());
         this.userRepository.save(user);
 
         logger.info("m: update - User with ID {} updated successfully", id);
 
-        return userMapper.toUserResponseDTO(user);
+        return UserMapper.INSTANCE.toUserResponseDTO(user);
     }
 
     @Transactional
@@ -125,7 +123,7 @@ public class UserServiceImpl implements UserService {
 
         logger.info("m: findById - User with id {} found successfully", id);
 
-        return userMapper.toUserResponseDTO(user);
+        return UserMapper.INSTANCE.toUserResponseDTO(user);
     }
 
     @Transactional(readOnly = true)
@@ -137,7 +135,7 @@ public class UserServiceImpl implements UserService {
 
         logger.info("m: findAll - Users found successfully");
 
-        return userMapper.toUserResponseListDTO(users);
+        return UserMapper.INSTANCE.toUserResponseListDTO(users);
     }
 
     @Transactional

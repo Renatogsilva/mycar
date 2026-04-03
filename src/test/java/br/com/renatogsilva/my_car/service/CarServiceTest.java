@@ -15,7 +15,7 @@ import br.com.renatogsilva.my_car.repository.car.CarRepository;
 import br.com.renatogsilva.my_car.service.auth.AuthenticationService;
 import br.com.renatogsilva.my_car.service.car.CarServiceImpl;
 import br.com.renatogsilva.my_car.utils.FactoryCar;
-import br.com.renatogsilva.my_car.utils.FactoryUser;
+import br.com.renatogsilva.my_car.utils.user.FactoryUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -62,7 +62,7 @@ public class CarServiceTest {
         carRequestDTO = FactoryCar.createCarRequestDTOObjectValid();
         carResponseDTO = FactoryCar.createCarResponseDTOObjectValid();
         car = FactoryCar.createValidCarObjectWithoutCreationDateAndstatusAndUserId();
-        user = FactoryUser.createUserEntityObjectValid();
+        user = FactoryUser.user().build();
     }
 
     @Test

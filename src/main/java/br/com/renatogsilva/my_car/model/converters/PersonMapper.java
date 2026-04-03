@@ -6,8 +6,7 @@ import br.com.renatogsilva.my_car.model.dto.person.PersonResponseDTO;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING,
-        unmappedTargetPolicy = ReportingPolicy.ERROR,
+@Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR,
         uses = {PhoneMapper.class})
 public interface PersonMapper {
     PersonMapper INSTANCE = Mappers.getMapper(PersonMapper.class);

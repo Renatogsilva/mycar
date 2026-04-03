@@ -8,7 +8,9 @@ import br.com.renatogsilva.my_car.model.dto.user.UserRequestDTO;
 import br.com.renatogsilva.my_car.model.dto.user.UserResponseDTO;
 import br.com.renatogsilva.my_car.model.dto.user.UserResponseListDTO;
 import br.com.renatogsilva.my_car.service.user.UserService;
-import br.com.renatogsilva.my_car.utils.FactoryUser;
+import br.com.renatogsilva.my_car.utils.user.FactoryUser;
+import br.com.renatogsilva.my_car.utils.user.FactoryUserProfileRequesDTO;
+import br.com.renatogsilva.my_car.utils.user.FactoryUserResponseDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -48,34 +50,30 @@ public class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private UserRequestDTO userRequestDTO;
-    private UserResponseDTO userResponseDTO;
-    private UserProfileRequestDTO userProfileRequestDTO;
-
     private Long userId;
 
     @BeforeEach
     public void setUp() {
-        this.userRequestDTO = FactoryUser.createUserRequestDTOObjectValid();
-        this.userResponseDTO = FactoryUser.createUserResponseDTOObjectValid();
-        this.userProfileRequestDTO = FactoryUser.createUserProfileRequestDTOObjectValid();
         this.userId = 1L;
     }
 
     @Test
     @DisplayName(value = "Should register user successfully")
     public void shouldRegisterUserSuccessfully() throws Exception {
-        given(this.userService.create(any(UserRequestDTO.class))).willReturn(this.userResponseDTO);
+        //GIVEN ARRANGE
+        UserResponseDTO createResponse = FactoryUserResponseDTO.userResponse().persisted().build();
+
+        given(this.userService.create(any(UserRequestDTO.class))).willReturn(createResponse);
 
         ResultActions resultActions = mockMvc.perform(post("/api/v1/user")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(FactoryUser.createUserRequestDTOObjectValidString()));
+                .content(FactoryUser.getUserRequestDTOObjectValidString()));
 
         resultActions
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.userId").value(this.userResponseDTO.getUserId()))
+                .andExpect(jsonPath("$.userId").value(createResponse.getUserId()))
                 .andExpect(jsonPath("$.personResponseDTO.personId")
-                        .value(this.userResponseDTO.getPersonResponseDTO().getPersonId()));
+                        .value(createResponse.getPersonResponseDTO().getPersonId()));
 
         then(this.userService).should().create(any(UserRequestDTO.class));
     }
@@ -85,7 +83,7 @@ public class UserControllerTest {
     public void shouldNotRegisterUser() throws Exception {
         ResultActions resultActions = mockMvc.perform(post("/api/v1/user")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(FactoryUser.createUserRequestDTOObjectInvalidString()));
+                .content(FactoryUser.getUserRequestDTOObjectInvalidString()));
 
         resultActions
                 .andExpect(status().is4xxClientError());
@@ -96,20 +94,24 @@ public class UserControllerTest {
     @Test
     @DisplayName(value = "Should update user successfully")
     public void shouldUpdateUserSuccessfully() throws Exception {
-        this.userResponseDTO.setUsername("username.alterado");
+        //GIVEN ARRANGE
+        UserResponseDTO createResponse = FactoryUserResponseDTO.userResponse().persisted()
+                .withUsername("username.alterado").build();
 
-        given(this.userService.update(eq(this.userId), any(UserRequestDTO.class))).willReturn(this.userResponseDTO);
+        given(this.userService.update(eq(this.userId), any(UserRequestDTO.class))).willReturn(createResponse);
 
+        //WHEN ACT
         ResultActions resultActions = mockMvc.perform(put("/api/v1/user/{id}", this.userId)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(FactoryUser.createUserRequestDTOObjectValidString()));
+                .content(FactoryUser.getUserRequestDTOObjectValidString()));
 
+        //THEN ASSERT
         resultActions
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isNotEmpty())
-                .andExpect(jsonPath("$.userId").value(this.userResponseDTO.getUserId()))
-                .andExpect(jsonPath("$.personResponseDTO.personId").value(this.userResponseDTO.getPersonResponseDTO().getPersonId()))
-                .andExpect(jsonPath("$.username").value(this.userResponseDTO.getUsername()));
+                .andExpect(jsonPath("$.userId").value(createResponse.getUserId()))
+                .andExpect(jsonPath("$.personResponseDTO.personId").value(createResponse.getPersonResponseDTO().getPersonId()))
+                .andExpect(jsonPath("$.username").value(createResponse.getUsername()));
 
         then(this.userService).should().update(eq(this.userId), any(UserRequestDTO.class));
     }
@@ -119,7 +121,7 @@ public class UserControllerTest {
     public void shouldNotUpdateUserWithInvalidData() throws Exception {
         ResultActions resultActions = mockMvc.perform(put("/api/v1/user/{id}", this.userId)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(FactoryUser.createUserRequestDTOObjectInvalidString()));
+                .content(FactoryUser.getUserRequestDTOObjectInvalidString()));
 
         resultActions
                 .andExpect(status().is4xxClientError());
@@ -130,17 +132,22 @@ public class UserControllerTest {
     @Test
     @DisplayName(value = "Should successfully find the user by id")
     public void shouldSuccessfullyFindUserById() throws Exception {
-        given(this.userService.findById(this.userId)).willReturn(this.userResponseDTO);
+        //GIVEN ARRANGE
+        UserResponseDTO createResponse = FactoryUserResponseDTO.userResponse().persisted().build();
 
+        given(this.userService.findById(this.userId)).willReturn(createResponse);
+
+        //WHE ACT
         ResultActions resultActions = mockMvc.perform(get("/api/v1/user/{id}", this.userId)
                 .contentType(MediaType.APPLICATION_JSON));
 
+        //THEN ASSERT
         resultActions
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isNotEmpty())
-                .andExpect(jsonPath("$.userId").value(this.userResponseDTO.getUserId()))
-                .andExpect(jsonPath("$.personResponseDTO.personId").value(this.userResponseDTO.getPersonResponseDTO().getPersonId()))
-                .andExpect(jsonPath("$.username").value(this.userResponseDTO.getUsername()));
+                .andExpect(jsonPath("$.userId").value(createResponse.getUserId()))
+                .andExpect(jsonPath("$.personResponseDTO.personId").value(createResponse.getPersonResponseDTO().getPersonId()))
+                .andExpect(jsonPath("$.username").value(createResponse.getUsername()));
 
         then(this.userService).should().findById(this.userId);
     }
@@ -148,6 +155,7 @@ public class UserControllerTest {
     @Test
     @DisplayName(value = "Should bring a list of users")
     public void shouldBringAListOfUsers() throws Exception {
+        //GIVEN ARRANGE
         UserResponseListDTO userResponseListDTOUm = new UserResponseListDTO(1L, "Full last name", "teste.com@email.com",
                 "085.549.795-80", "Masculino", "Ativo");
 
@@ -158,9 +166,11 @@ public class UserControllerTest {
 
         when(this.userService.findAll()).thenReturn(list);
 
+        //WHEN ACT
         ResultActions resultActions = mockMvc.perform(get("/api/v1/user")
                 .accept(MediaType.APPLICATION_JSON));
 
+        //THEN ASSERT
         resultActions
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isNotEmpty())
@@ -173,13 +183,16 @@ public class UserControllerTest {
     @Test
     @DisplayName(value = "Should bring an empty list of users")
     public void shouldBringAnEmptyListOfUsers() throws Exception {
+        //GIVEN ARRANGE
         List<UserResponseListDTO> list = List.of();
 
         when(this.userService.findAll()).thenReturn(list);
 
+        //WHEN ACT
         ResultActions resultActions = mockMvc.perform(get("/api/v1/user")
                 .accept(MediaType.APPLICATION_JSON));
 
+        //THEN ASSERT
         resultActions
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isEmpty())
@@ -192,11 +205,14 @@ public class UserControllerTest {
     @Test
     @DisplayName(value = "Should deactivate user successfully")
     public void shouldDeactivateUserSuccessfully() throws Exception {
+        //GIVEN ARRANGE
         doNothing().when(this.userService).disable(anyLong());
 
+        //WHEN ACT
         ResultActions resultActions = mockMvc.perform(patch("/api/v1/user/desactive/{id}", anyLong())
                 .accept(MediaType.APPLICATION_JSON));
 
+        //THEN ASSERT
         resultActions.andExpect(status().isNoContent());
 
         verify(this.userService).disable(anyLong());
@@ -206,11 +222,14 @@ public class UserControllerTest {
     @Test
     @DisplayName(value = "Should successfully activate the user")
     public void shouldSuccessfullyActivateUser() throws Exception {
+        //GIVEN ARRANGE
         doNothing().when(this.userService).enable(anyLong());
 
+        //WHEN ACT
         ResultActions resultActions = mockMvc.perform(patch("/api/v1/user/active/{id}", anyLong())
                 .accept(MediaType.APPLICATION_JSON));
 
+        //THEN ASSERT
         resultActions.andExpect(status().isNoContent());
 
         verify(this.userService).enable(anyLong());
@@ -220,17 +239,19 @@ public class UserControllerTest {
     @Test
     @DisplayName(value = "Should update password successfully")
     public void shouldUpdatePasswordSuccessfully() throws Exception {
-        doNothing().when(this.userService).update(this.userId, this.userProfileRequestDTO);
+        //GIVEN ARRANGE
+        UserProfileRequestDTO userProfileRequestDTO = FactoryUserProfileRequesDTO.userProfileRequest().persisted().build();
+        doNothing().when(this.userService).update(this.userId, userProfileRequestDTO);
 
+        //WHEN ACT
         ResultActions resultActions = mockMvc.perform(put("/api/v1/user/{userId}/change-password", this.userId)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(this.objectMapper.writeValueAsString(this.userProfileRequestDTO)));
+                .content(this.objectMapper.writeValueAsString(userProfileRequestDTO)));
 
-        System.out.println(resultActions.andReturn().getResponse().getContentAsString());
-
+        //THEN ASSERT
         resultActions.andExpect(status().isNoContent());
 
-        verify(this.userService).update(this.userId, this.userProfileRequestDTO);
-        verify(this.userService, times(1)).update(this.userId, this.userProfileRequestDTO);
+        verify(this.userService).update(this.userId, userProfileRequestDTO);
+        verify(this.userService, times(1)).update(this.userId, userProfileRequestDTO);
     }
 }

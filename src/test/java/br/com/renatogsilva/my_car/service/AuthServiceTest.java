@@ -13,7 +13,7 @@ import br.com.renatogsilva.my_car.model.exceptions.user.UserNotFoundException;
 import br.com.renatogsilva.my_car.repository.user.UserRepository;
 import br.com.renatogsilva.my_car.service.auth.AuthenticationServiceImpl;
 import br.com.renatogsilva.my_car.utils.FactoryAuthentication;
-import br.com.renatogsilva.my_car.utils.FactoryUser;
+import br.com.renatogsilva.my_car.utils.user.FactoryUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -70,11 +70,10 @@ public class AuthServiceTest {
     @Test
     @DisplayName(value = "Should throw exception when password doesn't match")
     public void shouldThrowExceptionWhenPasswordDoesNotMatch() throws Exception {
-        User user = new User(1L, "teste.teste", "$2a$10$AsMzGLVz.4ADQQvZsXByKuBrGFVatlYPswMiOS9BwpsFqFwfnRp9y", LocalDate.now(),
-                false, EnumStatus.ACTIVE, EnumTypeUser.ADMIN, null);
+        User userFromDB = FactoryUser.user().persisted().build();
 
-        given(this.userRepository.findUserByUsername(this.loginRequestDTOPasswordInvalid.getUsername())).willReturn(user);
-        given(this.bCryptPasswordEncoder.matches(this.loginRequestDTOPasswordInvalid.getPassword(), user.getPassword())).willReturn(false);
+        given(this.userRepository.findUserByUsername(this.loginRequestDTOPasswordInvalid.getUsername())).willReturn(userFromDB);
+        given(this.bCryptPasswordEncoder.matches(this.loginRequestDTOPasswordInvalid.getPassword(), userFromDB.getPassword())).willReturn(false);
 
         UserAuthenticationException exception = assertThrows(UserAuthenticationException.class, () -> {
             this.authenticationServiceImpl.findUserByUsername(this.loginRequestDTOPasswordInvalid);
@@ -84,8 +83,8 @@ public class AuthServiceTest {
         assertEquals(401, exception.getCode());
         verify(this.userRepository).findUserByUsername(this.loginRequestDTOPasswordInvalid.getUsername());
         verify(this.userRepository, times(1)).findUserByUsername(this.loginRequestDTOPasswordInvalid.getUsername());
-        verify(this.bCryptPasswordEncoder).matches(this.loginRequestDTOPasswordInvalid.getPassword(), user.getPassword());
-        verify(this.bCryptPasswordEncoder, times(1)).matches(this.loginRequestDTOPasswordInvalid.getPassword(), user.getPassword());
+        verify(this.bCryptPasswordEncoder).matches(this.loginRequestDTOPasswordInvalid.getPassword(), userFromDB.getPassword());
+        verify(this.bCryptPasswordEncoder, times(1)).matches(this.loginRequestDTOPasswordInvalid.getPassword(), userFromDB.getPassword());
         verify(this.jwtTokenProvider, never()).generateToken(this.loginRequestDTOPasswordInvalid.getUsername(), EnumTypeUser.ADMIN.getDescription());
         verify(this.jwtTokenProvider, times(0)).generateToken(this.loginRequestDTOUsernameInvalid.getUsername(), EnumTypeUser.ADMIN.getDescription());
     }
@@ -157,7 +156,7 @@ public class AuthServiceTest {
         given(authentication.isAuthenticated()).willReturn(true);
         given(authentication.getPrincipal()).willReturn("validUser");
 
-        User userMock = FactoryUser.createUserEntityObjectValid();
+        User userMock = FactoryUser.user().build();
         given(userRepository.findUserByUsername("validUser")).willReturn(userMock);
 
         User result = this.authenticationServiceImpl.getAuthenticatedUser();

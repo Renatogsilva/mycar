@@ -3,7 +3,7 @@ package br.com.renatogsilva.my_car.service;
 import br.com.renatogsilva.my_car.model.domain.Person;
 import br.com.renatogsilva.my_car.repository.person.PersonRepository;
 import br.com.renatogsilva.my_car.service.person.PersonServiceImpl;
-import br.com.renatogsilva.my_car.utils.FactoryPerson;
+import br.com.renatogsilva.my_car.utils.user.FactoryPerson;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -34,9 +34,11 @@ public class PersonServiceTest {
 
     @BeforeEach
     public void setUp() {
-        this.personEntity = FactoryPerson.createPersonEntityObjectValid();
-        this.personEntityUpload = FactoryPerson.updatePersonEntityObjectValid();
-        this.person = FactoryPerson.createPersonEntityObjectValid();
+        this.personEntity = FactoryPerson.person().build();
+        this.personEntityUpload = FactoryPerson.person().persisted()
+                .withName("Emanuel update", "Benjamin Benício Drumond update")
+                .withEmail("update.successful@gmail.com").build();
+        this.person = FactoryPerson.person().build();
     }
 
     @Test
@@ -81,8 +83,8 @@ public class PersonServiceTest {
         then(this.personRepository).shouldHaveNoMoreInteractions();
 
         Assertions.assertSame(result, this.personEntityUpload);
-        Assertions.assertEquals("Update", result.getFirstName());
-        Assertions.assertEquals("Sucessful", result.getLastName());
+        Assertions.assertEquals("Emanuel update", result.getFirstName());
+        Assertions.assertEquals("Benjamin Benício Drumond update", result.getLastName());
         Assertions.assertEquals("update.successful@gmail.com", result.getEmail());
     }
 

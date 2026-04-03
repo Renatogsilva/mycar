@@ -31,8 +31,6 @@ public class CarServiceImpl implements CarService {
     private final CarBusinessRules carBusinessRules;
     private final AuthenticationService authenticationService;
 
-    private final CarMapper carMapper;
-
     @Transactional
     @Override
     public CarResponseDTO create(CarRequestDTO carRequestDTO) {
@@ -42,14 +40,14 @@ public class CarServiceImpl implements CarService {
 
         User user = this.authenticationService.getAuthenticatedUser();
 
-        Car car = carMapper.toCar(carRequestDTO);
+        Car car = CarMapper.INSTANCE.toCar(carRequestDTO);
         car.setCreationDate(LocalDate.now());
         car.setStatus(EnumStatus.ACTIVE);
         car.setUserCreation(user);
 
         this.carRepository.save(car);
 
-        return carMapper.toCarResponseDto(car);
+        return CarMapper.INSTANCE.toCarResponseDto(car);
     }
 
     @Transactional
@@ -63,13 +61,13 @@ public class CarServiceImpl implements CarService {
                 .orElseThrow(() -> new CarNotFoundException(EnumMessageCarExceptions.CAR_NOT_FOUND.getMessage(),
                         EnumMessageCarExceptions.CAR_NOT_FOUND.getCode()));
 
-        car = carMapper.toCar(car, carRequestDTO);
+        car = CarMapper.INSTANCE.toCar(car, carRequestDTO);
 
         this.carRepository.save(car);
 
         logger.info("m: update - Car with ID {} updated successfully", id);
 
-        return carMapper.toCarResponseDto(car);
+        return CarMapper.INSTANCE.toCarResponseDto(car);
     }
 
     @Transactional
@@ -129,7 +127,7 @@ public class CarServiceImpl implements CarService {
 
         logger.info("m: findAll - Cars found successfully");
 
-        return carMapper.toCarResponseListDto(cars);
+        return CarMapper.INSTANCE.toCarResponseListDto(cars);
     }
 
     @Transactional(readOnly = true)
@@ -143,6 +141,6 @@ public class CarServiceImpl implements CarService {
 
         logger.info("m: findById - Car with id {} found successfully", id);
 
-        return carMapper.toCarResponseDto(car);
+        return CarMapper.INSTANCE.toCarResponseDto(car);
     }
 }
