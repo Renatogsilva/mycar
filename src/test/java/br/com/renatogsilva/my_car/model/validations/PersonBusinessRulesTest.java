@@ -93,7 +93,7 @@ public class PersonBusinessRulesTest {
     }
 
     @Test
-    @DisplayName("Should throw person duplication exception when creating a person that already exists")
+    @DisplayName("Should return true when validate inclusion rules person is not exist")
     public void shouldReturnTrue_whenInclusionRulesPersonIsNotExists() {
         //GIVEN ARRANGE
         PersonRequestDTO personRequestDTO = FactoryPersonRequestDTO.personRequest().build();
@@ -112,7 +112,7 @@ public class PersonBusinessRulesTest {
     }
 
     @Test
-    @DisplayName("Should throw person duplication exception when updating a person that already exists")
+    @DisplayName("Should return true when validate update rules person is not exist")
     public void shouldReturnTrue_whenUpdatingRulesPersonIsNotExists() {
         //GIVEN ARRANGE
         PersonRequestDTO personRequestDTO = FactoryPersonRequestDTO.personRequest().build();
