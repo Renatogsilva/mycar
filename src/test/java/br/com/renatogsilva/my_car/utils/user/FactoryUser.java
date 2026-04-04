@@ -21,7 +21,7 @@ public class FactoryUser {
 
             // DEFAULT (estado padrão)
             user.setUsername("username.login");
-            user.setPassword("abcd");
+            user.setPassword("current123");
             user.setPerson(FactoryPerson.person().persisted().build());
         }
 
@@ -31,6 +31,11 @@ public class FactoryUser {
             user.setTypeUser(EnumTypeUser.ADMIN);
             user.setStatus(EnumStatus.ACTIVE);
             user.setPrimaryAccess(false);
+            return this;
+        }
+
+        public UserBuilder withUserId(Long userId) {
+            user.setUserId(userId);
             return this;
         }
 
