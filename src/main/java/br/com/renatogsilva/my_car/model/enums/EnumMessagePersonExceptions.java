@@ -3,7 +3,7 @@ package br.com.renatogsilva.my_car.model.enums;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum EnumMessagePersonExceptions {
-    CAR_DUPLICATE(409, "Já existe um registro cadastrado na base com essas informações");
+    PERSON_DUPLICATE(409, "Já existe um registro cadastrado na base com essas informações");
 
     private Integer code;
     private String message;

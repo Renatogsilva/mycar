@@ -24,8 +24,8 @@ public class PersonBusinessRules {
         if (this.personRepository.findPersonDuplicateByPersonIdAndCpfOrEmail(personId, cpf, email) != null) {
             logger.error("There is a person registered with this data");
 
-            throw new PersonDuplicationException(EnumMessagePersonExceptions.CAR_DUPLICATE.getMessage(),
-                    EnumMessagePersonExceptions.CAR_DUPLICATE.getCode());
+            throw new PersonDuplicationException(EnumMessagePersonExceptions.PERSON_DUPLICATE.getMessage(),
+                    EnumMessagePersonExceptions.PERSON_DUPLICATE.getCode());
         }
     }
 

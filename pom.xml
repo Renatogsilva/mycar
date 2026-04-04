@@ -205,10 +205,12 @@
                     <targetClasses>
                         <param>br.com.renatogsilva.my_car.api.controller.*</param>
                         <param>br.com.renatogsilva.my_car.service.*</param>
+                        <param>br.com.renatogsilva.my_car.model.validations.*</param>
                     </targetClasses>
                     <targetTests>
                         <param>br.com.renatogsilva.my_car.controller.*</param>
                         <param>br.com.renatogsilva.my_car.service.*</param>
+                        <param>br.com.renatogsilva.my_car.model.validations.*</param>
                     </targetTests>
                     <mutators>
                         <mutator>STRONGER</mutator>
