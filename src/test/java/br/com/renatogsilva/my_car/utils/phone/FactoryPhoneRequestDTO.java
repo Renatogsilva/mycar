@@ -1,7 +1,7 @@
 package br.com.renatogsilva.my_car.utils.phone;
 
 import br.com.renatogsilva.my_car.model.dto.phone.PhoneRequestDTO;
-import br.com.renatogsilva.my_car.model.enumerators.EnumTypePhone;
+import br.com.renatogsilva.my_car.model.enums.EnumTypePhone;
 
 import java.util.ArrayList;
 import java.util.List;

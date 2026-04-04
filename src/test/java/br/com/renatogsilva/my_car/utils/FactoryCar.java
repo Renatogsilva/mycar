@@ -5,8 +5,8 @@ import br.com.renatogsilva.my_car.model.domain.User;
 import br.com.renatogsilva.my_car.model.dto.car.CarRequestDTO;
 import br.com.renatogsilva.my_car.model.dto.car.CarResponseDTO;
 import br.com.renatogsilva.my_car.model.dto.car.CarResponseListDTO;
-import br.com.renatogsilva.my_car.model.enumerators.EnumExchange;
-import br.com.renatogsilva.my_car.model.enumerators.EnumStatus;
+import br.com.renatogsilva.my_car.model.enums.EnumExchange;
+import br.com.renatogsilva.my_car.model.enums.EnumStatus;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

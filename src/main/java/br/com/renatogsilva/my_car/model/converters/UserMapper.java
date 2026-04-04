@@ -5,8 +5,8 @@ import br.com.renatogsilva.my_car.model.domain.User;
 import br.com.renatogsilva.my_car.model.dto.user.UserRequestDTO;
 import br.com.renatogsilva.my_car.model.dto.user.UserResponseDTO;
 import br.com.renatogsilva.my_car.model.dto.user.UserResponseListDTO;
-import br.com.renatogsilva.my_car.model.enumerators.EnumSex;
-import br.com.renatogsilva.my_car.model.enumerators.EnumStatus;
+import br.com.renatogsilva.my_car.model.enums.EnumSex;
+import br.com.renatogsilva.my_car.model.enums.EnumStatus;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 

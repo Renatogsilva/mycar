@@ -1,6 +1,6 @@
 package br.com.renatogsilva.my_car.model.dto.phone;
 
-import br.com.renatogsilva.my_car.model.enumerators.EnumTypePhone;
+import br.com.renatogsilva.my_car.model.enums.EnumTypePhone;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;

@@ -1,6 +1,6 @@
 package br.com.renatogsilva.my_car.model.domain;
 
-import br.com.renatogsilva.my_car.model.enumerators.EnumTypePhone;
+import br.com.renatogsilva.my_car.model.enums.EnumTypePhone;
 import jakarta.persistence.*;
 import lombok.*;
 

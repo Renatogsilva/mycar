@@ -2,8 +2,8 @@ package br.com.renatogsilva.my_car.utils.user;
 
 import br.com.renatogsilva.my_car.model.domain.Person;
 import br.com.renatogsilva.my_car.model.domain.User;
-import br.com.renatogsilva.my_car.model.enumerators.EnumStatus;
-import br.com.renatogsilva.my_car.model.enumerators.EnumTypeUser;
+import br.com.renatogsilva.my_car.model.enums.EnumStatus;
+import br.com.renatogsilva.my_car.model.enums.EnumTypeUser;
 import br.com.renatogsilva.my_car.utils.person.FactoryPerson;
 
 import java.time.LocalDate;

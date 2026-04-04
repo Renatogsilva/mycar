@@ -1,6 +1,5 @@
 package br.com.renatogsilva.my_car.service;
 
-import br.com.renatogsilva.my_car.model.converters.*;
 import br.com.renatogsilva.my_car.model.domain.Person;
 import br.com.renatogsilva.my_car.model.domain.User;
 import br.com.renatogsilva.my_car.model.dto.person.PersonRequestDTO;
@@ -8,9 +7,9 @@ import br.com.renatogsilva.my_car.model.dto.user.UserProfileRequestDTO;
 import br.com.renatogsilva.my_car.model.dto.user.UserRequestDTO;
 import br.com.renatogsilva.my_car.model.dto.user.UserResponseDTO;
 import br.com.renatogsilva.my_car.model.dto.user.UserResponseListDTO;
-import br.com.renatogsilva.my_car.model.enumerators.EnumMessageUserExceptions;
-import br.com.renatogsilva.my_car.model.enumerators.EnumStatus;
-import br.com.renatogsilva.my_car.model.enumerators.EnumTypeUser;
+import br.com.renatogsilva.my_car.model.enums.EnumMessageUserExceptions;
+import br.com.renatogsilva.my_car.model.enums.EnumStatus;
+import br.com.renatogsilva.my_car.model.enums.EnumTypeUser;
 import br.com.renatogsilva.my_car.model.exceptions.user.UserAuthenticationException;
 import br.com.renatogsilva.my_car.model.exceptions.user.UserNotFoundException;
 import br.com.renatogsilva.my_car.model.validations.PersonBusinessRules;

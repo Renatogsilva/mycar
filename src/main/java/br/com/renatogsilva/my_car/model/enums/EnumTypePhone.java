@@ -1,13 +1,20 @@
-package br.com.renatogsilva.my_car.model.enumerators;
+package br.com.renatogsilva.my_car.model.enums;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum EnumExchange {
-    MANUAL(1, "Manual"),
-    AUTOMATIC(2, "Automático");
+public enum EnumTypePhone {
+    FIXED(1, "Fixo"),
+    RESIDENTIAL(2, "Residencial"),
+    CELL_PHONE(3, "Celular"),
+    COMMERCIAL(4, "Comercial"),;
 
     private Integer code;
     private String description;
+
+    EnumTypePhone(Integer code, String description) {
+        this.code = code;
+        this.description = description;
+    }
 
     @JsonValue
     public Integer getCode() {
@@ -18,17 +25,12 @@ public enum EnumExchange {
         return description;
     }
 
-    EnumExchange(Integer code, String description) {
-        this.code = code;
-        this.description = description;
-    }
-
-    public static EnumExchange get(Integer cod) {
+    public static EnumTypePhone get(Integer cod) {
         if (cod == null) {
             return null;
         }
 
-        for (EnumExchange e : EnumExchange.values()) {
+        for (EnumTypePhone e : EnumTypePhone.values()) {
             if (e.code.equals(cod)) {
                 return e;
             }

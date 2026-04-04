@@ -6,7 +6,7 @@ import br.com.renatogsilva.my_car.api.controller.CarController;
 import br.com.renatogsilva.my_car.model.dto.car.CarRequestDTO;
 import br.com.renatogsilva.my_car.model.dto.car.CarResponseDTO;
 import br.com.renatogsilva.my_car.model.dto.car.CarResponseListDTO;
-import br.com.renatogsilva.my_car.model.enumerators.EnumExchange;
+import br.com.renatogsilva.my_car.model.enums.EnumExchange;
 import br.com.renatogsilva.my_car.service.car.CarService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;

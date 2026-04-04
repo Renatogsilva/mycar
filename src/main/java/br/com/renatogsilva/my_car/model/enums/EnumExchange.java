@@ -1,19 +1,13 @@
-package br.com.renatogsilva.my_car.model.enumerators;
+package br.com.renatogsilva.my_car.model.enums;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum EnumStatus {
-    ACTIVE(1, "Ativo"),
-    INACTIVE(2, "Inativo"),
-    DELETED(3, "Deletado");
+public enum EnumExchange {
+    MANUAL(1, "Manual"),
+    AUTOMATIC(2, "Automático");
 
     private Integer code;
     private String description;
-
-    EnumStatus(Integer code, String description) {
-        this.code = code;
-        this.description = description;
-    }
 
     @JsonValue
     public Integer getCode() {
@@ -23,13 +17,18 @@ public enum EnumStatus {
     public String getDescription() {
         return description;
     }
-    
-    public static EnumStatus get(Integer cod) {
+
+    EnumExchange(Integer code, String description) {
+        this.code = code;
+        this.description = description;
+    }
+
+    public static EnumExchange get(Integer cod) {
         if (cod == null) {
             return null;
         }
 
-        for (EnumStatus e : EnumStatus.values()) {
+        for (EnumExchange e : EnumExchange.values()) {
             if (e.code.equals(cod)) {
                 return e;
             }

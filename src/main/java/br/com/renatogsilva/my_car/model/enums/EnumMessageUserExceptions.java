@@ -1,4 +1,4 @@
-package br.com.renatogsilva.my_car.model.enumerators;
+package br.com.renatogsilva.my_car.model.enums;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 

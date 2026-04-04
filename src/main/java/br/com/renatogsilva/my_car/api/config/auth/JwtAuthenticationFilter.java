@@ -1,7 +1,7 @@
 package br.com.renatogsilva.my_car.api.config.auth;
 
-import br.com.renatogsilva.my_car.model.enumerators.EnumMessageGenericExceptions;
-import br.com.renatogsilva.my_car.model.enumerators.EnumMessageUserExceptions;
+import br.com.renatogsilva.my_car.model.enums.EnumMessageGenericExceptions;
+import br.com.renatogsilva.my_car.model.enums.EnumMessageUserExceptions;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.FilterChain;

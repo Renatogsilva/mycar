@@ -1,6 +1,6 @@
 package br.com.renatogsilva.my_car.api.exception;
 
-import br.com.renatogsilva.my_car.model.enumerators.EnumMessageGenericExceptions;
+import br.com.renatogsilva.my_car.model.enums.EnumMessageGenericExceptions;
 import br.com.renatogsilva.my_car.model.exceptions.car.CarDuplicationException;
 import br.com.renatogsilva.my_car.model.exceptions.car.CarNotFoundException;
 import br.com.renatogsilva.my_car.model.exceptions.person.PersonDuplicationException;

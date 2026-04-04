@@ -1,7 +1,7 @@
 package br.com.renatogsilva.my_car.model.validations;
 
 import br.com.renatogsilva.my_car.model.dto.user.UserRequestDTO;
-import br.com.renatogsilva.my_car.model.enumerators.EnumMessageUserExceptions;
+import br.com.renatogsilva.my_car.model.enums.EnumMessageUserExceptions;
 import br.com.renatogsilva.my_car.model.exceptions.user.UserDuplicationException;
 import br.com.renatogsilva.my_car.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;

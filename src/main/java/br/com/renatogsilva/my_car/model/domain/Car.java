@@ -1,7 +1,7 @@
 package br.com.renatogsilva.my_car.model.domain;
 
-import br.com.renatogsilva.my_car.model.enumerators.EnumExchange;
-import br.com.renatogsilva.my_car.model.enumerators.EnumStatus;
+import br.com.renatogsilva.my_car.model.enums.EnumExchange;
+import br.com.renatogsilva.my_car.model.enums.EnumStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;

@@ -1,7 +1,7 @@
 package br.com.renatogsilva.my_car.model.domain;
 
-import br.com.renatogsilva.my_car.model.enumerators.EnumStatus;
-import br.com.renatogsilva.my_car.model.enumerators.EnumTypeUser;
+import br.com.renatogsilva.my_car.model.enums.EnumStatus;
+import br.com.renatogsilva.my_car.model.enums.EnumTypeUser;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

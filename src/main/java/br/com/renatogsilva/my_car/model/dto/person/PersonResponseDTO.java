@@ -1,7 +1,7 @@
 package br.com.renatogsilva.my_car.model.dto.person;
 
 import br.com.renatogsilva.my_car.model.dto.phone.PhoneResponseDTO;
-import br.com.renatogsilva.my_car.model.enumerators.EnumSex;
+import br.com.renatogsilva.my_car.model.enums.EnumSex;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

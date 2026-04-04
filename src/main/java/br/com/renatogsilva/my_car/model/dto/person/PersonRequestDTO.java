@@ -1,7 +1,7 @@
 package br.com.renatogsilva.my_car.model.dto.person;
 
 import br.com.renatogsilva.my_car.model.dto.phone.PhoneRequestDTO;
-import br.com.renatogsilva.my_car.model.enumerators.EnumSex;
+import br.com.renatogsilva.my_car.model.enums.EnumSex;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;

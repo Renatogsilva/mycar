@@ -4,7 +4,7 @@ import br.com.renatogsilva.my_car.model.domain.Car;
 import br.com.renatogsilva.my_car.model.dto.car.CarRequestDTO;
 import br.com.renatogsilva.my_car.model.dto.car.CarResponseDTO;
 import br.com.renatogsilva.my_car.model.dto.car.CarResponseListDTO;
-import br.com.renatogsilva.my_car.model.enumerators.EnumExchange;
+import br.com.renatogsilva.my_car.model.enums.EnumExchange;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 

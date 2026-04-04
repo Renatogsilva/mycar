@@ -1,6 +1,6 @@
 package br.com.renatogsilva.my_car.model.dto.car;
 
-import br.com.renatogsilva.my_car.model.enumerators.EnumExchange;
+import br.com.renatogsilva.my_car.model.enums.EnumExchange;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.*;
 import lombok.*;

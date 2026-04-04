@@ -5,7 +5,7 @@ import br.com.renatogsilva.my_car.api.config.auth.TokenRevocationConfig;
 import br.com.renatogsilva.my_car.model.domain.User;
 import br.com.renatogsilva.my_car.model.dto.login.LoginRequestDTO;
 import br.com.renatogsilva.my_car.model.dto.login.LoginResponseDTO;
-import br.com.renatogsilva.my_car.model.enumerators.EnumMessageUserExceptions;
+import br.com.renatogsilva.my_car.model.enums.EnumMessageUserExceptions;
 import br.com.renatogsilva.my_car.model.exceptions.user.UserAuthenticationException;
 import br.com.renatogsilva.my_car.model.exceptions.user.UserNotFoundException;
 import br.com.renatogsilva.my_car.repository.user.UserRepository;

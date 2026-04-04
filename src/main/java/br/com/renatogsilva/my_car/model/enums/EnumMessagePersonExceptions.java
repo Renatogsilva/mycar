@@ -1,15 +1,14 @@
-package br.com.renatogsilva.my_car.model.enumerators;
+package br.com.renatogsilva.my_car.model.enums;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum EnumMessageGenericExceptions {
-    INVALID_PARAMETER(400, "Parâmetro inválido"),
-    TOKEN_INVALID_OR_EXPIRED(403, "Token inválido ou expirado"),;
+public enum EnumMessagePersonExceptions {
+    CAR_DUPLICATE(409, "Já existe um registro cadastrado na base com essas informações");
 
     private Integer code;
     private String message;
 
-    private EnumMessageGenericExceptions(Integer code, String message) {
+    private EnumMessagePersonExceptions(Integer code, String message) {
         this.code = code;
         this.message = message;
     }
@@ -23,12 +22,12 @@ public enum EnumMessageGenericExceptions {
         return message;
     }
 
-    public static EnumMessageGenericExceptions get(Integer cod) {
+    public static EnumMessagePersonExceptions get(Integer cod) {
         if (cod == null) {
             return null;
         }
 
-        for (EnumMessageGenericExceptions e : EnumMessageGenericExceptions.values()) {
+        for (EnumMessagePersonExceptions e : EnumMessagePersonExceptions.values()) {
             if (e.code.equals(cod)) {
                 return e;
             }

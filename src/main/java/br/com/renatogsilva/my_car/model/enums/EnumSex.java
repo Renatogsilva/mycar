@@ -1,16 +1,15 @@
-package br.com.renatogsilva.my_car.model.enumerators;
+package br.com.renatogsilva.my_car.model.enums;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum EnumTypeUser {
-    ADMIN(1, "Admin"),
-    USER(2, "User"),
-    NOT_PERMISION(3, "Not Permission");
+public enum EnumSex {
+    MALE(1, "Masculino"),
+    FEMALE(2, "Feminino");
 
     private Integer code;
     private String description;
 
-    EnumTypeUser(Integer code, String description) {
+    EnumSex(Integer code, String description) {
         this.code = code;
         this.description = description;
     }
@@ -24,12 +23,12 @@ public enum EnumTypeUser {
         return description;
     }
 
-    public static EnumTypeUser get(Integer cod) {
+    public static EnumSex get(Integer cod) {
         if (cod == null) {
             return null;
         }
 
-        for (EnumTypeUser e : EnumTypeUser.values()) {
+        for (EnumSex e : EnumSex.values()) {
             if (e.code.equals(cod)) {
                 return e;
             }

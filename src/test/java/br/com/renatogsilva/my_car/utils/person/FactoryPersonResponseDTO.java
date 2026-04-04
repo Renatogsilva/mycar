@@ -2,7 +2,7 @@ package br.com.renatogsilva.my_car.utils.person;
 
 import br.com.renatogsilva.my_car.model.dto.person.PersonResponseDTO;
 import br.com.renatogsilva.my_car.model.dto.phone.PhoneResponseDTO;
-import br.com.renatogsilva.my_car.model.enumerators.EnumSex;
+import br.com.renatogsilva.my_car.model.enums.EnumSex;
 import br.com.renatogsilva.my_car.utils.phone.FactoryPhoneResponseDTO;
 
 import java.time.LocalDate;
