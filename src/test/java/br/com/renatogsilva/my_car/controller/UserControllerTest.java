@@ -7,6 +7,7 @@ import br.com.renatogsilva.my_car.model.dto.user.UserProfileRequestDTO;
 import br.com.renatogsilva.my_car.model.dto.user.UserRequestDTO;
 import br.com.renatogsilva.my_car.model.dto.user.UserResponseDTO;
 import br.com.renatogsilva.my_car.model.dto.user.UserResponseListDTO;
+import br.com.renatogsilva.my_car.model.enums.EnumStatus;
 import br.com.renatogsilva.my_car.service.user.UserService;
 import br.com.renatogsilva.my_car.utils.user.FactoryUser;
 import br.com.renatogsilva.my_car.utils.user.FactoryUserProfileRequesDTO;
@@ -157,10 +158,10 @@ public class UserControllerTest {
     public void shouldBringAListOfUsers() throws Exception {
         //GIVEN ARRANGE
         UserResponseListDTO userResponseListDTOUm = new UserResponseListDTO(1L, "Full last name", "teste.com@email.com",
-                "085.549.795-80", "Masculino", "Ativo");
+                "085.549.795-80", "Masculino", EnumStatus.ACTIVE, EnumStatus.ACTIVE.getDescription());
 
         UserResponseListDTO userResponseListDTODois = new UserResponseListDTO(1L, "Full last name", "teste.com@email.com",
-                "085.549.795-80", "Feminino", "Ativo");
+                "085.549.795-80", "Feminino", EnumStatus.ACTIVE, EnumStatus.ACTIVE.getDescription());
 
         List<UserResponseListDTO> list = List.of(userResponseListDTOUm, userResponseListDTODois);
 

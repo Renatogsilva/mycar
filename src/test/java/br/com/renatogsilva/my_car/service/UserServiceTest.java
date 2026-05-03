@@ -272,7 +272,9 @@ public class UserServiceTest {
                 () -> Assertions.assertNotNull(userResponseDTOList.get(1)),
                 () -> Assertions.assertNotNull(userResponseDTOList.get(2)),
                 () -> Assertions.assertEquals(usersFromDB.get(0).getPerson().getFirstName() + " " +
-                        usersFromDB.get(0).getPerson().getLastName(), userResponseDTOList.get(0).getFullName())
+                        usersFromDB.get(0).getPerson().getLastName(), userResponseDTOList.get(0).getFullName()),
+                () -> Assertions.assertEquals(EnumStatus.ACTIVE, userResponseDTOList.get(0).getStatus()),
+                () -> Assertions.assertEquals(EnumStatus.ACTIVE.getDescription(), userResponseDTOList.get(0).getStatus().getDescription())
         );
     }
 

@@ -1,5 +1,6 @@
 package br.com.renatogsilva.my_car.model.dto.user;
 
+import br.com.renatogsilva.my_car.model.enums.EnumStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,5 +20,6 @@ public class UserResponseListDTO implements Serializable {
     private String email;
     private String cpf;
     private String enumSexDescription;
+    private EnumStatus status;
     private String enumStatusDescription;
 }
