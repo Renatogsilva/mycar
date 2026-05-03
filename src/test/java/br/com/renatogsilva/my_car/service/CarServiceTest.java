@@ -72,6 +72,8 @@ public class CarServiceTest {
         assertEquals(carRequestDTO.getMark(), carResponseDTO.getMark());
         assertEquals(carRequestDTO.getVersion(), carResponseDTO.getVersion());
         assertEquals(carRequestDTO.getYearOfManufacture(), carResponseDTO.getYearOfManufacture());
+        assertEquals(EnumStatus.ACTIVE, carResponseDTO.getStatus());
+        assertEquals(EnumStatus.ACTIVE.getDescription(), carResponseDTO.getStatus().getDescription());
 
         var argumentCaptor = ArgumentCaptor.forClass(Car.class);
 
@@ -155,6 +157,7 @@ public class CarServiceTest {
         assertEquals(carArgumentCapture.getBodyStyle(), carResponseDTO.getBodyStyle());
         assertEquals(carArgumentCapture.getColor(), carResponseDTO.getColor());
         assertEquals(EnumStatus.ACTIVE, carArgumentCapture.getStatus());
+        assertEquals(EnumStatus.ACTIVE.getDescription(), carArgumentCapture.getStatus().getDescription());
 
         verify(this.carBusinessRules).validateUpdateRules(any(CarRequestDTO.class));
         verify(this.carBusinessRules, times(1)).validateUpdateRules(carRequestDTO);
@@ -204,6 +207,7 @@ public class CarServiceTest {
         assertNotNull(carArgumentCaptor.getUserExclusion());
         assertNotNull(carArgumentCaptor.getStatus());
         assertEquals(EnumStatus.INACTIVE, carArgumentCaptor.getStatus());
+        assertEquals(EnumStatus.INACTIVE.getDescription(), carArgumentCaptor.getStatus().getDescription());
     }
 
     @Test
@@ -258,6 +262,7 @@ public class CarServiceTest {
         assertNotNull(carArgumentCaptor.getStatus());
 
         assertEquals(EnumStatus.ACTIVE, carArgumentCaptor.getStatus());
+        assertEquals(EnumStatus.ACTIVE.getDescription(), carArgumentCaptor.getStatus().getDescription());
 
         verify(this.carRepository, times(1)).findById(1L);
         verify(this.carRepository, times(1)).save(any(Car.class));

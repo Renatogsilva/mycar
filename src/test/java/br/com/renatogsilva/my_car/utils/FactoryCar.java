@@ -14,7 +14,7 @@ import java.util.List;
 
 public class FactoryCar {
 
-    public static CarRequestDTO createCarRequestDTOObjectValid(){
+    public static CarRequestDTO createCarRequestDTOObjectValid() {
         CarRequestDTO carRequestDTO = new CarRequestDTO();
 
         carRequestDTO.setMark("Wolkswagem");
@@ -28,7 +28,7 @@ public class FactoryCar {
         return carRequestDTO;
     }
 
-    public static CarRequestDTO updateCarRequestDTOObjectValid(){
+    public static CarRequestDTO updateCarRequestDTOObjectValid() {
         CarRequestDTO carRequestDTO = new CarRequestDTO();
 
         carRequestDTO.setCarId(1L);
@@ -43,7 +43,7 @@ public class FactoryCar {
         return carRequestDTO;
     }
 
-    public static CarResponseDTO createCarResponseDTOObjectValid(){
+    public static CarResponseDTO createCarResponseDTOObjectValid() {
         CarResponseDTO carResponseDTO = new CarResponseDTO();
 
         carResponseDTO.setColor("Branco");
@@ -58,7 +58,7 @@ public class FactoryCar {
         return carResponseDTO;
     }
 
-    public static Car createValidCarObjectWithoutCreationDateAndstatusAndUserId(){
+    public static Car createValidCarObjectWithoutCreationDateAndstatusAndUserId() {
         Car car = new Car();
 
         car.setCarId(1L);
@@ -74,7 +74,7 @@ public class FactoryCar {
         return car;
     }
 
-    public static Car createValidCarObject(){
+    public static Car createValidCarObject() {
         Car car = new Car();
 
         car.setCarId(1L);
@@ -93,7 +93,7 @@ public class FactoryCar {
         return car;
     }
 
-    public static Car createValidCarObjectAndInactive(){
+    public static Car createValidCarObjectAndInactive() {
         Car car = new Car();
 
         car.setCarId(1L);
@@ -113,7 +113,7 @@ public class FactoryCar {
         return car;
     }
 
-    public static List<Car> createListValidCarObject(){
+    public static List<Car> createListValidCarObject() {
         List<Car> cars = new ArrayList<>();
         Car car = new Car();
 
@@ -135,7 +135,7 @@ public class FactoryCar {
         return cars;
     }
 
-    public static List<CarResponseListDTO> carResponseListDTOList(){
+    public static List<CarResponseListDTO> carResponseListDTOList() {
         List<CarResponseListDTO> carsResponseDto = new ArrayList<>();
         CarResponseListDTO carResponseDTO = new CarResponseListDTO();
 
@@ -144,6 +144,8 @@ public class FactoryCar {
         carResponseDTO.setEngine("1.6");
         carResponseDTO.setVersion("Polo MSI");
         carResponseDTO.setYearOfManufacture(2020);
+        carResponseDTO.setStatus(EnumStatus.ACTIVE);
+        carResponseDTO.setEnumStatusDescription(EnumStatus.ACTIVE.getDescription());
 
         carsResponseDto.add(carResponseDTO);
 

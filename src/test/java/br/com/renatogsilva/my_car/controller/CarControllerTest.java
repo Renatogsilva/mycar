@@ -7,6 +7,7 @@ import br.com.renatogsilva.my_car.model.dto.car.CarRequestDTO;
 import br.com.renatogsilva.my_car.model.dto.car.CarResponseDTO;
 import br.com.renatogsilva.my_car.model.dto.car.CarResponseListDTO;
 import br.com.renatogsilva.my_car.model.enums.EnumExchange;
+import br.com.renatogsilva.my_car.model.enums.EnumStatus;
 import br.com.renatogsilva.my_car.service.car.CarService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,7 +58,8 @@ public class CarControllerTest {
                 "Sedan", EnumExchange.AUTOMATIC, "1.0 Turbo", "Cronos");
 
         this.carResponseDTO = new CarResponseDTO(1L, "Fiat", 2020, "Black",
-                "Sedan", EnumExchange.AUTOMATIC.getDescription(), "1.0 Turbo", "Cronos");
+                "Sedan", EnumExchange.AUTOMATIC.getDescription(), "1.0 Turbo", "Cronos",
+                EnumStatus.ACTIVE, EnumStatus.ACTIVE.getDescription());
 
         this.carRequestDTOFailure = new CarRequestDTO(null, "", 2020, "",
                 "Sedan", EnumExchange.AUTOMATIC, "1.0 Turbo", "Cronos");
@@ -82,7 +84,9 @@ public class CarControllerTest {
                 .andExpect(jsonPath("$.yearOfManufacture").value(2020))
                 .andExpect(jsonPath("$.color").value("Black"))
                 .andExpect(jsonPath("$.engine").value("1.0 Turbo"))
-                .andExpect(jsonPath("$.version").value("Cronos"));
+                .andExpect(jsonPath("$.version").value("Cronos"))
+                .andExpect(jsonPath("$.status").value(1))
+                .andExpect(jsonPath("$.enumStatusDescription").value("Ativo"));
 
         verify(carService).create(carRequestDTO);
         verify(carService, times(1)).create(this.carRequestDTO);
@@ -160,7 +164,9 @@ public class CarControllerTest {
                 .andExpect(jsonPath("$.yearOfManufacture").value(2020))
                 .andExpect(jsonPath("$.color").value("Black"))
                 .andExpect(jsonPath("$.version").value("Cronos"))
-                .andExpect(jsonPath("$.engine").value("1.0 Turbo"));
+                .andExpect(jsonPath("$.engine").value("1.0 Turbo"))
+                .andExpect(jsonPath("$.status").value(1))
+                .andExpect(jsonPath("$.enumStatusDescription").value("Ativo"));
 
         verify(carService).findById(this.carId);
         verify(carService, times(1)).findById(this.carId);
@@ -170,13 +176,16 @@ public class CarControllerTest {
     @DisplayName(value = "Should bring a list of vehicles")
     public void shouldBringAListOfVehicles() throws Exception {
         CarResponseListDTO carResponseDTOFiat = new CarResponseListDTO(1L, "Fiat", 2020,
-                "1.0 Turbo", "Cronos");
+                "1.0 Turbo", "Cronos",
+                EnumStatus.ACTIVE, EnumStatus.ACTIVE.getDescription());
 
         CarResponseListDTO carResponseDTOWolkswagem = new CarResponseListDTO(2L, "Wolkswagem", 2021,
-                "1.6", "Polo MSI");
+                "1.6", "Polo MSI",
+                EnumStatus.ACTIVE, EnumStatus.ACTIVE.getDescription());
 
         CarResponseListDTO carResponseDTOChevrolet = new CarResponseListDTO(3L, "Chevrolet", 2023,
-                "1.6", "Onix");
+                "1.6", "Onix",
+                EnumStatus.ACTIVE, EnumStatus.ACTIVE.getDescription());
 
         List<CarResponseListDTO> list = List.of(carResponseDTOFiat, carResponseDTOWolkswagem, carResponseDTOChevrolet);
 
