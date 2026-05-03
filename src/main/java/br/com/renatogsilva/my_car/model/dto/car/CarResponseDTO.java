@@ -1,5 +1,6 @@
 package br.com.renatogsilva.my_car.model.dto.car;
 
+import br.com.renatogsilva.my_car.model.enums.EnumStatus;
 import lombok.*;
 
 import java.io.Serializable;
@@ -19,4 +20,6 @@ public class CarResponseDTO implements Serializable {
     private String enumExchangeDescription;
     private String engine;
     private String version;
+    private EnumStatus status;
+    private String enumStatusDescription;
 }

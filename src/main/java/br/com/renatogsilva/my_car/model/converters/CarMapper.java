@@ -5,6 +5,7 @@ import br.com.renatogsilva.my_car.model.dto.car.CarRequestDTO;
 import br.com.renatogsilva.my_car.model.dto.car.CarResponseDTO;
 import br.com.renatogsilva.my_car.model.dto.car.CarResponseListDTO;
 import br.com.renatogsilva.my_car.model.enums.EnumExchange;
+import br.com.renatogsilva.my_car.model.enums.EnumStatus;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
@@ -31,11 +32,19 @@ public interface CarMapper {
     Car toCar(@MappingTarget Car car, CarRequestDTO carRequestDTO);
 
     @Mapping(target = "enumExchangeDescription", expression = "java(getExchangeDescription(car.getExchange()))")
+    @Mapping(target = "enumStatusDescription", expression = "java(getStatusDescription(car.getStatus()))")
     CarResponseDTO toCarResponseDto(Car car);
+
+    @Mapping(target = "enumStatusDescription", expression = "java(getStatusDescription(cars.getStatus()))")
+    CarResponseListDTO toCarResponseListDto(Car cars);
 
     List<CarResponseListDTO> toCarResponseListDto(List<Car> cars);
 
     default String getExchangeDescription(EnumExchange exchange) {
         return exchange.getDescription();
+    }
+
+    default String getStatusDescription(EnumStatus status) {
+        return status.getDescription();
     }
 }

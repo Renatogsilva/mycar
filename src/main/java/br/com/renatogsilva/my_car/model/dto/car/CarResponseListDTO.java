@@ -1,5 +1,6 @@
 package br.com.renatogsilva.my_car.model.dto.car;
 
+import br.com.renatogsilva.my_car.model.enums.EnumStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,4 +20,6 @@ public class CarResponseListDTO implements Serializable {
     private Integer yearOfManufacture;
     private String engine;
     private String version;
+    private EnumStatus status;
+    private String enumStatusDescription;
 }
