@@ -226,7 +226,7 @@ public class CarControllerTest {
     public void shouldDeactivateVehicleSuccessfully() throws Exception {
         doNothing().when(carService).disable(anyLong());
 
-        ResultActions resultActions = mockMvc.perform(patch("/api/v1/car/desactive/{id}", anyLong())
+        ResultActions resultActions = mockMvc.perform(patch("/api/v1/car/disable/{id}", anyLong())
                 .accept(MediaType.APPLICATION_JSON));
 
         resultActions.andExpect(status().isNoContent());
@@ -240,7 +240,7 @@ public class CarControllerTest {
     public void shouldSuccessfullyActivateVehicle() throws Exception {
         doNothing().when(carService).enable(anyLong());
 
-        ResultActions resultActions = mockMvc.perform(patch("/api/v1/car/active/{id}", anyLong())
+        ResultActions resultActions = mockMvc.perform(patch("/api/v1/car/enable/{id}", anyLong())
                 .accept(MediaType.APPLICATION_JSON));
 
         resultActions.andExpect(status().isNoContent());

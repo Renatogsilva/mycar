@@ -93,7 +93,7 @@ public class CarController {
         return this.carService.findAll();
     }
 
-    @PatchMapping(value = "/active/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(value = "/enable/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Ativa veículo",
             tags = {"Car"},
@@ -109,7 +109,7 @@ public class CarController {
         this.carService.enable(id);
     }
 
-    @PatchMapping(value = "/desactive/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(value = "/disable/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Desativa veículo",
             tags = {"Car"},

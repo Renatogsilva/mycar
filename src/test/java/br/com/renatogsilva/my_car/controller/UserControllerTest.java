@@ -210,7 +210,7 @@ public class UserControllerTest {
         doNothing().when(this.userService).disable(anyLong());
 
         //WHEN ACT
-        ResultActions resultActions = mockMvc.perform(patch("/api/v1/user/desactive/{id}", anyLong())
+        ResultActions resultActions = mockMvc.perform(patch("/api/v1/user/disable/{id}", anyLong())
                 .accept(MediaType.APPLICATION_JSON));
 
         //THEN ASSERT
@@ -227,7 +227,7 @@ public class UserControllerTest {
         doNothing().when(this.userService).enable(anyLong());
 
         //WHEN ACT
-        ResultActions resultActions = mockMvc.perform(patch("/api/v1/user/active/{id}", anyLong())
+        ResultActions resultActions = mockMvc.perform(patch("/api/v1/user/enable/{id}", anyLong())
                 .accept(MediaType.APPLICATION_JSON));
 
         //THEN ASSERT

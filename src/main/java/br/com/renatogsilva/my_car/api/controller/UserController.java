@@ -80,7 +80,7 @@ public class UserController {
         this.userService.update(userId, userProfileRequestDTO);
     }
 
-    @PatchMapping(value = "/active/{id}")
+    @PatchMapping(value = "/enable/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Ativar usuário",
             tags = {"User"},
@@ -97,7 +97,7 @@ public class UserController {
         this.userService.enable(id);
     }
 
-    @PatchMapping(value = "/desactive/{id}")
+    @PatchMapping(value = "/disable/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Inativar usuário",
             tags = {"User"},
