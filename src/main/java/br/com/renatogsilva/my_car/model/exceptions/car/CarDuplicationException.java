@@ -2,7 +2,9 @@ package br.com.renatogsilva.my_car.model.exceptions.car;
 
 import br.com.renatogsilva.my_car.model.exceptions.basic.ObjectDuplicationException;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class CarDuplicationException extends ObjectDuplicationException {
     private int code;

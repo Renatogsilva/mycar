@@ -43,8 +43,8 @@ public class UserServiceImpl implements UserService {
     public UserResponseDTO create(UserRequestDTO userRequestDTO) {
         logger.info("m: create - Creating a new user {}", userRequestDTO);
 
-        userBusinessRules.validateInclusioRules(userRequestDTO);
-        personBusinessRules.validateInclusioRules(userRequestDTO.getPersonRequestDTO());
+        userBusinessRules.validateInclusionRules(userRequestDTO);
+        personBusinessRules.validateInclusionRules(userRequestDTO.getPersonRequestDTO());
 
         User user = UserMapper.INSTANCE.toUser(userRequestDTO);
         user.setStatus(EnumStatus.ACTIVE);

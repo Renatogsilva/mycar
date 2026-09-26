@@ -80,8 +80,8 @@ public class UserServiceTest {
         User userPersisted = FactoryUser.user().persisted().build();
         Person personPersisted = FactoryPerson.person().persisted().build();
 
-        doNothing().when(this.userBusinessRules).validateInclusioRules(any(UserRequestDTO.class));
-        doNothing().when(this.personBusinessRules).validateInclusioRules(any(PersonRequestDTO.class));
+        doNothing().when(this.userBusinessRules).validateInclusionRules(any(UserRequestDTO.class));
+        doNothing().when(this.personBusinessRules).validateInclusionRules(any(PersonRequestDTO.class));
 
         when(this.personService.create(any(Person.class))).thenReturn(personPersisted);
         when(this.userRepository.save(any(User.class))).thenReturn(userPersisted);
@@ -100,8 +100,8 @@ public class UserServiceTest {
         User userCaptor = userArgumentCaptor.getValue();
         Person personCaptor = personArgumentCaptor.getValue();
 
-        verify(this.userBusinessRules).validateInclusioRules(any(UserRequestDTO.class));
-        verify(this.personBusinessRules).validateInclusioRules(any(PersonRequestDTO.class));
+        verify(this.userBusinessRules).validateInclusionRules(any(UserRequestDTO.class));
+        verify(this.personBusinessRules).validateInclusionRules(any(PersonRequestDTO.class));
         verify(this.bCryptPasswordEncoder).encode(userRequestDTO.getPersonRequestDTO().getCpf());
 
         Assertions.assertNotNull(personCaptor);

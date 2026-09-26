@@ -44,7 +44,7 @@ public class UserBusinessRulesTest {
 
         //WHEN ACT
         UserDuplicationException userDuplicationException = Assertions.assertThrows(UserDuplicationException.class, () -> {
-            this.userBusinessRules.validateInclusioRules(userRequestDTO);
+            this.userBusinessRules.validateInclusionRules(userRequestDTO);
         });
 
         //THEN ASSERT
@@ -98,7 +98,7 @@ public class UserBusinessRulesTest {
                 userRequestDTO.getUsername())).thenReturn(null);
 
         //WHEN ACT
-        this.userBusinessRules.validateInclusioRules(userRequestDTO);
+        this.userBusinessRules.validateInclusionRules(userRequestDTO);
 
         //THEN ASSERT
         verify(this.userRepository).findUserDuplicateByUserIdAndLogin(userRequestDTO.getUserId(), userRequestDTO.getUsername());

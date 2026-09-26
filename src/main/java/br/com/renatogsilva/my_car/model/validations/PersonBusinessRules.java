@@ -29,7 +29,7 @@ public class PersonBusinessRules {
         }
     }
 
-    public void validateInclusioRules(PersonRequestDTO personRequestDTO) {
+    public void validateInclusionRules(PersonRequestDTO personRequestDTO) {
         validatePersonDuplicateByPersonIdAndCpfAndEmail(personRequestDTO.getPersonId(),
                 personRequestDTO.getCpf(), personRequestDTO.getEmail());
     }

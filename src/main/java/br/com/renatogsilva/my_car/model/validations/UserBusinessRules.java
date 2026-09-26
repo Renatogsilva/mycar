@@ -29,7 +29,7 @@ public class UserBusinessRules {
         }
     }
 
-    public void validateInclusioRules(UserRequestDTO userRequestDTO) {
+    public void validateInclusionRules(UserRequestDTO userRequestDTO) {
         validateUserDuplicateByUserIdAndLogin(userRequestDTO.getUserId(), userRequestDTO.getUsername());
     }
 
