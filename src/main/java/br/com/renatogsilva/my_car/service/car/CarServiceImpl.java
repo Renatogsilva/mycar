@@ -6,6 +6,7 @@ import br.com.renatogsilva.my_car.model.domain.User;
 import br.com.renatogsilva.my_car.model.dto.car.CarRequestDTO;
 import br.com.renatogsilva.my_car.model.dto.car.CarResponseDTO;
 import br.com.renatogsilva.my_car.model.dto.car.CarResponseListDTO;
+import br.com.renatogsilva.my_car.model.enums.EnumExchange;
 import br.com.renatogsilva.my_car.model.enums.EnumMessageCarExceptions;
 import br.com.renatogsilva.my_car.model.enums.EnumStatus;
 import br.com.renatogsilva.my_car.model.exceptions.car.CarNotFoundException;
@@ -15,6 +16,8 @@ import br.com.renatogsilva.my_car.service.auth.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -120,14 +123,17 @@ public class CarServiceImpl implements CarService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<CarResponseListDTO> findAll() {
+    public Page<CarResponseListDTO> findAllByFilters(EnumStatus status, EnumExchange exchange, Pageable pageable) {
         logger.info("m: findAll - Finding all cars");
 
-        List<Car> cars = this.carRepository.findAll();
+        String statusValue = status != null ? status.name() : null;
+        String exchangeValue = exchange != null ? exchange.name() : null;
+
+        Page<Car> cars = this.carRepository.findAllByFilters(statusValue, exchangeValue, pageable);
 
         logger.info("m: findAll - Cars found successfully");
 
-        return CarMapper.INSTANCE.toCarResponseListDto(cars);
+        return cars.map(CarMapper.INSTANCE::toCarResponseListDto);
     }
 
     @Transactional(readOnly = true)

@@ -17,6 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -173,52 +177,110 @@ public class CarControllerTest {
     }
 
     @Test
-    @DisplayName(value = "Should bring a list of vehicles")
-    public void shouldBringAListOfVehicles() throws Exception {
-        CarResponseListDTO carResponseDTOFiat = new CarResponseListDTO(1L, "Fiat", 2020,
+    @DisplayName("Should bring a page of vehicles")
+    void shouldBringAPageOfVehicles() throws Exception {
+
+        CarResponseListDTO carResponseDTOFiat = new CarResponseListDTO(
+                1L, "Fiat", 2020,
                 "1.0 Turbo", "Cronos",
-                EnumStatus.ACTIVE, EnumStatus.ACTIVE.getDescription());
+                EnumStatus.ACTIVE,
+                EnumStatus.ACTIVE.getDescription()
+        );
 
-        CarResponseListDTO carResponseDTOWolkswagem = new CarResponseListDTO(2L, "Wolkswagem", 2021,
+        CarResponseListDTO carResponseDTOWolkswagem = new CarResponseListDTO(
+                2L, "Wolkswagem", 2021,
                 "1.6", "Polo MSI",
-                EnumStatus.ACTIVE, EnumStatus.ACTIVE.getDescription());
+                EnumStatus.ACTIVE,
+                EnumStatus.ACTIVE.getDescription()
+        );
 
-        CarResponseListDTO carResponseDTOChevrolet = new CarResponseListDTO(3L, "Chevrolet", 2023,
+        CarResponseListDTO carResponseDTOChevrolet = new CarResponseListDTO(
+                3L, "Chevrolet", 2023,
                 "1.6", "Onix",
-                EnumStatus.ACTIVE, EnumStatus.ACTIVE.getDescription());
+                EnumStatus.ACTIVE,
+                EnumStatus.ACTIVE.getDescription()
+        );
 
-        List<CarResponseListDTO> list = List.of(carResponseDTOFiat, carResponseDTOWolkswagem, carResponseDTOChevrolet);
+        List<CarResponseListDTO> list = List.of(
+                carResponseDTOFiat,
+                carResponseDTOWolkswagem,
+                carResponseDTOChevrolet
+        );
 
-        when(carService.findAll()).thenReturn(list);
+        Pageable pageable = PageRequest.of(0, 10);
 
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/car")
-                .accept(MediaType.APPLICATION_JSON));
+        Page<CarResponseListDTO> page =
+                new PageImpl<>(list, pageable, list.size());
+
+        when(carService.findAllByFilters(
+                eq(null),
+                eq(null),
+                any(Pageable.class)
+        )).thenReturn(page);
+
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/car")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .accept(MediaType.APPLICATION_JSON)
+        );
 
         resultActions
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$").isNotEmpty())
-                .andExpect(jsonPath("$.size()").value(list.size()));
+                .andExpect(jsonPath("$.content").isNotEmpty())
+                .andExpect(jsonPath("$.content.length()").value(list.size()))
+                .andExpect(jsonPath("$.totalElements").value(list.size()))
+                .andExpect(jsonPath("$.totalPages").value(1))
+                .andExpect(jsonPath("$.number").value(0))
+                .andExpect(jsonPath("$.size").value(10));
 
-        verify(carService).findAll();
-        verify(carService, times(1)).findAll();
+        verify(carService, times(1))
+                .findAllByFilters(
+                        eq(null),
+                        eq(null),
+                        any(Pageable.class)
+                );
     }
 
     @Test
-    @DisplayName(value = "Should bring an empty list of vehicles")
-    public void shouldBringAnEmptyListOfVehicles() throws Exception {
-        List<CarResponseListDTO> list = List.of();
-        when(carService.findAll()).thenReturn(list);
+    @DisplayName("Should bring an empty page of vehicles")
+    void shouldBringAnEmptyPageOfVehicles() throws Exception {
 
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/car")
-                .accept(MediaType.APPLICATION_JSON));
+        List<CarResponseListDTO> list = List.of();
+
+        Pageable pageable = PageRequest.of(0, 10);
+
+        Page<CarResponseListDTO> page =
+                new PageImpl<>(list, pageable, 0);
+
+        when(carService.findAllByFilters(
+                eq(null),
+                eq(null),
+                any(Pageable.class)
+        )).thenReturn(page);
+
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/car")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .accept(MediaType.APPLICATION_JSON)
+        );
 
         resultActions
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$").isEmpty())
-                .andExpect(jsonPath("$.size()").value(list.size()));
+                .andExpect(jsonPath("$.content").isEmpty())
+                .andExpect(jsonPath("$.totalElements").value(0))
+                .andExpect(jsonPath("$.totalPages").value(0))
+                .andExpect(jsonPath("$.number").value(0))
+                .andExpect(jsonPath("$.size").value(10))
+                .andExpect(jsonPath("$.empty").value(true));
 
-        verify(carService).findAll();
-        verify(carService, times(1)).findAll();
+        verify(carService, times(1))
+                .findAllByFilters(
+                        eq(null),
+                        eq(null),
+                        any(Pageable.class)
+                );
     }
 
     @Test

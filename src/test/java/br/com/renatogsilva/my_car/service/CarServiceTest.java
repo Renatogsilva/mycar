@@ -5,6 +5,7 @@ import br.com.renatogsilva.my_car.model.domain.User;
 import br.com.renatogsilva.my_car.model.dto.car.CarRequestDTO;
 import br.com.renatogsilva.my_car.model.dto.car.CarResponseDTO;
 import br.com.renatogsilva.my_car.model.dto.car.CarResponseListDTO;
+import br.com.renatogsilva.my_car.model.enums.EnumExchange;
 import br.com.renatogsilva.my_car.model.enums.EnumMessageCarExceptions;
 import br.com.renatogsilva.my_car.model.enums.EnumStatus;
 import br.com.renatogsilva.my_car.model.exceptions.car.CarDuplicationException;
@@ -23,6 +24,10 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -328,19 +333,99 @@ public class CarServiceTest {
     }
 
     @Test
-    @DisplayName("Should return a list of records")
-    void shouldReturnAListOfRecords() {
+    @DisplayName("Should return a page of records")
+    void shouldReturnAPageOfRecords() {
         List<Car> cars = FactoryCar.createListValidCarObject();
-        List<CarResponseListDTO> carsResponseDto = FactoryCar.carResponseListDTOList();
+        List<CarResponseListDTO> carsResponseDto =
+                FactoryCar.carResponseListDTOList();
 
-        given(this.carRepository.findAll()).willReturn(cars);
+        Pageable pageable = PageRequest.of(0, 10);
 
-        List<CarResponseListDTO> carsResponseDtoList = this.carServiceImpl.findAll();
+        Page<Car> carsPage = new PageImpl<>(
+                cars,
+                pageable,
+                cars.size()
+        );
 
-        assertNotNull(carsResponseDtoList);
-        assertEquals(carsResponseDto, carsResponseDtoList);
-        assertEquals(1, carsResponseDtoList.size());
+        given(this.carRepository.findAllByFilters(
+                null,
+                null,
+                pageable
+        )).willReturn(carsPage);
 
-        verify(this.carRepository, times(1)).findAll();
+        Page<CarResponseListDTO> carsResponseDtoPage =
+                this.carServiceImpl.findAllByFilters(
+                        null,
+                        null,
+                        pageable
+                );
+
+        assertNotNull(carsResponseDtoPage);
+        assertEquals(carsResponseDto.size(), carsResponseDtoPage.getContent().size());
+        assertEquals(carsResponseDto, carsResponseDtoPage.getContent());
+
+        assertEquals(1, carsResponseDtoPage.getTotalElements());
+        assertEquals(1, carsResponseDtoPage.getTotalPages());
+        assertEquals(0, carsResponseDtoPage.getNumber());
+        assertEquals(10, carsResponseDtoPage.getSize());
+
+        verify(this.carRepository, times(1))
+                .findAllByFilters(null, null, pageable);
+    }
+
+    @Test
+    @DisplayName("Should return a page of records filtered by status and exchange")
+    void shouldReturnAPageOfRecordsFilteredByStatusAndExchange() {
+        List<Car> cars = FactoryCar.createListValidCarObject();
+        List<CarResponseListDTO> carsResponseDto =
+                FactoryCar.carResponseListDTOList();
+
+        Pageable pageable = PageRequest.of(0, 10);
+
+        Page<Car> carsPage = new PageImpl<>(
+                cars,
+                pageable,
+                cars.size()
+        );
+
+        given(this.carRepository.findAllByFilters(
+                EnumStatus.ACTIVE.name(),
+                EnumExchange.AUTOMATIC.name(),
+                pageable
+        )).willReturn(carsPage);
+
+        Page<CarResponseListDTO> carsResponseDtoPage =
+                this.carServiceImpl.findAllByFilters(
+                        EnumStatus.ACTIVE,
+                        EnumExchange.AUTOMATIC,
+                        pageable
+                );
+
+        assertNotNull(carsResponseDtoPage);
+
+        assertEquals(
+                carsResponseDto,
+                carsResponseDtoPage.getContent()
+        );
+
+        assertEquals(
+                carsResponseDto.size(),
+                carsResponseDtoPage.getNumberOfElements()
+        );
+
+        assertEquals(
+                cars.size(),
+                carsResponseDtoPage.getTotalElements()
+        );
+
+        assertEquals(0, carsResponseDtoPage.getNumber());
+        assertEquals(10, carsResponseDtoPage.getSize());
+
+        verify(this.carRepository, times(1))
+                .findAllByFilters(
+                        EnumStatus.ACTIVE.name(),
+                        EnumExchange.AUTOMATIC.name(),
+                        pageable
+                );
     }
 }
