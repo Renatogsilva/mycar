@@ -19,12 +19,13 @@ import br.com.renatogsilva.my_car.utils.GeneralFunctions;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -128,14 +129,17 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<UserResponseListDTO> findAll() {
+    public Page<UserResponseListDTO> findAllByFilters(EnumStatus status, EnumTypeUser typeUser, Pageable pageable) {
         logger.info("m: findAll - Finding all users");
 
-        List<User> users = this.userRepository.findAll();
+        String statusValue = status != null ? status.name() : null;
+        String typeUserValue = typeUser != null ? typeUser.name() : null;
+
+        Page<User> users = this.userRepository.findAllByFilters(statusValue, typeUserValue, pageable);
 
         logger.info("m: findAll - Users found successfully");
 
-        return UserMapper.INSTANCE.toUserResponseListDTO(users);
+        return users.map(UserMapper.INSTANCE::toUserResponseListDTO);
     }
 
     @Transactional

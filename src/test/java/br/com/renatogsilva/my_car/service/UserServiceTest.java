@@ -29,6 +29,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.ArrayList;
@@ -249,35 +253,235 @@ public class UserServiceTest {
     }
 
     @Test
-    @DisplayName("Should find all users successfully")
-    public void shouldFindAllUsersSuccessfully() {
-        //GIVEN ASSERT
-        List<User> usersFromDB = new ArrayList<>(
-                List.of(FactoryUser.user().persisted().build(),
-                        FactoryUser.user().persisted().withUserId(2L).withUsername("lista.gmail").build(),
-                        FactoryUser.user().persisted().withUserId(3L).withUsername("terceiro.gmail").build()));
+    @DisplayName("Should find all users by filters successfully")
+    void shouldFindAllUsersByFiltersSuccessfully() {
+        // GIVEN
+        List<User> usersFromDB = List.of(
+                FactoryUser.user()
+                        .persisted()
+                        .build(),
 
-        when(this.userRepository.findAll()).thenReturn(usersFromDB);
-        //WHEN ACT
-        List<UserResponseListDTO> userResponseDTOList = this.userService.findAll();
+                FactoryUser.user()
+                        .persisted()
+                        .withUserId(2L)
+                        .withUsername("lista.gmail")
+                        .build(),
 
-        //THEN ASSERT
-        verify(this.userRepository).findAll();
+                FactoryUser.user()
+                        .persisted()
+                        .withUserId(3L)
+                        .withUsername("terceiro.gmail")
+                        .build()
+        );
+
+        Pageable pageable = PageRequest.of(0, 10);
+
+        Page<User> usersPage = new PageImpl<>(
+                usersFromDB,
+                pageable,
+                usersFromDB.size()
+        );
+
+        when(this.userRepository.findAllByFilters(
+                EnumStatus.ACTIVE.name(),
+                EnumTypeUser.ADMIN.name(),
+                pageable
+        )).thenReturn(usersPage);
+
+        // WHEN
+        Page<UserResponseListDTO> userResponseDTOPage =
+                this.userService.findAllByFilters(
+                        EnumStatus.ACTIVE,
+                        EnumTypeUser.ADMIN,
+                        pageable
+                );
+
+        // THEN
+        verify(this.userRepository).findAllByFilters(
+                EnumStatus.ACTIVE.name(),
+                EnumTypeUser.ADMIN.name(),
+                pageable
+        );
+
         verifyNoMoreInteractions(this.userRepository);
 
         Assertions.assertAll(
                 "Assert Group",
-                () -> Assertions.assertEquals(3, userResponseDTOList.size()),
-                () -> Assertions.assertNotNull(userResponseDTOList.get(0)),
-                () -> Assertions.assertNotNull(userResponseDTOList.get(1)),
-                () -> Assertions.assertNotNull(userResponseDTOList.get(2)),
-                () -> Assertions.assertEquals(usersFromDB.get(0).getPerson().getFirstName() + " " +
-                        usersFromDB.get(0).getPerson().getLastName(), userResponseDTOList.get(0).getFullName()),
-                () -> Assertions.assertEquals(EnumStatus.ACTIVE, userResponseDTOList.get(0).getStatus()),
-                () -> Assertions.assertEquals(EnumStatus.ACTIVE.getDescription(), userResponseDTOList.get(0).getStatus().getDescription())
+
+                () -> Assertions.assertEquals(
+                        3,
+                        userResponseDTOPage.getTotalElements()
+                ),
+
+                () -> Assertions.assertEquals(
+                        3,
+                        userResponseDTOPage.getContent().size()
+                ),
+
+                () -> Assertions.assertNotNull(
+                        userResponseDTOPage.getContent().get(0)
+                ),
+
+                () -> Assertions.assertNotNull(
+                        userResponseDTOPage.getContent().get(1)
+                ),
+
+                () -> Assertions.assertNotNull(
+                        userResponseDTOPage.getContent().get(2)
+                ),
+
+                () -> Assertions.assertEquals(
+                        usersFromDB.get(0).getPerson().getFirstName() + " " +
+                                usersFromDB.get(0).getPerson().getLastName(),
+                        userResponseDTOPage.getContent().get(0).getFullName()
+                ),
+
+                () -> Assertions.assertEquals(
+                        EnumStatus.ACTIVE,
+                        userResponseDTOPage.getContent().get(0).getStatus()
+                ),
+
+                () -> Assertions.assertEquals(
+                        EnumStatus.ACTIVE.getDescription(),
+                        userResponseDTOPage.getContent().get(0).getStatus().getDescription()
+                )
         );
     }
 
+    @Test
+    @DisplayName("Should convert status and typeUser to String successfully")
+    void shouldConvertStatusAndTypeUserToStringSuccessfully() {
+        // GIVEN
+        Pageable pageable = PageRequest.of(0, 10);
+
+        Page<User> usersPage = new PageImpl<>(
+                List.of(),
+                pageable,
+                0
+        );
+
+        when(this.userRepository.findAllByFilters(
+                "ACTIVE",
+                "ADMIN",
+                pageable
+        )).thenReturn(usersPage);
+
+        // WHEN
+        this.userService.findAllByFilters(
+                EnumStatus.ACTIVE,
+                EnumTypeUser.ADMIN,
+                pageable
+        );
+
+        // THEN
+        verify(this.userRepository).findAllByFilters(
+                "ACTIVE",
+                "ADMIN",
+                pageable
+        );
+    }
+
+    @Test
+    @DisplayName("Should convert status and keep typeUser as null")
+    void shouldConvertStatusAndKeepTypeUserAsNull() {
+        // GIVEN
+        Pageable pageable = PageRequest.of(0, 10);
+
+        Page<User> usersPage = new PageImpl<>(
+                List.of(),
+                pageable,
+                0
+        );
+
+        when(this.userRepository.findAllByFilters(
+                "ACTIVE",
+                null,
+                pageable
+        )).thenReturn(usersPage);
+
+        // WHEN
+        this.userService.findAllByFilters(
+                EnumStatus.ACTIVE,
+                null,
+                pageable
+        );
+
+        // THEN
+        verify(this.userRepository).findAllByFilters(
+                "ACTIVE",
+                null,
+                pageable
+        );
+    }
+
+    @Test
+    @DisplayName("Should keep status as null and convert typeUser to String")
+    void shouldKeepStatusAsNullAndConvertTypeUserToString() {
+
+        // GIVEN
+        Pageable pageable = PageRequest.of(0, 10);
+
+        Page<User> usersPage = new PageImpl<>(
+                List.of(),
+                pageable,
+                0
+        );
+
+        when(this.userRepository.findAllByFilters(
+                null,
+                "ADMIN",
+                pageable
+        )).thenReturn(usersPage);
+
+        // WHEN
+        this.userService.findAllByFilters(
+                null,
+                EnumTypeUser.ADMIN,
+                pageable
+        );
+
+        // THEN
+        verify(this.userRepository).findAllByFilters(
+                null,
+                "ADMIN",
+                pageable
+        );
+    }
+
+    @Test
+    @DisplayName("Should keep status and typeUser as null")
+    void shouldKeepStatusAndTypeUserAsNull() {
+
+        // GIVEN
+        Pageable pageable = PageRequest.of(0, 10);
+
+        Page<User> usersPage = new PageImpl<>(
+                List.of(),
+                pageable,
+                0
+        );
+
+        when(this.userRepository.findAllByFilters(
+                null,
+                null,
+                pageable
+        )).thenReturn(usersPage);
+
+        // WHEN
+        this.userService.findAllByFilters(
+                null,
+                null,
+                pageable
+        );
+
+        // THEN
+        verify(this.userRepository).findAllByFilters(
+                null,
+                null,
+                pageable
+        );
+    }
+    
     @Test
     @DisplayName("Should enable user by id successfully")
     public void shouldEnableUserByIdSuccessfully() {

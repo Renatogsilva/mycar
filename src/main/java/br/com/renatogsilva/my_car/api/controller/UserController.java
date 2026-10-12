@@ -4,6 +4,8 @@ import br.com.renatogsilva.my_car.model.dto.user.UserProfileRequestDTO;
 import br.com.renatogsilva.my_car.model.dto.user.UserRequestDTO;
 import br.com.renatogsilva.my_car.model.dto.user.UserResponseDTO;
 import br.com.renatogsilva.my_car.model.dto.user.UserResponseListDTO;
+import br.com.renatogsilva.my_car.model.enums.EnumStatus;
+import br.com.renatogsilva.my_car.model.enums.EnumTypeUser;
 import br.com.renatogsilva.my_car.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -12,11 +14,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -141,9 +143,9 @@ public class UserController {
                     @ApiResponse(responseCode = "401", description = "Usuário não autenticado"),
                     @ApiResponse(responseCode = "403", description = "Usuário sem permissão"),
                     @ApiResponse(responseCode = "500", description = "Erro ao consultar lista de usuários")}, method = "GET")
-    public List<UserResponseListDTO> findAll() {
+    public Page<UserResponseListDTO> findAllByStatusAndTypeUser(@RequestParam(required = false) EnumStatus status, @RequestParam(required = false) EnumTypeUser typeUser, Pageable pageable) {
         logger.info("m: findAll - receiving request to find all user objects");
 
-        return this.userService.findAll();
+        return this.userService.findAllByFilters(status, typeUser, pageable);
     }
 }

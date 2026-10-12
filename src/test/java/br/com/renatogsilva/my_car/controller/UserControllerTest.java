@@ -8,6 +8,7 @@ import br.com.renatogsilva.my_car.model.dto.user.UserRequestDTO;
 import br.com.renatogsilva.my_car.model.dto.user.UserResponseDTO;
 import br.com.renatogsilva.my_car.model.dto.user.UserResponseListDTO;
 import br.com.renatogsilva.my_car.model.enums.EnumStatus;
+import br.com.renatogsilva.my_car.model.enums.EnumTypeUser;
 import br.com.renatogsilva.my_car.service.user.UserService;
 import br.com.renatogsilva.my_car.utils.user.FactoryUser;
 import br.com.renatogsilva.my_car.utils.user.FactoryUserProfileRequesDTO;
@@ -21,6 +22,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -154,53 +159,119 @@ public class UserControllerTest {
     }
 
     @Test
-    @DisplayName(value = "Should bring a list of users")
-    public void shouldBringAListOfUsers() throws Exception {
-        //GIVEN ARRANGE
-        UserResponseListDTO userResponseListDTOUm = new UserResponseListDTO(1L, "Full last name", "teste.com@email.com",
-                "085.549.795-80", "Masculino", EnumStatus.ACTIVE, EnumStatus.ACTIVE.getDescription());
+    @DisplayName("Should bring a list of users")
+    void shouldBringAListOfUsers() throws Exception {
+        // GIVEN
+        UserResponseListDTO userResponseListDTOUm =
+                new UserResponseListDTO(
+                        1L,
+                        "Full last name",
+                        "teste.com@email.com",
+                        "085.549.795-80",
+                        "Masculino",
+                        EnumStatus.ACTIVE,
+                        EnumStatus.ACTIVE.getDescription()
+                );
 
-        UserResponseListDTO userResponseListDTODois = new UserResponseListDTO(1L, "Full last name", "teste.com@email.com",
-                "085.549.795-80", "Feminino", EnumStatus.ACTIVE, EnumStatus.ACTIVE.getDescription());
+        UserResponseListDTO userResponseListDTODois =
+                new UserResponseListDTO(
+                        2L,
+                        "Full last name",
+                        "teste2@email.com",
+                        "085.549.795-81",
+                        "Feminino",
+                        EnumStatus.ACTIVE,
+                        EnumStatus.ACTIVE.getDescription()
+                );
 
-        List<UserResponseListDTO> list = List.of(userResponseListDTOUm, userResponseListDTODois);
+        List<UserResponseListDTO> users = List.of(
+                userResponseListDTOUm,
+                userResponseListDTODois
+        );
 
-        when(this.userService.findAll()).thenReturn(list);
+        Pageable pageable = PageRequest.of(0, 10);
 
-        //WHEN ACT
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/user")
-                .accept(MediaType.APPLICATION_JSON));
+        Page<UserResponseListDTO> page =
+                new PageImpl<>(users, pageable, users.size());
 
-        //THEN ASSERT
+        when(this.userService.findAllByFilters(
+                EnumStatus.ACTIVE,
+                EnumTypeUser.ADMIN,
+                pageable
+        )).thenReturn(page);
+
+        // WHEN
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/user")
+                        .param("status", "ACTIVE")
+                        .param("typeUser", "ADMIN")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .accept(MediaType.APPLICATION_JSON)
+        );
+
+        // THEN
         resultActions
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$").isNotEmpty())
-                .andExpect(jsonPath("$.size()").value(list.size()));
+                .andExpect(jsonPath("$.content").isNotEmpty())
+                .andExpect(jsonPath("$.content.size()").value(users.size()))
+                .andExpect(jsonPath("$.totalElements").value(users.size()))
+                .andExpect(jsonPath("$.number").value(0))
+                .andExpect(jsonPath("$.size").value(10));
 
-        verify(this.userService).findAll();
-        verify(this.userService, times(1)).findAll();
+        verify(this.userService).findAllByFilters(
+                EnumStatus.ACTIVE,
+                EnumTypeUser.ADMIN,
+                pageable
+        );
+
+        verifyNoMoreInteractions(this.userService);
     }
 
     @Test
-    @DisplayName(value = "Should bring an empty list of users")
-    public void shouldBringAnEmptyListOfUsers() throws Exception {
-        //GIVEN ARRANGE
-        List<UserResponseListDTO> list = List.of();
+    @DisplayName("Should bring an empty list of users")
+    void shouldBringAnEmptyListOfUsers() throws Exception {
 
-        when(this.userService.findAll()).thenReturn(list);
+        // GIVEN
+        Pageable pageable = PageRequest.of(0, 10);
 
-        //WHEN ACT
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/user")
-                .accept(MediaType.APPLICATION_JSON));
+        Page<UserResponseListDTO> page = new PageImpl<>(
+                List.of(),
+                pageable,
+                0
+        );
 
-        //THEN ASSERT
+        when(this.userService.findAllByFilters(
+                null,
+                null,
+                pageable
+        )).thenReturn(page);
+
+        // WHEN
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/user")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .accept(MediaType.APPLICATION_JSON)
+        );
+
+        // THEN
         resultActions
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$").isEmpty())
-                .andExpect(jsonPath("$.size()").value(list.size()));
+                .andExpect(jsonPath("$.content").isEmpty())
+                .andExpect(jsonPath("$.content.size()").value(0))
+                .andExpect(jsonPath("$.totalElements").value(0))
+                .andExpect(jsonPath("$.totalPages").value(0))
+                .andExpect(jsonPath("$.number").value(0))
+                .andExpect(jsonPath("$.size").value(10));
 
-        verify(this.userService).findAll();
-        verify(this.userService, times(1)).findAll();
+        verify(this.userService).findAllByFilters(
+                null,
+                null,
+                pageable
+        );
+
+        verifyNoMoreInteractions(this.userService);
     }
 
     @Test
