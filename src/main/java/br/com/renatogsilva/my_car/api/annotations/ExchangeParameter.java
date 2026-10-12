@@ -1,4 +1,4 @@
-package br.com.renatogsilva.my_car.shared.annotations;
+package br.com.renatogsilva.my_car.api.annotations;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;

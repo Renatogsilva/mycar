@@ -1,4 +1,4 @@
-package br.com.renatogsilva.my_car.shared.annotations;
+package br.com.renatogsilva.my_car.api.annotations;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -15,15 +15,15 @@ import java.lang.annotation.Target;
 })
 @Retention(RetentionPolicy.RUNTIME)
 @Parameter(
-        description = "Status do usuário",
+        description = "Perfil do usuário",
         schema = @Schema(
                 type = "string",
                 allowableValues = {
-                        "ACTIVE",
-                        "INACTIVE",
-                        "DELETED"
+                        "ADMIN",
+                        "USER",
+                        "NOT_PERMISSION"
                 }
         )
 )
-public @interface StatusParameter {
+public @interface TypeUserParameter {
 }
