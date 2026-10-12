@@ -6,14 +6,18 @@ import br.com.renatogsilva.my_car.model.dto.user.UserResponseDTO;
 import br.com.renatogsilva.my_car.model.dto.user.UserResponseListDTO;
 import br.com.renatogsilva.my_car.model.enums.EnumStatus;
 import br.com.renatogsilva.my_car.model.enums.EnumTypeUser;
+import br.com.renatogsilva.my_car.shared.annotations.StatusParameter;
 import br.com.renatogsilva.my_car.service.user.UserService;
+import br.com.renatogsilva.my_car.shared.annotations.TypeUserParameter;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -143,7 +147,9 @@ public class UserController {
                     @ApiResponse(responseCode = "401", description = "Usuário não autenticado"),
                     @ApiResponse(responseCode = "403", description = "Usuário sem permissão"),
                     @ApiResponse(responseCode = "500", description = "Erro ao consultar lista de usuários")}, method = "GET")
-    public Page<UserResponseListDTO> findAllByStatusAndTypeUser(@RequestParam(required = false) EnumStatus status, @RequestParam(required = false) EnumTypeUser typeUser, Pageable pageable) {
+    public Page<UserResponseListDTO> findAllByStatusAndTypeUser(@RequestParam(required = false) @StatusParameter EnumStatus status,
+                                                                @RequestParam(required = false) @TypeUserParameter EnumTypeUser typeUser,
+                                                                @ParameterObject Pageable pageable) {
         logger.info("m: findAll - receiving request to find all user objects");
 
         return this.userService.findAllByFilters(status, typeUser, pageable);

@@ -15,7 +15,7 @@ public interface UserRepository extends JpaRepository<User, Long>, UserRepositor
 
     public User findUserByUsername(String username);
 
-    @Query(nativeQuery = true, value = "SELECT *FROM tb_user as u " +
+    @Query(nativeQuery = true, value = "SELECT u.* FROM tb_user u " +
             " WHERE (:status IS NULL OR u.status = :status)" +
             " AND (:typeUser IS NULL OR u.type_user = :typeUser)")
     public Page<User> findAllByFilters(@Param("status") String status, @Param("typeUser") String typeUser, Pageable pageable);

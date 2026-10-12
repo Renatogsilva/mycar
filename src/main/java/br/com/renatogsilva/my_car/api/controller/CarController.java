@@ -6,6 +6,8 @@ import br.com.renatogsilva.my_car.model.dto.car.CarResponseListDTO;
 import br.com.renatogsilva.my_car.model.enums.EnumExchange;
 import br.com.renatogsilva.my_car.model.enums.EnumStatus;
 import br.com.renatogsilva.my_car.service.car.CarService;
+import br.com.renatogsilva.my_car.shared.annotations.ExchangeParameter;
+import br.com.renatogsilva.my_car.shared.annotations.StatusParameter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -13,6 +15,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -89,7 +92,9 @@ public class CarController {
                     @ApiResponse(responseCode = "401", description = "Usuário não autenticado"),
                     @ApiResponse(responseCode = "403", description = "Usuário sem permissão"),
                     @ApiResponse(responseCode = "500", description = "Erro ao consultar veículo")}, method = "GET")
-    public Page<CarResponseListDTO> findAllByStatusAndExchange(@RequestParam(required = false) EnumStatus status, @RequestParam(required = false) EnumExchange exchange, Pageable pageable) {
+    public Page<CarResponseListDTO> findAllByStatusAndExchange(@RequestParam(required = false) @StatusParameter EnumStatus status,
+                                                               @RequestParam(required = false) @ExchangeParameter EnumExchange exchange,
+                                                               @ParameterObject Pageable pageable) {
         logger.info("m: findAll - receiving request to find all cars objects");
 
         return this.carService.findAllByFilters(status, exchange, pageable);
