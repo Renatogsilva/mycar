@@ -25,8 +25,8 @@ cd my-car
 /mvnw spring-boot:run
 ```
 
-# Collection postman
-https://esterapf.postman.co/workspace/My-Workspace~0c96488b-e00c-4428-82d5-e422dd1dffce/folder/10337088-ce05701c-7426-464b-a309-e376d9082275?action=share&creator=10337088&ctx=documentation&active-environment=10337088-8f20346d-1ba8-409a-b6df-7b10558caae7
+# Workspace bruno
+[1 - MY CAR QA.zip](../../../Downloads/1%20-%20MY%20CAR%20QA.zip)
 
 # Autor
 Renato Gomes Silva
