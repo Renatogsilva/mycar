@@ -1,0 +1,727 @@
+{
+  "info": {
+    "name": "1 - MY CAR QA",
+    "description": null,
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1 - Authentication",
+      "item": [
+        {
+          "name": "1 - Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "",
+                "disabled": false,
+                "type": "default"
+              }
+            ],
+            "description": "",
+            "url": {
+              "raw": "{{url_base}}/api/v1/auth/login",
+              "protocol": "",
+              "host": [
+                "{{url_base}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\" : \"john.stewart\",\n  \"password\" : \"355.137.120-24\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "pm.environment.set(\"token\", pm.response.body.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "2 - Logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{url_base}}/api/v1/auth/logout",
+              "protocol": "",
+              "host": [
+                "{{url_base}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "logout"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2 - User",
+      "item": [
+        {
+          "name": "1 - Create",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "",
+                "disabled": false,
+                "type": "default"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{url_base}}/api/v1/user",
+              "protocol": "",
+              "host": [
+                "{{url_base}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"teste.55\",\n    \"personRequestDTO\": {\n        \"firstName\": \"Fulano\",\n        \"lastName\": \"De Tal\",\n        \"email\": \"fulado.de.tal@gmail.com\",\n        \"cpf\": \"451.732.600-41\",\n        \"sex\": 2,\n        \"birthDate\": \"1994-10-19\",\n        \"phonesRequestDTOs\": [\n            {\n                \"number\": \"(62)98452-8714\",\n                \"typePhone\": 1,\n                \"isMain\": true\n            }\n        ]\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "pm.environment.set(\"user_id\", pm.response.body.userId);",
+                  "pm.environment.set(\"person_id\", pm.response.body.personResponseDTO.personId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "2 - Update",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "",
+                "disabled": false,
+                "type": "default"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{url_base}}/api/v1/user/{{user_id}}",
+              "protocol": "",
+              "host": [
+                "{{url_base}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user",
+                "{{user_id}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"userId\": {{user_id}},\n    \"username\": \"john.stewart\",\n    \"personRequestDTO\": {\n        \"personId\": {{person_id}},\n        \"firstName\": \"John\",\n        \"lastName\": \"Stewart\",\n        \"email\": \"john.Stewart@gmail.com\",\n        \"cpf\": \"355.137.120-24\",\n        \"sex\": 1,\n        \"birthDate\": \"1990-08-19\",\n        \"phonesRequestDTOs\": [\n            {\n                \"phoneId\": 1,\n                \"number\": \"(62)98452-8700\",\n                \"typePhone\": 2,\n                \"isMain\": true\n            }\n        ]\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "3 - Get by id",
+          "request": {
+            "method": "get",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{url_base}}/api/v1/user/{{user_id}}",
+              "protocol": "",
+              "host": [
+                "{{url_base}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user",
+                "{{user_id}}"
+              ],
+              "query": [],
+              "variable": []
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "pm.environment.set(\"user_id\", pm.response.body.userId);",
+                  "pm.environment.set(\"person_id\", pm.response.body.personResponseDTO.personId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "4 - Find all",
+          "request": {
+            "method": "get",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{url_base}}/api/v1/user?status=ACTIVE&page=0&size=10",
+              "protocol": "",
+              "host": [
+                "{{url_base}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user?status=ACTIVE&page=0&size=10"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "ACTIVE"
+                },
+                {
+                  "key": "typeUser",
+                  "value": "ADMIN"
+                },
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "5 - Update password",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "",
+                "disabled": false,
+                "type": "default"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{url_base}}/api/v1/user/{{user_id}}/change-password",
+              "protocol": "",
+              "host": [
+                "{{url_base}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user",
+                "{{user_id}}",
+                "change-password"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"userId\": {{user_id}},\n    \"username\": \"john.stewart\",\n    \"email\": \"john.Stewart@gmail.com\",\n    \"currentPassword\": \"355.137.120-24\",\n    \"newPassword\": \"haljordan1234567\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "6 - Disable",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{url_base}}/api/v1/user/disable/{{user_id}}",
+              "protocol": "",
+              "host": [
+                "{{url_base}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user",
+                "disable",
+                "{{user_id}}"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "7 - Enable",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{url_base}}/api/v1/user/enable/{{user_id}}",
+              "protocol": "",
+              "host": [
+                "{{url_base}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user",
+                "enable",
+                "{{user_id}}"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3 - Car",
+      "item": [
+        {
+          "name": "1 - Create",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "",
+                "disabled": false,
+                "type": "default"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{url_base}}/api/v1/car",
+              "protocol": "",
+              "host": [
+                "{{url_base}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "car"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"mark\":\"Wolkswagem\",\n    \"yearOfManufacture\": 2026,\n    \"color\": \"Branco\",\n    \"bodyStyle\": \"HATCH\",\n    \"exchange\": 2,\n    \"engine\": \"1.0 TURBO\",\n    \"version\": \"VIRTUS TSI\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "pm.environment.set(\"carId\", pm.response.body.carId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "2 - Update",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "",
+                "disabled": false,
+                "type": "default"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{url_base}}/api/v1/car/{{carId}}",
+              "protocol": "",
+              "host": [
+                "{{url_base}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "car",
+                "{{carId}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"carId\": {{carId}},\n    \"mark\":\"Wolkswagen\",\n    \"yearOfManufacture\": 2020,\n    \"color\": \"Branco\",\n    \"bodyStyle\": \"sedan\",\n    \"exchange\": 2,\n    \"engine\": \"2.0\",\n    \"version\": \"Polo MSI\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "3 - Get by id",
+          "request": {
+            "method": "get",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{url_base}}/api/v1/car/{{carId}}",
+              "protocol": "",
+              "host": [
+                "{{url_base}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "car",
+                "{{carId}}"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "4 - Find all",
+          "request": {
+            "method": "get",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{url_base}}/api/v1/car?page=0&size=10",
+              "protocol": "",
+              "host": [
+                "{{url_base}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "car?page=0&size=10"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "INACTIVE"
+                },
+                {
+                  "key": "exchange",
+                  "value": "MANUAL"
+                },
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "5 - Disable",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{url_base}}/api/v1/car/disable/{{carId}}",
+              "protocol": "",
+              "host": [
+                "{{url_base}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "car",
+                "disable",
+                "{{carId}}"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "6 - Enable",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{url_base}}/api/v1/car/enable/{{carId}}",
+              "protocol": "",
+              "host": [
+                "{{url_base}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "car",
+                "enable",
+                "{{carId}}"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "url_base",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "carId",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "user_id",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "person_id",
+      "value": "",
+      "type": "default"
+    }
+  ]
+}
