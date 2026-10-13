@@ -26,7 +26,7 @@ cd my-car
 ```
 
 # Workspace bruno
-[1 - MY CAR QA.json](../../../Downloads/1%20-%20MY%20CAR%20QA.json)
+A collection para importação está localizada na raiz do projeto, no arquivo `1 - MY CAR QA.json`.
 
 # Swagger my car
 LOCAL: http://localhost:8181/swagger-ui/index.html
