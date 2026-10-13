@@ -23,6 +23,7 @@ public class PersonResponseDTO implements Serializable {
     private String email;
     private String cpf;
     private EnumSex sex;
+    private String sexDescription;
     private LocalDate birthDate;
     private List<PhoneResponseDTO> phonesResponseDTOs;
 }

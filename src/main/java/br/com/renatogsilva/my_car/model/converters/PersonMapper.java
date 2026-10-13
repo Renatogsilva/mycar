@@ -3,6 +3,7 @@ package br.com.renatogsilva.my_car.model.converters;
 import br.com.renatogsilva.my_car.model.domain.Person;
 import br.com.renatogsilva.my_car.model.dto.person.PersonRequestDTO;
 import br.com.renatogsilva.my_car.model.dto.person.PersonResponseDTO;
+import br.com.renatogsilva.my_car.model.enums.EnumSex;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
@@ -21,9 +22,14 @@ public interface PersonMapper {
 
     @Mapping(target = "phonesResponseDTOs", source = "phones")
     @Mapping(target = "fullName", expression = "java(concatFullName(person.getFirstName(), person.getLastName()))")
+    @Mapping(target = "sexDescription", expression = "java(getSexDescription(person.getSex()))")
     PersonResponseDTO toPersonResponseDTO(Person person);
 
     default String concatFullName(String firstName, String lastName) {
         return firstName + " " + lastName;
+    }
+
+    default String getSexDescription(EnumSex sex) {
+        return sex != null ? sex.getDescription() : null;
     }
 }

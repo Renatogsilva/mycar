@@ -15,6 +15,7 @@ import br.com.renatogsilva.my_car.model.exceptions.user.UserNotFoundException;
 import br.com.renatogsilva.my_car.model.validations.PersonBusinessRules;
 import br.com.renatogsilva.my_car.model.validations.UserBusinessRules;
 import br.com.renatogsilva.my_car.repository.user.UserRepository;
+import br.com.renatogsilva.my_car.service.auth.AuthenticationService;
 import br.com.renatogsilva.my_car.service.person.PersonService;
 import br.com.renatogsilva.my_car.service.user.UserServiceImpl;
 import br.com.renatogsilva.my_car.utils.GeneralFunctions;
@@ -60,6 +61,9 @@ public class UserServiceTest {
 
     @Mock
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Mock
+    private AuthenticationService authenticationService;
 
     @InjectMocks
     private UserServiceImpl userService;
@@ -129,6 +133,8 @@ public class UserServiceTest {
     @DisplayName("Should update user successfully")
     public void shouldUpdateUserSuccessfully() {
         //GIVEN ARRANGE
+        User authenticatedUser = FactoryUser.user().persisted().build();
+
         Long userId = 1L;
         PersonRequestDTO personRequestDTOToUpdate = FactoryPersonRequestDTO.personRequest().persisted()
                 .withName("First Name Updated", "Last Name Updated").build();
@@ -152,6 +158,7 @@ public class UserServiceTest {
         doNothing().when(this.userBusinessRules).validateUpdateRules(any(UserRequestDTO.class));
         doNothing().when(this.personBusinessRules).validateUpdateRules(any(PersonRequestDTO.class));
 
+        when(authenticationService.getAuthenticatedUser()).thenReturn(authenticatedUser);
         when(this.userRepository.findById(userId)).thenReturn(Optional.of(userFromDB));
         when(this.personService.update(any(Person.class))).thenReturn(updatedUserEntity.getPerson());
         when(this.userRepository.save(any(User.class))).thenReturn(updatedUserEntity);
@@ -481,7 +488,7 @@ public class UserServiceTest {
                 pageable
         );
     }
-    
+
     @Test
     @DisplayName("Should enable user by id successfully")
     public void shouldEnableUserByIdSuccessfully() {
