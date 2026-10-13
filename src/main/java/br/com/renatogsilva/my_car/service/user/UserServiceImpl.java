@@ -14,6 +14,7 @@ import br.com.renatogsilva.my_car.model.exceptions.user.UserNotFoundException;
 import br.com.renatogsilva.my_car.model.validations.PersonBusinessRules;
 import br.com.renatogsilva.my_car.model.validations.UserBusinessRules;
 import br.com.renatogsilva.my_car.repository.user.UserRepository;
+import br.com.renatogsilva.my_car.service.auth.AuthenticationService;
 import br.com.renatogsilva.my_car.service.person.PersonService;
 import br.com.renatogsilva.my_car.utils.GeneralFunctions;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +39,7 @@ public class UserServiceImpl implements UserService {
     private final UserBusinessRules userBusinessRules;
     private final PersonBusinessRules personBusinessRules;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final AuthenticationService authenticationService;
 
     @Transactional
     @Override
@@ -67,6 +69,8 @@ public class UserServiceImpl implements UserService {
     public UserResponseDTO update(Long id, UserRequestDTO userRequestDTO) {
         logger.info("m: update - Updating a user {}", userRequestDTO);
 
+        boolean isRefreshToken;
+
         userBusinessRules.validateUpdateRules(userRequestDTO);
         personBusinessRules.validateUpdateRules(userRequestDTO.getPersonRequestDTO());
 
@@ -74,10 +78,18 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserNotFoundException(EnumMessageUserExceptions.USER_NOT_FOUND.getMessage(),
                         EnumMessageUserExceptions.USER_NOT_FOUND.getCode()));
 
+        isRefreshToken = this.authenticationService.getAuthenticatedUser().getUsername().equals(user.getUsername()) &&
+                (!userRequestDTO.getUsername().equals(user.getUsername()));
+
         user = UserMapper.INSTANCE.toUser(user, userRequestDTO);
 
         this.personService.update(user.getPerson());
         this.userRepository.save(user);
+
+        if(isRefreshToken) {
+            logger.info("m: update - Revoking authentication token due to username change");
+            this.authenticationService.logout();
+        }
 
         logger.info("m: update - User with ID {} updated successfully", id);
 

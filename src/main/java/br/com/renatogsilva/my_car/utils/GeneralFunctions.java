@@ -9,10 +9,10 @@ public class GeneralFunctions {
     private static final Logger logger = LoggerFactory.getLogger(GeneralFunctions.class);
 
     public static boolean passwordMatch(BCryptPasswordEncoder bCryptPasswordEncoder,
-                                        String usernameLoginResponseDTO, String usernameLoginRequestDTO) {
+                                        String passwordResponseDTO, String passwordRequestDTO) {
 
         logger.info("m: passwordMatch - verify passwords match");
 
-        return bCryptPasswordEncoder.matches(usernameLoginRequestDTO, usernameLoginResponseDTO);
+        return bCryptPasswordEncoder.matches(passwordRequestDTO, passwordResponseDTO);
     }
 }
