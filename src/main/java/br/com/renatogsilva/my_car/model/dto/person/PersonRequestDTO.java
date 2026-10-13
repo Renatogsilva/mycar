@@ -27,7 +27,7 @@ public class PersonRequestDTO implements Serializable {
     private Long personId;
 
     @NotBlank(message = "Campo primeiro nome é obrigatório")
-    @Size(min = 5, max = 255, message = "O valor do campo primeiro nome deve conter no mínimo 5 e no máximo 255 caractere")
+    @Size(min = 4, max = 255, message = "O valor do campo primeiro nome deve conter no mínimo 5 e no máximo 255 caractere")
     private String firstName;
     private String lastName;
 
