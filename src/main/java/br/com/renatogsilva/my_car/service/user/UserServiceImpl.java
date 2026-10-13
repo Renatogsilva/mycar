@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
     public UserResponseDTO update(Long id, UserRequestDTO userRequestDTO) {
         logger.info("m: update - Updating a user {}", userRequestDTO);
 
-        boolean isRefreshToken;
+        boolean shouldRevokeToken;
 
         userBusinessRules.validateUpdateRules(userRequestDTO);
         personBusinessRules.validateUpdateRules(userRequestDTO.getPersonRequestDTO());
@@ -78,7 +78,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserNotFoundException(EnumMessageUserExceptions.USER_NOT_FOUND.getMessage(),
                         EnumMessageUserExceptions.USER_NOT_FOUND.getCode()));
 
-        isRefreshToken = this.authenticationService.getAuthenticatedUser().getUsername().equals(user.getUsername()) &&
+        shouldRevokeToken  = this.authenticationService.getAuthenticatedUser().getUsername().equals(user.getUsername()) &&
                 (!userRequestDTO.getUsername().equals(user.getUsername()));
 
         user = UserMapper.INSTANCE.toUser(user, userRequestDTO);
@@ -86,7 +86,7 @@ public class UserServiceImpl implements UserService {
         this.personService.update(user.getPerson());
         this.userRepository.save(user);
 
-        if(isRefreshToken) {
+        if(shouldRevokeToken ) {
             logger.info("m: update - Revoking authentication token due to username change");
             this.authenticationService.logout();
         }

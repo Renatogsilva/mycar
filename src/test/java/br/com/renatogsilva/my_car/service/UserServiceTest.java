@@ -36,10 +36,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -112,35 +112,35 @@ public class UserServiceTest {
         verify(this.personBusinessRules).validateInclusionRules(any(PersonRequestDTO.class));
         verify(this.bCryptPasswordEncoder).encode(userRequestDTO.getPersonRequestDTO().getCpf());
 
-        Assertions.assertNotNull(personCaptor);
-        Assertions.assertEquals(personPersisted.getFirstName(), personCaptor.getFirstName());
-        Assertions.assertEquals(personPersisted.getLastName(), personCaptor.getLastName());
-        Assertions.assertEquals(personPersisted.getEmail(), personCaptor.getEmail());
-        Assertions.assertEquals(personPersisted.getCpf(), personCaptor.getCpf());
-        Assertions.assertEquals(EnumStatus.ACTIVE, userCaptor.getStatus());
-        Assertions.assertEquals(EnumTypeUser.ADMIN, userCaptor.getTypeUser());
-        Assertions.assertEquals(jwtToken, userCaptor.getPassword());
+        assertNotNull(personCaptor);
+        assertEquals(personPersisted.getFirstName(), personCaptor.getFirstName());
+        assertEquals(personPersisted.getLastName(), personCaptor.getLastName());
+        assertEquals(personPersisted.getEmail(), personCaptor.getEmail());
+        assertEquals(personPersisted.getCpf(), personCaptor.getCpf());
+        assertEquals(EnumStatus.ACTIVE, userCaptor.getStatus());
+        assertEquals(EnumTypeUser.ADMIN, userCaptor.getTypeUser());
+        assertEquals(jwtToken, userCaptor.getPassword());
         Assertions.assertTrue(userCaptor.isPrimaryAccess());
-        Assertions.assertNotNull(userCaptor.getCreationDate());
+        assertNotNull(userCaptor.getCreationDate());
         Assertions.assertSame(personPersisted, userCaptor.getPerson());
 
-        Assertions.assertNotNull(userCaptor);
-        Assertions.assertNotNull(userResponseDTO);
-        Assertions.assertEquals(userResponseDTO.getUsername(), userCaptor.getUsername());
+        assertNotNull(userCaptor);
+        assertNotNull(userResponseDTO);
+        assertEquals(userResponseDTO.getUsername(), userCaptor.getUsername());
     }
 
     @Test
-    @DisplayName("Should update user successfully")
-    public void shouldUpdateUserSuccessfully() {
+    @DisplayName("Should update user without revoking token when username remains unchanged")
+    public void shouldUpdateUserWithoutRevokingTokenWhenUsernameUnchanged() {
         //GIVEN ARRANGE
-        User authenticatedUser = FactoryUser.user().persisted().build();
+        User authenticatedUser = FactoryUser.user().withUsername("username.login").persisted().build();
 
         Long userId = 1L;
         PersonRequestDTO personRequestDTOToUpdate = FactoryPersonRequestDTO.personRequest().persisted()
                 .withName("First Name Updated", "Last Name Updated").build();
 
         UserRequestDTO userRequestDTOToUpdate = FactoryUserRequestDTO.userRequest().persisted()
-                .withUsername("update.success")
+                .withUsername("username.login")
                 .withPerson(personRequestDTOToUpdate).build();
 
         Person personFromDB = FactoryPerson.person().persisted().build();
@@ -151,7 +151,7 @@ public class UserServiceTest {
 
         Person updatedPersonEntity = FactoryPerson.person().persisted().withName("First Name Updated", "Last Name Updated").build();
 
-        User updatedUserEntity = FactoryUser.user().persisted().withUsername("update.success")
+        User updatedUserEntity = FactoryUser.user().persisted().withUsername("username.login")
                 .withPerson(updatedPersonEntity).build();
 
 
@@ -177,26 +177,235 @@ public class UserServiceTest {
         verify(this.personBusinessRules).validateUpdateRules(personRequestDTOToUpdate);
         verify(this.userRepository).findById(userId);
 
-        Assertions.assertNotNull(result);
-        Assertions.assertNotNull(userCaptor);
-        Assertions.assertNotNull(userCaptor.getPerson());
+        verify(authenticationService).getAuthenticatedUser();
+        verify(authenticationService, never()).logout();
 
-        Assertions.assertAll(
-                () -> Assertions.assertEquals("update.success", result.getUsername()),
-                () -> Assertions.assertEquals("First Name Updated Last Name Updated",
+        assertNotNull(result);
+        assertNotNull(userCaptor);
+        assertNotNull(userCaptor.getPerson());
+
+        assertAll(
+                () -> assertEquals("username.login", result.getUsername()),
+                () -> assertEquals("First Name Updated Last Name Updated",
                         result.getPersonResponseDTO().getFullName())
         );
 
-        Assertions.assertAll(
-                () -> Assertions.assertEquals("update.success", userCaptor.getUsername()),
-                () -> Assertions.assertNotNull(userCaptor.getPerson()),
-                () -> Assertions.assertEquals("First Name Updated", userCaptor.getPerson().getFirstName()),
-                () -> Assertions.assertEquals("Last Name Updated", userCaptor.getPerson().getLastName())
+        assertAll(
+                () -> assertEquals("username.login", userCaptor.getUsername()),
+                () -> assertNotNull(userCaptor.getPerson()),
+                () -> assertEquals("First Name Updated", userCaptor.getPerson().getFirstName()),
+                () -> assertEquals("Last Name Updated", userCaptor.getPerson().getLastName())
         );
 
-        Assertions.assertAll(
-                () -> Assertions.assertEquals("First Name Updated", userCaptor.getPerson().getFirstName()),
-                () -> Assertions.assertEquals("Last Name Updated", userCaptor.getPerson().getLastName())
+        assertAll(
+                () -> assertEquals("First Name Updated", userCaptor.getPerson().getFirstName()),
+                () -> assertEquals("Last Name Updated", userCaptor.getPerson().getLastName())
+        );
+    }
+
+    @Test
+    @DisplayName("Should update user without revoking token when authenticated user is different from the user being modified")
+    public void shouldUpdateUserWithoutRevokingTokenWhenAuthenticatedUserIsDifferentFromTheUserBeingModified() {
+        // Arrange
+        Long userId = 1L;
+
+        User authenticatedUser = FactoryUser.user()
+                .persisted()
+                .withUsername("authenticated.user")
+                .build();
+
+        Person personFromDB = FactoryPerson.person()
+                .persisted()
+                .build();
+
+        User userFromDB = FactoryUser.user()
+                .persisted()
+                .withUsername("user.original")
+                .withPerson(personFromDB)
+                .build();
+
+        PersonRequestDTO personRequestDTOToUpdate =
+                FactoryPersonRequestDTO.personRequest()
+                        .persisted()
+                        .withName("First Name Updated", "Last Name Updated")
+                        .build();
+
+        UserRequestDTO userRequestDTOToUpdate =
+                FactoryUserRequestDTO.userRequest()
+                        .persisted()
+                        .withUsername("user.updated")
+                        .withPerson(personRequestDTOToUpdate)
+                        .build();
+
+        doNothing().when(userBusinessRules)
+                .validateUpdateRules(any(UserRequestDTO.class));
+
+        doNothing().when(personBusinessRules)
+                .validateUpdateRules(any(PersonRequestDTO.class));
+
+        when(authenticationService.getAuthenticatedUser())
+                .thenReturn(authenticatedUser);
+
+        when(userRepository.findById(userId))
+                .thenReturn(Optional.of(userFromDB));
+
+        when(personService.update(any(Person.class)))
+                .thenReturn(personFromDB);
+
+        when(userRepository.save(any(User.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        // Act
+        UserResponseDTO result =
+                userService.update(userId, userRequestDTOToUpdate);
+
+        // Assert
+        verify(authenticationService).getAuthenticatedUser();
+        verify(authenticationService, never()).logout();
+
+        ArgumentCaptor<User> userCaptor =
+                ArgumentCaptor.forClass(User.class);
+
+        verify(userRepository).save(userCaptor.capture());
+
+        assertNotNull(result);
+
+        assertAll(
+                () -> assertEquals("user.updated", result.getUsername()),
+                () -> assertEquals(
+                        "user.updated",
+                        userCaptor.getValue().getUsername()
+                )
+        );
+    }
+
+    @Test
+    @DisplayName("Should not revoke token when authenticated user is different and username remains unchanged")
+    public void shouldNotRevokeTokenWhenAuthenticatedUserIsDifferentAndUsernameUnchanged() {
+        // Arrange
+        Long userId = 1L;
+
+        User authenticatedUser = FactoryUser.user()
+                .persisted()
+                .withUsername("authenticated.user")
+                .build();
+
+        Person personFromDB = FactoryPerson.person()
+                .persisted()
+                .build();
+
+        User userFromDB = FactoryUser.user()
+                .persisted()
+                .withUsername("user.original")
+                .withPerson(personFromDB)
+                .build();
+
+        PersonRequestDTO personRequestDTO =
+                FactoryPersonRequestDTO.personRequest()
+                        .persisted()
+                        .build();
+
+        UserRequestDTO userRequestDTO =
+                FactoryUserRequestDTO.userRequest()
+                        .persisted()
+                        .withUsername("user.original")
+                        .withPerson(personRequestDTO)
+                        .build();
+
+        doNothing().when(userBusinessRules)
+                .validateUpdateRules(any(UserRequestDTO.class));
+
+        doNothing().when(personBusinessRules)
+                .validateUpdateRules(any(PersonRequestDTO.class));
+
+        when(authenticationService.getAuthenticatedUser())
+                .thenReturn(authenticatedUser);
+
+        when(userRepository.findById(userId))
+                .thenReturn(Optional.of(userFromDB));
+
+        when(personService.update(any(Person.class)))
+                .thenReturn(personFromDB);
+
+        when(userRepository.save(any(User.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        // Act
+        UserResponseDTO result = userService.update(userId, userRequestDTO);
+
+        // Assert
+        verify(authenticationService).getAuthenticatedUser();
+        verify(authenticationService, never()).logout();
+
+        assertNotNull(result);
+        assertEquals("user.original", result.getUsername());
+    }
+
+    @Test
+    @DisplayName("Should revoke token when authenticated user's username changes")
+    public void shouldRevokeTokenWhenAuthenticatedUserUsernameChanges() {
+        // Arrange
+        Long userId = 1L;
+
+        User authenticatedUser = FactoryUser.user()
+                .persisted()
+                .withUsername("user.original")
+                .build();
+
+        Person personFromDB = FactoryPerson.person()
+                .persisted()
+                .build();
+
+        User userFromDB = FactoryUser.user()
+                .persisted()
+                .withUsername("user.original")
+                .withPerson(personFromDB)
+                .build();
+
+        PersonRequestDTO personRequestDTOToUpdate = FactoryPersonRequestDTO.personRequest()
+                .persisted()
+                .withName("First Name Updated", "Last Name Updated")
+                .build();
+
+        UserRequestDTO userRequestDTOToUpdate = FactoryUserRequestDTO.userRequest()
+                .persisted()
+                .withUsername("user.updated")
+                .withPerson(personRequestDTOToUpdate)
+                .build();
+
+        doNothing().when(userBusinessRules)
+                .validateUpdateRules(any(UserRequestDTO.class));
+
+        doNothing().when(personBusinessRules)
+                .validateUpdateRules(any(PersonRequestDTO.class));
+
+        when(authenticationService.getAuthenticatedUser())
+                .thenReturn(authenticatedUser);
+
+        when(userRepository.findById(userId))
+                .thenReturn(Optional.of(userFromDB));
+
+        when(personService.update(any(Person.class)))
+                .thenReturn(personFromDB);
+
+        when(userRepository.save(any(User.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        // Act
+        UserResponseDTO result = userService.update(userId, userRequestDTOToUpdate);
+
+        // Assert
+        verify(authenticationService).getAuthenticatedUser();
+        verify(authenticationService).logout();
+
+        ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
+        verify(userRepository).save(userCaptor.capture());
+
+        assertNotNull(result);
+
+        assertAll(
+                () -> assertEquals("user.updated", result.getUsername()),
+                () -> assertEquals("user.updated", userCaptor.getValue().getUsername())
         );
     }
 
@@ -230,10 +439,10 @@ public class UserServiceTest {
 
             User userCaptor = userArgumentCaptor.getValue();
 
-            Assertions.assertAll(
+            assertAll(
                     "Assert UserCaptor",
-                    () -> Assertions.assertNotNull(userCaptor),
-                    () -> Assertions.assertEquals(jwtToken, userCaptor.getPassword())
+                    () -> assertNotNull(userCaptor),
+                    () -> assertEquals(jwtToken, userCaptor.getPassword())
             );
         }
     }
@@ -252,10 +461,10 @@ public class UserServiceTest {
         verify(this.userRepository).findById(this.userId);
         verifyNoMoreInteractions(this.userRepository);
 
-        Assertions.assertAll(
+        assertAll(
                 "Assert Group",
-                () -> Assertions.assertNotNull(userResponseDTO),
-                () -> Assertions.assertEquals(userEntityFromDB.getUsername(), userResponseDTO.getUsername())
+                () -> assertNotNull(userResponseDTO),
+                () -> assertEquals(userEntityFromDB.getUsername(), userResponseDTO.getUsername())
         );
     }
 
@@ -312,43 +521,43 @@ public class UserServiceTest {
 
         verifyNoMoreInteractions(this.userRepository);
 
-        Assertions.assertAll(
+        assertAll(
                 "Assert Group",
 
-                () -> Assertions.assertEquals(
+                () -> assertEquals(
                         3,
                         userResponseDTOPage.getTotalElements()
                 ),
 
-                () -> Assertions.assertEquals(
+                () -> assertEquals(
                         3,
                         userResponseDTOPage.getContent().size()
                 ),
 
-                () -> Assertions.assertNotNull(
+                () -> assertNotNull(
                         userResponseDTOPage.getContent().get(0)
                 ),
 
-                () -> Assertions.assertNotNull(
+                () -> assertNotNull(
                         userResponseDTOPage.getContent().get(1)
                 ),
 
-                () -> Assertions.assertNotNull(
+                () -> assertNotNull(
                         userResponseDTOPage.getContent().get(2)
                 ),
 
-                () -> Assertions.assertEquals(
+                () -> assertEquals(
                         usersFromDB.get(0).getPerson().getFirstName() + " " +
                                 usersFromDB.get(0).getPerson().getLastName(),
                         userResponseDTOPage.getContent().get(0).getFullName()
                 ),
 
-                () -> Assertions.assertEquals(
+                () -> assertEquals(
                         EnumStatus.ACTIVE,
                         userResponseDTOPage.getContent().get(0).getStatus()
                 ),
 
-                () -> Assertions.assertEquals(
+                () -> assertEquals(
                         EnumStatus.ACTIVE.getDescription(),
                         userResponseDTOPage.getContent().get(0).getStatus().getDescription()
                 )
@@ -511,12 +720,12 @@ public class UserServiceTest {
         verify(this.userRepository).findById(this.userId);
         verifyNoMoreInteractions(this.userRepository);
 
-        Assertions.assertAll(
+        assertAll(
                 "Assert Group",
-                () -> Assertions.assertNotNull(userCaptor),
-                () -> Assertions.assertEquals(userEntityFromDB.getUsername(), userCaptor.getUsername()),
-                () -> Assertions.assertNotNull(userCaptor.getPassword()),
-                () -> Assertions.assertEquals(EnumStatus.ACTIVE, userCaptor.getStatus())
+                () -> assertNotNull(userCaptor),
+                () -> assertEquals(userEntityFromDB.getUsername(), userCaptor.getUsername()),
+                () -> assertNotNull(userCaptor.getPassword()),
+                () -> assertEquals(EnumStatus.ACTIVE, userCaptor.getStatus())
         );
     }
 
@@ -541,12 +750,12 @@ public class UserServiceTest {
         verify(this.userRepository).findById(this.userId);
         verifyNoMoreInteractions(this.userRepository);
 
-        Assertions.assertAll(
+        assertAll(
                 "Assert Group",
-                () -> Assertions.assertNotNull(userCaptor),
-                () -> Assertions.assertEquals(userEntityFromDB.getUsername(), userCaptor.getUsername()),
-                () -> Assertions.assertNotNull(userCaptor.getPassword()),
-                () -> Assertions.assertEquals(EnumStatus.INACTIVE, userCaptor.getStatus())
+                () -> assertNotNull(userCaptor),
+                () -> assertEquals(userEntityFromDB.getUsername(), userCaptor.getUsername()),
+                () -> assertNotNull(userCaptor.getPassword()),
+                () -> assertEquals(EnumStatus.INACTIVE, userCaptor.getStatus())
         );
     }
 
@@ -567,11 +776,11 @@ public class UserServiceTest {
         verify(this.userRepository).findById(this.userId);
         verifyNoMoreInteractions(this.userRepository);
 
-        Assertions.assertAll(
+        assertAll(
                 "Assert Group",
-                () -> Assertions.assertNotNull(userNotFoundException),
-                () -> Assertions.assertEquals(EnumMessageUserExceptions.USER_NOT_FOUND.getMessage(), userNotFoundException.getMessage()),
-                () -> Assertions.assertEquals(EnumMessageUserExceptions.USER_NOT_FOUND.getCode(), userNotFoundException.getCode())
+                () -> assertNotNull(userNotFoundException),
+                () -> assertEquals(EnumMessageUserExceptions.USER_NOT_FOUND.getMessage(), userNotFoundException.getMessage()),
+                () -> assertEquals(EnumMessageUserExceptions.USER_NOT_FOUND.getCode(), userNotFoundException.getCode())
         );
     }
 
@@ -589,11 +798,11 @@ public class UserServiceTest {
         });
 
         //THEN ASSERT
-        Assertions.assertAll(
+        assertAll(
                 "Assert Group",
-                () -> Assertions.assertNotNull(userNotFoundException),
-                () -> Assertions.assertEquals(EnumMessageUserExceptions.USER_NOT_FOUND.getMessage(), userNotFoundException.getMessage()),
-                () -> Assertions.assertEquals(EnumMessageUserExceptions.USER_NOT_FOUND.getCode(), userNotFoundException.getCode())
+                () -> assertNotNull(userNotFoundException),
+                () -> assertEquals(EnumMessageUserExceptions.USER_NOT_FOUND.getMessage(), userNotFoundException.getMessage()),
+                () -> assertEquals(EnumMessageUserExceptions.USER_NOT_FOUND.getCode(), userNotFoundException.getCode())
         );
     }
 
@@ -623,11 +832,11 @@ public class UserServiceTest {
             verify(this.userRepository).findById(this.userId);
             verifyNoMoreInteractions(this.userRepository);
 
-            Assertions.assertAll(
+            assertAll(
                     "Assert Group",
-                    () -> Assertions.assertNotNull(userAuthenticationException),
-                    () -> Assertions.assertEquals(EnumMessageUserExceptions.CURRENT_PASSWORD_INVALID.getMessage(), userAuthenticationException.getMessage()),
-                    () -> Assertions.assertEquals(EnumMessageUserExceptions.CURRENT_PASSWORD_INVALID.getCode(), userAuthenticationException.getCode())
+                    () -> assertNotNull(userAuthenticationException),
+                    () -> assertEquals(EnumMessageUserExceptions.CURRENT_PASSWORD_INVALID.getMessage(), userAuthenticationException.getMessage()),
+                    () -> assertEquals(EnumMessageUserExceptions.CURRENT_PASSWORD_INVALID.getCode(), userAuthenticationException.getCode())
             );
         }
     }
@@ -656,11 +865,11 @@ public class UserServiceTest {
             verify(this.userRepository).findById(this.userId);
             verifyNoMoreInteractions(this.userRepository);
 
-            Assertions.assertAll(
+            assertAll(
                     "Assert Group",
-                    () -> Assertions.assertNotNull(userAuthenticationException),
-                    () -> Assertions.assertEquals(EnumMessageUserExceptions.USERNAME_INVALID.getMessage(), userAuthenticationException.getMessage()),
-                    () -> Assertions.assertEquals(EnumMessageUserExceptions.USERNAME_INVALID.getCode(), userAuthenticationException.getCode())
+                    () -> assertNotNull(userAuthenticationException),
+                    () -> assertEquals(EnumMessageUserExceptions.USERNAME_INVALID.getMessage(), userAuthenticationException.getMessage()),
+                    () -> assertEquals(EnumMessageUserExceptions.USERNAME_INVALID.getCode(), userAuthenticationException.getCode())
             );
         }
     }
@@ -680,11 +889,11 @@ public class UserServiceTest {
         verify(this.userRepository).findById(this.userId);
         verifyNoMoreInteractions(this.userRepository);
 
-        Assertions.assertAll(
+        assertAll(
                 "Assert Group",
-                () -> Assertions.assertNotNull(userNotFoundException),
-                () -> Assertions.assertEquals(EnumMessageUserExceptions.USER_NOT_FOUND.getMessage(), userNotFoundException.getMessage()),
-                () -> Assertions.assertEquals(EnumMessageUserExceptions.USER_NOT_FOUND.getCode(), userNotFoundException.getCode())
+                () -> assertNotNull(userNotFoundException),
+                () -> assertEquals(EnumMessageUserExceptions.USER_NOT_FOUND.getMessage(), userNotFoundException.getMessage()),
+                () -> assertEquals(EnumMessageUserExceptions.USER_NOT_FOUND.getCode(), userNotFoundException.getCode())
         );
     }
 
@@ -703,11 +912,11 @@ public class UserServiceTest {
         verify(this.userRepository).findById(this.userId);
         verifyNoMoreInteractions(this.userRepository);
 
-        Assertions.assertAll(
+        assertAll(
                 "Assert Group",
-                () -> Assertions.assertNotNull(userNotFoundException),
-                () -> Assertions.assertEquals(EnumMessageUserExceptions.USER_NOT_FOUND.getMessage(), userNotFoundException.getMessage()),
-                () -> Assertions.assertEquals(EnumMessageUserExceptions.USER_NOT_FOUND.getCode(), userNotFoundException.getCode())
+                () -> assertNotNull(userNotFoundException),
+                () -> assertEquals(EnumMessageUserExceptions.USER_NOT_FOUND.getMessage(), userNotFoundException.getMessage()),
+                () -> assertEquals(EnumMessageUserExceptions.USER_NOT_FOUND.getCode(), userNotFoundException.getCode())
         );
     }
 
@@ -742,11 +951,11 @@ public class UserServiceTest {
         verify(this.userRepository).findById(this.userId);
         verifyNoMoreInteractions(this.userRepository);
 
-        Assertions.assertAll(
+        assertAll(
                 "Assert Group",
-                () -> Assertions.assertNotNull(userNotFoundException),
-                () -> Assertions.assertEquals(EnumMessageUserExceptions.USER_NOT_FOUND.getMessage(), userNotFoundException.getMessage()),
-                () -> Assertions.assertEquals(EnumMessageUserExceptions.USER_NOT_FOUND.getCode(), userNotFoundException.getCode())
+                () -> assertNotNull(userNotFoundException),
+                () -> assertEquals(EnumMessageUserExceptions.USER_NOT_FOUND.getMessage(), userNotFoundException.getMessage()),
+                () -> assertEquals(EnumMessageUserExceptions.USER_NOT_FOUND.getCode(), userNotFoundException.getCode())
         );
     }
 
