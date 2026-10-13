@@ -43,9 +43,9 @@ public class PersonBusinessRulesTest {
                 personRequestDTO.getCpf(), personRequestDTO.getEmail())).thenReturn(person);
 
         //WHEN ACT
-        PersonDuplicationException personDuplicationException = Assertions.assertThrows(PersonDuplicationException.class, () -> {
-            this.personBusinessRules.validateInclusionRules(personRequestDTO);
-        });
+        PersonDuplicationException personDuplicationException = Assertions.assertThrows(PersonDuplicationException.class, () ->
+                this.personBusinessRules.validateInclusionRules(personRequestDTO)
+        );
 
         //THEN ASSERT
         verify(this.personRepository).findPersonDuplicateByPersonIdAndCpfOrEmail(
@@ -73,9 +73,9 @@ public class PersonBusinessRulesTest {
                 personRequestDTO.getCpf(), personRequestDTO.getEmail())).thenReturn(person);
 
         //WHEN ACT
-        PersonDuplicationException personDuplicationException = Assertions.assertThrows(PersonDuplicationException.class, () -> {
-            this.personBusinessRules.validateUpdateRules(personRequestDTO);
-        });
+        PersonDuplicationException personDuplicationException = Assertions.assertThrows(PersonDuplicationException.class, () ->
+                this.personBusinessRules.validateUpdateRules(personRequestDTO)
+        );
 
         //THEN ASSERT
         verify(this.personRepository).findPersonDuplicateByPersonIdAndCpfOrEmail(

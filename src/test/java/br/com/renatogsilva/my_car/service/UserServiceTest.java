@@ -770,9 +770,9 @@ public class UserServiceTest {
         when(this.userRepository.findById(this.userId)).thenReturn(Optional.empty());
         //WHEN ACT
 
-        UserNotFoundException userNotFoundException = Assertions.assertThrows(UserNotFoundException.class, () -> {
-            this.userService.update(this.userId, userRequestDTO);
-        });
+        UserNotFoundException userNotFoundException = Assertions.assertThrows(UserNotFoundException.class, () ->
+                this.userService.update(this.userId, userRequestDTO)
+        );
 
         //THEN ASSERT
         verify(this.userRepository).findById(this.userId);
@@ -795,9 +795,9 @@ public class UserServiceTest {
         when(this.userRepository.findById(this.userId)).thenReturn(Optional.empty());
 
         //WHEN ACT
-        UserNotFoundException userNotFoundException = Assertions.assertThrows(UserNotFoundException.class, () -> {
-            this.userService.update(this.userId, userProfileRequestDTO);
-        });
+        UserNotFoundException userNotFoundException = Assertions.assertThrows(UserNotFoundException.class, () ->
+                this.userService.update(this.userId, userProfileRequestDTO)
+        );
 
         //THEN ASSERT
         assertAll(
@@ -826,9 +826,9 @@ public class UserServiceTest {
             )).thenReturn(false);
 
             //WHEN ACT
-            UserAuthenticationException userAuthenticationException = Assertions.assertThrows(UserAuthenticationException.class, () -> {
-                this.userService.update(this.userId, userProfileRequestDTO);
-            });
+            UserAuthenticationException userAuthenticationException = Assertions.assertThrows(UserAuthenticationException.class, () ->
+                    this.userService.update(this.userId, userProfileRequestDTO)
+            );
 
             //THEN ASSERT
             verify(this.userRepository).findById(this.userId);
@@ -859,9 +859,9 @@ public class UserServiceTest {
             )).thenReturn(true);
 
             //WHEN ACT
-            UserAuthenticationException userAuthenticationException = Assertions.assertThrows(UserAuthenticationException.class, () -> {
-                this.userService.update(this.userId, userProfileRequestDTO);
-            });
+            UserAuthenticationException userAuthenticationException = Assertions.assertThrows(UserAuthenticationException.class, () ->
+                    this.userService.update(this.userId, userProfileRequestDTO)
+            );
 
             //THEN ASSERT
             verify(this.userRepository).findById(this.userId);
@@ -883,9 +883,9 @@ public class UserServiceTest {
         when(this.userRepository.findById(this.userId)).thenReturn(Optional.empty());
 
         //WHEN ACT
-        UserNotFoundException userNotFoundException = Assertions.assertThrows(UserNotFoundException.class, () -> {
-            this.userService.findById(this.userId);
-        });
+        UserNotFoundException userNotFoundException = Assertions.assertThrows(UserNotFoundException.class, () ->
+                this.userService.findById(this.userId)
+        );
 
         //THEN ASSERT
         verify(this.userRepository).findById(this.userId);
@@ -906,9 +906,9 @@ public class UserServiceTest {
         when(this.userRepository.findById(this.userId)).thenReturn(Optional.empty());
 
         //WHEN ACT
-        UserNotFoundException userNotFoundException = Assertions.assertThrows(UserNotFoundException.class, () -> {
-            this.userService.enable(this.userId);
-        });
+        UserNotFoundException userNotFoundException = Assertions.assertThrows(UserNotFoundException.class, () ->
+                this.userService.enable(this.userId)
+        );
 
         //THEN ASSERT
         verify(this.userRepository).findById(this.userId);
@@ -945,9 +945,9 @@ public class UserServiceTest {
         when(this.userRepository.findById(this.userId)).thenReturn(Optional.empty());
 
         //WHEN ACT
-        UserNotFoundException userNotFoundException = Assertions.assertThrows(UserNotFoundException.class, () -> {
-            this.userService.disable(this.userId);
-        });
+        UserNotFoundException userNotFoundException = Assertions.assertThrows(UserNotFoundException.class, () ->
+                this.userService.disable(this.userId)
+        );
 
         //THEN ASSERT
         verify(this.userRepository).findById(this.userId);

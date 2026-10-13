@@ -43,9 +43,9 @@ public class UserBusinessRulesTest {
                 userRequestDTO.getUsername())).thenReturn(userEntityFromDB);
 
         //WHEN ACT
-        UserDuplicationException userDuplicationException = Assertions.assertThrows(UserDuplicationException.class, () -> {
-            this.userBusinessRules.validateInclusionRules(userRequestDTO);
-        });
+        UserDuplicationException userDuplicationException = Assertions.assertThrows(UserDuplicationException.class, () ->
+                this.userBusinessRules.validateInclusionRules(userRequestDTO)
+        );
 
         //THEN ASSERT
         verify(this.userRepository).findUserDuplicateByUserIdAndLogin(userRequestDTO.getUserId(), userRequestDTO.getUsername());
@@ -71,9 +71,9 @@ public class UserBusinessRulesTest {
                 userRequestDTO.getUsername())).thenReturn(userEntityFromDB);
 
         //WHEN ACT
-        UserDuplicationException userDuplicationException = Assertions.assertThrows(UserDuplicationException.class, () -> {
-            this.userBusinessRules.validateUpdateRules(userRequestDTO);
-        });
+        UserDuplicationException userDuplicationException = Assertions.assertThrows(UserDuplicationException.class, () ->
+                this.userBusinessRules.validateUpdateRules(userRequestDTO)
+        );
 
         //THEN ASSERT
         verify(this.userRepository).findUserDuplicateByUserIdAndLogin(userRequestDTO.getUserId(), userRequestDTO.getUsername());

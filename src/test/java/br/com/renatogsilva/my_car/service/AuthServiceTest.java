@@ -69,15 +69,15 @@ public class AuthServiceTest {
 
     @Test
     @DisplayName(value = "Should throw exception when password doesn't match")
-    public void shouldThrowExceptionWhenPasswordDoesNotMatch() throws Exception {
+    public void shouldThrowExceptionWhenPasswordDoesNotMatch() {
         User userFromDB = FactoryUser.user().persisted().build();
 
         given(this.userRepository.findUserByUsername(this.loginRequestDTOPasswordInvalid.getUsername())).willReturn(userFromDB);
         given(this.bCryptPasswordEncoder.matches(this.loginRequestDTOPasswordInvalid.getPassword(), userFromDB.getPassword())).willReturn(false);
 
-        UserAuthenticationException exception = assertThrows(UserAuthenticationException.class, () -> {
-            this.authenticationServiceImpl.authenticate(this.loginRequestDTOPasswordInvalid);
-        });
+        UserAuthenticationException exception = assertThrows(UserAuthenticationException.class, () ->
+                this.authenticationServiceImpl.authenticate(this.loginRequestDTOPasswordInvalid)
+        );
 
         assertEquals("Usuário ou senha inválidos", exception.getMessage());
         assertEquals(401, exception.getCode());
@@ -91,12 +91,12 @@ public class AuthServiceTest {
 
     @Test
     @DisplayName(value = "Should throw exception when login doesn't match")
-    public void shouldThrowExceptionWhenLoginDoNotMatch() throws Exception {
+    public void shouldThrowExceptionWhenLoginDoNotMatch() {
         given(this.userRepository.findUserByUsername(loginRequestDTOPasswordInvalid.getUsername())).willReturn(null);
 
-        UserAuthenticationException exception = assertThrows(UserAuthenticationException.class, () -> {
-            this.authenticationServiceImpl.authenticate(this.loginRequestDTOPasswordInvalid);
-        });
+        UserAuthenticationException exception = assertThrows(UserAuthenticationException.class, () ->
+                this.authenticationServiceImpl.authenticate(this.loginRequestDTOPasswordInvalid)
+        );
 
         assertEquals("Usuário ou senha inválidos", exception.getMessage());
         assertEquals(401, exception.getCode());
@@ -109,7 +109,7 @@ public class AuthServiceTest {
 
     @Test
     @DisplayName(value = "Should reject authentication when user is inactive")
-    public void shouldRejectAuthenticationWhenUserIsInactive() throws Exception {
+    public void shouldRejectAuthenticationWhenUserIsInactive() {
         User userFromDB = FactoryUser.user()
                 .persisted()
                 .build();
@@ -160,7 +160,7 @@ public class AuthServiceTest {
 
     @Test
     @DisplayName(value = "Should reject authentication when user is deleted")
-    public void shouldRejectAuthenticationWhenUserIsDeleted() throws Exception {
+    public void shouldRejectAuthenticationWhenUserIsDeleted() {
         User userFromDB = FactoryUser.user()
                 .persisted()
                 .build();
@@ -211,7 +211,7 @@ public class AuthServiceTest {
 
     @Test
     @DisplayName(value = "Should return LoginResponseDTO when login is successful")
-    public void shouldReturnLoginResponseDTOWhenLoginIsSuccessful() throws Exception {
+    public void shouldReturnLoginResponseDTOWhenLoginIsSuccessful() {
         User user = new User(1L, "teste.teste", "$2a$10$AsMzGLVz.4ADQQvZsXByKuBrGFVatlYPswMiOS9BwpsFqFwfnRp9y", LocalDate.now(),
                 false, EnumStatus.ACTIVE, EnumTypeUser.ADMIN, null);
         long expectedExpirationTime = System.currentTimeMillis() + 1200000;
@@ -235,14 +235,14 @@ public class AuthServiceTest {
 
     @Test
     @DisplayName(value = "Should return exception when user not found")
-    public void shouldReturnExceptionWhenUserNotFound() throws Exception {
+    public void shouldReturnExceptionWhenUserNotFound() {
         SecurityContext mockSecurityContext = mock(SecurityContext.class);
         SecurityContextHolder.setContext(mockSecurityContext);
         when(mockSecurityContext.getAuthentication()).thenReturn(null);
 
-        UserNotFoundException userNotFoundException = assertThrows(UserNotFoundException.class, () -> {
-            this.authenticationServiceImpl.getAuthenticatedUser();
-        });
+        UserNotFoundException userNotFoundException = assertThrows(UserNotFoundException.class, () ->
+                this.authenticationServiceImpl.getAuthenticatedUser()
+        );
 
         assertEquals("Usuário não encontrado", userNotFoundException.getMessage());
         assertEquals(404, userNotFoundException.getCode());
@@ -251,7 +251,7 @@ public class AuthServiceTest {
 
     @Test
     @DisplayName(value = "Should return user with successful")
-    public void shouldReturnUserWithSuccessfulAuthentication() throws Exception {
+    public void shouldReturnUserWithSuccessfulAuthentication() {
         SecurityContext mockSecurityContext = mock(SecurityContext.class);
         SecurityContextHolder.setContext(mockSecurityContext);
         given(mockSecurityContext.getAuthentication()).willReturn(this.authentication);
@@ -325,9 +325,9 @@ public class AuthServiceTest {
 
         given(mockSecurityContext.getAuthentication()).willReturn(null);
 
-        UserNotFoundException thrown = assertThrows(UserNotFoundException.class, () -> {
-            this.authenticationServiceImpl.getAuthenticatedUser();
-        });
+        UserNotFoundException thrown = assertThrows(UserNotFoundException.class, () ->
+                this.authenticationServiceImpl.getAuthenticatedUser()
+        );
 
         assertEquals(EnumMessageUserExceptions.USER_NOT_FOUND.getMessage(), thrown.getMessage());
         assertEquals(EnumMessageUserExceptions.USER_NOT_FOUND.getCode(), thrown.getCode());
@@ -346,9 +346,9 @@ public class AuthServiceTest {
         given(mockSecurityContext.getAuthentication()).willReturn(mockAuthentication);
         given(mockAuthentication.isAuthenticated()).willReturn(false);
 
-        UserNotFoundException thrown = assertThrows(UserNotFoundException.class, () -> {
-            this.authenticationServiceImpl.getAuthenticatedUser();
-        });
+        UserNotFoundException thrown = assertThrows(UserNotFoundException.class, () ->
+                this.authenticationServiceImpl.getAuthenticatedUser()
+        );
 
         assertEquals(EnumMessageUserExceptions.USER_NOT_FOUND.getMessage(), thrown.getMessage());
         assertEquals(EnumMessageUserExceptions.USER_NOT_FOUND.getCode(), thrown.getCode());

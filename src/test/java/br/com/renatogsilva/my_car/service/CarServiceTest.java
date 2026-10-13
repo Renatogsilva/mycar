@@ -177,9 +177,9 @@ public class CarServiceTest {
 
         given(carRepository.findById(1L)).willReturn(Optional.empty());
 
-        CarNotFoundException thrown = assertThrows(CarNotFoundException.class, () -> {
-            carServiceImpl.update(carRequestDTO, 1L);
-        });
+        CarNotFoundException thrown = assertThrows(CarNotFoundException.class, () ->
+                carServiceImpl.update(carRequestDTO, 1L)
+        );
 
         assertEquals(EnumMessageCarExceptions.CAR_NOT_FOUND.getMessage(), thrown.getMessage());
         assertEquals(EnumMessageCarExceptions.CAR_NOT_FOUND.getCode(), thrown.getCode());
@@ -220,9 +220,9 @@ public class CarServiceTest {
     void shouldThrowAnExceptionWhenQueryingRegistryToDisable() {
         given(this.carRepository.findById(1L)).willReturn(Optional.empty());
 
-        CarNotFoundException thrown = assertThrows(CarNotFoundException.class, () -> {
-            this.carServiceImpl.disable(1L);
-        });
+        CarNotFoundException thrown = assertThrows(CarNotFoundException.class, () ->
+                this.carServiceImpl.disable(1L)
+        );
 
         assertEquals(EnumMessageCarExceptions.CAR_NOT_FOUND.getMessage(), thrown.getMessage());
         assertEquals(EnumMessageCarExceptions.CAR_NOT_FOUND.getCode(), thrown.getCode());
@@ -278,9 +278,9 @@ public class CarServiceTest {
     void shouldThrowAnExceptionWhenQueryingRegistryToEnable() {
         given(this.carRepository.findById(1L)).willReturn(Optional.empty());
 
-        CarNotFoundException thrown = assertThrows(CarNotFoundException.class, () -> {
-            this.carServiceImpl.enable(1L);
-        });
+        CarNotFoundException thrown = assertThrows(CarNotFoundException.class, () ->
+                this.carServiceImpl.enable(1L)
+        );
 
         assertEquals(EnumMessageCarExceptions.CAR_NOT_FOUND.getMessage(), thrown.getMessage());
         assertEquals(EnumMessageCarExceptions.CAR_NOT_FOUND.getCode(), thrown.getCode());
@@ -322,9 +322,9 @@ public class CarServiceTest {
     void shouldThrowExceptionWhenNotFindingRecordById() {
         given(carRepository.findById(1L)).willReturn(Optional.empty());
 
-        CarNotFoundException thrown = assertThrows(CarNotFoundException.class, () -> {
-            carServiceImpl.findById(1L);
-        });
+        CarNotFoundException thrown = assertThrows(CarNotFoundException.class, () ->
+                carServiceImpl.findById(1L)
+        );
 
         assertEquals(EnumMessageCarExceptions.CAR_NOT_FOUND.getMessage(), thrown.getMessage());
         assertEquals(EnumMessageCarExceptions.CAR_NOT_FOUND.getCode(), thrown.getCode());

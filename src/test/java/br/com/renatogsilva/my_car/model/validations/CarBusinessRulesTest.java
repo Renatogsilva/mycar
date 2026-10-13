@@ -42,9 +42,9 @@ public class CarBusinessRulesTest {
                 carRequestDTO.getMark(), carRequestDTO.getVersion(), carRequestDTO.getEngine())).thenReturn(carEntityFromDB);
 
         //WHEN ACT
-        CarDuplicationException carDuplicationException = Assertions.assertThrows(CarDuplicationException.class, () -> {
-            this.carBusinessRules.validateInclusionRules(carRequestDTO);
-        });
+        CarDuplicationException carDuplicationException = Assertions.assertThrows(CarDuplicationException.class, () ->
+                this.carBusinessRules.validateInclusionRules(carRequestDTO)
+        );
 
         //THEN ASSERT
         verify(this.carRepository).findCarDuplicatorByIdAndMarkAndVersionAndEngine(
@@ -71,9 +71,9 @@ public class CarBusinessRulesTest {
                 carRequestDTO.getMark(), carRequestDTO.getVersion(), carRequestDTO.getEngine())).thenReturn(carEntityFromDB);
 
         //WHEN ACT
-        CarDuplicationException carDuplicationException = Assertions.assertThrows(CarDuplicationException.class, () -> {
-            this.carBusinessRules.validateUpdateRules(carRequestDTO);
-        });
+        CarDuplicationException carDuplicationException = Assertions.assertThrows(CarDuplicationException.class, () ->
+                this.carBusinessRules.validateUpdateRules(carRequestDTO)
+        );
 
         //THEN ASSERT
         verify(this.carRepository).findCarDuplicatorByIdAndMarkAndVersionAndEngine(
