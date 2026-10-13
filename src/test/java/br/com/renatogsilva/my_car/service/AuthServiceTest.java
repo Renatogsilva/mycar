@@ -91,7 +91,7 @@ public class AuthServiceTest {
 
     @Test
     @DisplayName(value = "Should throw exception when login doesn't match")
-    public void shouldThrowExceptionWhenLoginDoesntMatch() throws Exception {
+    public void shouldThrowExceptionWhenLoginDoNotMatch() throws Exception {
         given(this.userRepository.findUserByUsername(loginRequestDTOPasswordInvalid.getUsername())).willReturn(null);
 
         UserAuthenticationException exception = assertThrows(UserAuthenticationException.class, () -> {
@@ -105,6 +105,108 @@ public class AuthServiceTest {
         verify(this.bCryptPasswordEncoder, times(0)).encode(this.loginRequestDTOPasswordInvalid.getPassword());
         verify(this.jwtTokenProvider, never()).generateToken(loginRequestDTOUsernameInvalid.getUsername(), EnumTypeUser.ADMIN.getDescription());
         verify(this.jwtTokenProvider, times(0)).generateToken(loginRequestDTOUsernameInvalid.getUsername(), EnumTypeUser.ADMIN.getDescription());
+    }
+
+    @Test
+    @DisplayName(value = "Should reject authentication when user is inactive")
+    public void shouldRejectAuthenticationWhenUserIsInactive() throws Exception {
+        User userFromDB = FactoryUser.user()
+                .persisted()
+                .build();
+
+        userFromDB.setStatus(EnumStatus.INACTIVE);
+
+        given(this.userRepository.findUserByUsername(
+                this.loginRequestDTOValid.getUsername()))
+                .willReturn(userFromDB);
+
+        given(this.bCryptPasswordEncoder.matches(
+                this.loginRequestDTOValid.getPassword(),
+                userFromDB.getPassword()))
+                .willReturn(true);
+
+        UserAuthenticationException exception = assertThrows(
+                UserAuthenticationException.class,
+                () -> this.authenticationServiceImpl.authenticate(
+                        this.loginRequestDTOValid)
+        );
+
+        assertEquals(
+                EnumMessageUserExceptions.CREDENTIALS_INVALID.getMessage(),
+                exception.getMessage()
+        );
+        assertEquals(
+                EnumMessageUserExceptions.CREDENTIALS_INVALID.getCode(),
+                exception.getCode()
+        );
+
+        verify(this.userRepository, times(1))
+                .findUserByUsername(this.loginRequestDTOValid.getUsername());
+
+        verify(this.bCryptPasswordEncoder, times(1))
+                .matches(
+                        this.loginRequestDTOValid.getPassword(),
+                        userFromDB.getPassword()
+                );
+
+        verify(this.jwtTokenProvider, never())
+                .generateToken(
+                        this.loginRequestDTOValid.getUsername(),
+                        userFromDB.getTypeUser().getDescription()
+                );
+
+        verifyNoInteractions(this.tokenRevocationConfig);
+    }
+
+    @Test
+    @DisplayName(value = "Should reject authentication when user is deleted")
+    public void shouldRejectAuthenticationWhenUserIsDeleted() throws Exception {
+        User userFromDB = FactoryUser.user()
+                .persisted()
+                .build();
+
+        userFromDB.setStatus(EnumStatus.DELETED);
+
+        given(this.userRepository.findUserByUsername(
+                this.loginRequestDTOValid.getUsername()))
+                .willReturn(userFromDB);
+
+        given(this.bCryptPasswordEncoder.matches(
+                this.loginRequestDTOValid.getPassword(),
+                userFromDB.getPassword()))
+                .willReturn(true);
+
+        UserAuthenticationException exception = assertThrows(
+                UserAuthenticationException.class,
+                () -> this.authenticationServiceImpl.authenticate(
+                        this.loginRequestDTOValid)
+        );
+
+        assertEquals(
+                EnumMessageUserExceptions.CREDENTIALS_INVALID.getMessage(),
+                exception.getMessage()
+        );
+        assertEquals(
+                EnumMessageUserExceptions.CREDENTIALS_INVALID.getCode(),
+                exception.getCode()
+        );
+
+        verify(this.userRepository, times(1))
+                .findUserByUsername(this.loginRequestDTOValid.getUsername());
+
+        verify(this.bCryptPasswordEncoder, times(1))
+                .matches(
+                        this.loginRequestDTOValid.getPassword(),
+                        userFromDB.getPassword()
+                );
+
+        verify(this.jwtTokenProvider, never())
+                .generateToken(
+                        this.loginRequestDTOValid.getUsername(),
+                        userFromDB.getTypeUser().getDescription()
+                );
+
+        verifyNoInteractions(this.tokenRevocationConfig);
     }
 
     @Test
@@ -139,7 +241,7 @@ public class AuthServiceTest {
         when(mockSecurityContext.getAuthentication()).thenReturn(null);
 
         UserNotFoundException userNotFoundException = assertThrows(UserNotFoundException.class, () -> {
-           this.authenticationServiceImpl.getAuthenticatedUser();
+            this.authenticationServiceImpl.getAuthenticatedUser();
         });
 
         assertEquals("Usuário não encontrado", userNotFoundException.getMessage());
@@ -175,7 +277,7 @@ public class AuthServiceTest {
 
     @Test
     @DisplayName(value = "Should revoke token when valid")
-    public void shouldRevokeTokenWhenValid(){
+    public void shouldRevokeTokenWhenValid() {
         SecurityContext mockSecurityContext = mock(SecurityContext.class);
         Authentication mockAuthentication = mock(Authentication.class);
         SecurityContextHolder.setContext(mockSecurityContext);
@@ -196,7 +298,7 @@ public class AuthServiceTest {
 
     @Test
     @DisplayName(value = "Should not revoke token when invalid")
-    public void shouldNotRevokeTokenWhenInvalid(){
+    public void shouldNotRevokeTokenWhenInvalid() {
         SecurityContext mockSecurityContext = mock(SecurityContext.class);
         Authentication mockAuthentication = mock(Authentication.class);
         SecurityContextHolder.setContext(mockSecurityContext);
@@ -217,7 +319,7 @@ public class AuthServiceTest {
 
     @Test
     @DisplayName(value = "Should return null authentication")
-    public void shouldReturnNullAuthentication(){
+    public void shouldReturnNullAuthentication() {
         SecurityContext mockSecurityContext = mock(SecurityContext.class);
         SecurityContextHolder.setContext(mockSecurityContext);
 
@@ -236,7 +338,7 @@ public class AuthServiceTest {
 
     @Test
     @DisplayName(value = "Should return false authentication")
-    public void shouldReturnFalseAuthentication(){
+    public void shouldReturnFalseAuthentication() {
         Authentication mockAuthentication = mock(Authentication.class);
         SecurityContext mockSecurityContext = mock(SecurityContext.class);
         SecurityContextHolder.setContext(mockSecurityContext);

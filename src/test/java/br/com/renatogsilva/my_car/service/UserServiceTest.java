@@ -435,6 +435,7 @@ public class UserServiceTest {
             ArgumentCaptor<User> userArgumentCaptor = ArgumentCaptor.forClass(User.class);
 
             verify(this.userRepository).save(userArgumentCaptor.capture());
+            verify(this.authenticationService).logout();
             verifyNoMoreInteractions(this.userRepository);
 
             User userCaptor = userArgumentCaptor.getValue();
@@ -747,6 +748,7 @@ public class UserServiceTest {
 
         User userCaptor = userArgumentCaptor.getValue();
 
+        verify(this.authenticationService).logout();
         verify(this.userRepository).findById(this.userId);
         verifyNoMoreInteractions(this.userRepository);
 
