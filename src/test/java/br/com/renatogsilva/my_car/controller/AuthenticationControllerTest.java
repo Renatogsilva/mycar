@@ -57,7 +57,7 @@ public class AuthenticationControllerTest {
     @Test
     @DisplayName(value = "Should successfully authenticate")
     public void shouldSuccessfullyAuthenticate() throws Exception {
-        given(authenticationService.findUserByUsername(loginRequestDTO)).willReturn(loginResponseDTO);
+        given(authenticationService.authenticate(loginRequestDTO)).willReturn(loginResponseDTO);
 
         ResultActions resultActions = mockMvc.perform(post("/api/v1/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -69,8 +69,8 @@ public class AuthenticationControllerTest {
                 .andExpect(jsonPath("$.token").value(this.loginResponseDTO.getToken()))
                 .andExpect(jsonPath("$.expiresIn").value(this.loginResponseDTO.getExpiresIn()));
 
-        verify(authenticationService).findUserByUsername(loginRequestDTO);
-        verify(authenticationService, times(1)).findUserByUsername(loginRequestDTO);
+        verify(authenticationService).authenticate(loginRequestDTO);
+        verify(authenticationService, times(1)).authenticate(loginRequestDTO);
     }
 
     @Test
@@ -98,7 +98,7 @@ public class AuthenticationControllerTest {
         resultActions
                 .andExpect(status().is4xxClientError());
 
-        verify(authenticationService, never()).findUserByUsername(this.loginRequestDTOFailure);
-        verify(authenticationService, times(0)).findUserByUsername(this.loginRequestDTOFailure);
+        verify(authenticationService, never()).authenticate(this.loginRequestDTOFailure);
+        verify(authenticationService, times(0)).authenticate(this.loginRequestDTOFailure);
     }
 }

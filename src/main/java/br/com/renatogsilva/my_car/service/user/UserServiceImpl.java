@@ -122,6 +122,8 @@ public class UserServiceImpl implements UserService {
 
         this.userRepository.save(user);
 
+        this.authenticationService.logout();
+
         logger.info("m: update - User password with ID {} updated successfully", id);
     }
 
@@ -188,9 +190,12 @@ public class UserServiceImpl implements UserService {
             logger.warn("m: disable - User with id {} is already active", id);
             return;
         }
+
         user.setStatus(EnumStatus.INACTIVE);
 
         this.userRepository.save(user);
+
+        this.authenticationService.logout();
 
         logger.info("m: disable - User with id {} successfully disabled", id);
     }

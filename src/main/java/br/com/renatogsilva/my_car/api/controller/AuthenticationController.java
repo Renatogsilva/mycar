@@ -36,7 +36,7 @@ public class AuthenticationController {
     public LoginResponseDTO authentication(@RequestBody @Valid LoginRequestDTO loginRequestDTO) {
         logger.info("m: authentication - receiving authentication request with loginRequestDTO object");
 
-        return this.authenticationService.findUserByUsername(loginRequestDTO);
+        return this.authenticationService.authenticate(loginRequestDTO);
     }
 
     @PostMapping(value = "/logout")

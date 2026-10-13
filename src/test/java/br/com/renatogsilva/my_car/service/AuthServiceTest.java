@@ -76,7 +76,7 @@ public class AuthServiceTest {
         given(this.bCryptPasswordEncoder.matches(this.loginRequestDTOPasswordInvalid.getPassword(), userFromDB.getPassword())).willReturn(false);
 
         UserAuthenticationException exception = assertThrows(UserAuthenticationException.class, () -> {
-            this.authenticationServiceImpl.findUserByUsername(this.loginRequestDTOPasswordInvalid);
+            this.authenticationServiceImpl.authenticate(this.loginRequestDTOPasswordInvalid);
         });
 
         assertEquals("Usuário ou senha inválidos", exception.getMessage());
@@ -95,7 +95,7 @@ public class AuthServiceTest {
         given(this.userRepository.findUserByUsername(loginRequestDTOPasswordInvalid.getUsername())).willReturn(null);
 
         UserAuthenticationException exception = assertThrows(UserAuthenticationException.class, () -> {
-            this.authenticationServiceImpl.findUserByUsername(this.loginRequestDTOPasswordInvalid);
+            this.authenticationServiceImpl.authenticate(this.loginRequestDTOPasswordInvalid);
         });
 
         assertEquals("Usuário ou senha inválidos", exception.getMessage());
@@ -119,7 +119,7 @@ public class AuthServiceTest {
         given(this.jwtTokenProvider.generateToken(eq(this.loginRequestDTOValid.getUsername()), eq(EnumTypeUser.ADMIN.getDescription())))
                 .willReturn("Bearer ");
 
-        LoginResponseDTO loginResponseDTO = this.authenticationServiceImpl.findUserByUsername(this.loginRequestDTOValid);
+        LoginResponseDTO loginResponseDTO = this.authenticationServiceImpl.authenticate(this.loginRequestDTOValid);
 
         assertNotNull(loginResponseDTO);
         assertTrue(expectedExpirationTime <= loginResponseDTO.getExpiresIn());

@@ -6,6 +6,7 @@ import br.com.renatogsilva.my_car.model.domain.User;
 import br.com.renatogsilva.my_car.model.dto.login.LoginRequestDTO;
 import br.com.renatogsilva.my_car.model.dto.login.LoginResponseDTO;
 import br.com.renatogsilva.my_car.model.enums.EnumMessageUserExceptions;
+import br.com.renatogsilva.my_car.model.enums.EnumStatus;
 import br.com.renatogsilva.my_car.model.exceptions.user.UserAuthenticationException;
 import br.com.renatogsilva.my_car.model.exceptions.user.UserNotFoundException;
 import br.com.renatogsilva.my_car.repository.user.UserRepository;
@@ -36,7 +37,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public Long EXPIRATION_TIME;
 
     @Override
-    public LoginResponseDTO findUserByUsername(LoginRequestDTO loginRequestDTO) {
+    public LoginResponseDTO authenticate(LoginRequestDTO loginRequestDTO) {
         logger.info("m: findUserByUsername - get user by username {}", loginRequestDTO.getUsername());
 
         User user = userRepository.findUserByUsername(loginRequestDTO.getUsername());
@@ -49,10 +50,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     EnumMessageUserExceptions.CREDENTIALS_INVALID.getCode());
         }
 
+        if (user.getStatus() != EnumStatus.ACTIVE) {
+            logger.error("m: authenticate - user {} is inactive or deleted", loginRequestDTO.getUsername());
+
+            throw new UserAuthenticationException(EnumMessageUserExceptions.CREDENTIALS_INVALID.getMessage(),
+                    EnumMessageUserExceptions.CREDENTIALS_INVALID.getCode());
+        }
+
         LoginResponseDTO loginResponseDTO = new LoginResponseDTO(jwtTokenProvider.generateToken(loginRequestDTO.getUsername(), user.getTypeUser().getDescription()));
 
         loginResponseDTO.setExpiresIn(new Date(System.currentTimeMillis() + EXPIRATION_TIME).getTime());
 
+        logger.info("m: authenticate - authenticated with successfully");
         return loginResponseDTO;
     }
 
@@ -67,6 +76,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new UserNotFoundException(EnumMessageUserExceptions.USER_NOT_FOUND.getMessage(),
                     EnumMessageUserExceptions.USER_NOT_FOUND.getCode());
         }
+
+        logger.info("m: getAuthenticatedUser - session captured with successfully");
         return this.userRepository.findUserByUsername((String) authentication.getPrincipal());
     }
 

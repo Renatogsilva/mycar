@@ -6,7 +6,7 @@ import br.com.renatogsilva.my_car.model.dto.login.LoginResponseDTO;
 
 public interface AuthenticationService {
 
-    LoginResponseDTO findUserByUsername(LoginRequestDTO loginRequestDTO);
+    LoginResponseDTO authenticate(LoginRequestDTO loginRequestDTO);
     User getAuthenticatedUser();
     void logout();
 }
